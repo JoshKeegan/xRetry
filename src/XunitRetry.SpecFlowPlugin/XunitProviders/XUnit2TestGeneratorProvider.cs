@@ -2,7 +2,7 @@
  * Copied from TechTalk.SpecFlow.Generator.UnitTestProvider
  *
  * Require some methods to be changed to virtual.
- * TODO: Open issue to see if they can change it so we don't need this copied
+ * TODO: Remove once PR is merged & released: https://github.com/techtalk/SpecFlow/pull/1556
  */
 
 using System;
