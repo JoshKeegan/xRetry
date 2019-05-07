@@ -8,9 +8,9 @@ build:
   script:
     - cd build
     - make build unit-tests-run nuget-create
-  artefacts:
+  artifacts:
     paths:
-      - artifacts
+      - artefacts
       - build
 
 publish:
