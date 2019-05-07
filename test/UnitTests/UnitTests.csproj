@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SpecFlowGeneratorPlugins Include="../../src/XunitRetry.SpecFlowPlugin/bin/Debug/netstandard2.0/XunitRetry.SpecFlowPlugin.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.0.213" />
+    <PackageReference Include="SpecFlow.xUnit" Version="3.0.213" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\XunitRetry.SpecFlowPlugin\XunitRetry.SpecFlowPlugin.csproj" />
+    <ProjectReference Include="..\..\src\XunitRetry\XunitRetry.csproj" />
+  </ItemGroup>
+
+</Project>
