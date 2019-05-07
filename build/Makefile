@@ -7,7 +7,7 @@ clean:
 
 	mkdir -p ../artefacts/nuget
 
-build:
+build: clean
 	dotnet restore ../
 
 # SpecFlowPlugin must be built before the tests
