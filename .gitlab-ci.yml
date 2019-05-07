@@ -10,7 +10,7 @@ build:
     - make build unit-tests-run nuget-create
   artefacts:
     paths:
-      - artefacts
+      - artifacts
       - build
 
 publish:
