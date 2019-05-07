@@ -1,0 +1,27 @@
+stages:
+  - build
+  - publish
+
+build:
+  image: joshkeegan/dotnet-build:2.2.100.0
+  stage: build
+  script:
+    - cd build
+    - make build unit-tests-run nuget-create
+  artefacts:
+    paths:
+      - artefacts
+      - build
+
+publish:
+  image: joshkeegan/dotnet-build:2.2.100.0
+  only:
+    - master
+  stage: publish
+  dependencies:
+    - build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd build
+    - make nuget-publish apiKey='$NUGET_API_KEY'
