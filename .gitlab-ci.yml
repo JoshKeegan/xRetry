@@ -24,4 +24,4 @@ publish:
     GIT_STRATEGY: none
   script:
     - cd deploy
-    - ./deploy.sh ${NUGET_API_KEY}
+    - /bin/bash deploy.sh ${NUGET_API_KEY}
