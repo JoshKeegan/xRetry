@@ -16,7 +16,7 @@ build:
 publish:
   image: joshkeegan/dotnet-build:2.2.100.0
   only:
-    - master
+    - release
   stage: publish
   dependencies:
     - build
@@ -24,4 +24,4 @@ publish:
     GIT_STRATEGY: none
   script:
     - cd build
-    - make nuget-publish apiKey='$NUGET_API_KEY'
+    - make nuget-publish apiKey='${NUGET_API_KEY}'
