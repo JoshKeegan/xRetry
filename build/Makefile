@@ -1,4 +1,4 @@
-PACKAGE_VERSION=0.1.0-alpha1#
+PACKAGE_VERSION=0.1.0-alpha4#
 
 clean:
 	rm -r ../artefacts || true
@@ -30,8 +30,3 @@ nuget-create:
 		--no-build \
 		-c Release \
 		-o ../../artefacts/nuget
-
-# Args:
-#	- apiKey
-nuget-publish:
-	dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key $(apiKey) ../artefacts/nuget/\*.nupkg

@@ -36,8 +36,8 @@ namespace UnitTests.SpecFlowPlugin.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Retry", "\tIn order to allow for transient failures\r\n\tAs a QA engineer\r\n\tI want to be able " +
-                    "to run tests multiple times until they pass", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Retry", "\tIn order to allow for transient failures\n\tAs a QA engineer\n\tI want to be able to" +
+                    " run tests multiple times until they pass", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         

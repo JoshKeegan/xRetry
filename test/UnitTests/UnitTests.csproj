@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -25,18 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\xRetry.SpecFlowPlugin\xRetry.SpecFlowPlugin.csproj" />
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="SpecFlowPlugin\Features\Retry.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowFeatureFiles Update="SpecFlowPlugin\Features\Retry.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-    </SpecFlowFeatureFiles>
   </ItemGroup>
 
 </Project>

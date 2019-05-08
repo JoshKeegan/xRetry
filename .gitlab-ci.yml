@@ -11,7 +11,7 @@ build:
   artifacts:
     paths:
       - artefacts
-      - build
+      - deploy
 
 publish:
   image: joshkeegan/dotnet-build:2.2.100.0
@@ -23,5 +23,5 @@ publish:
   variables:
     GIT_STRATEGY: none
   script:
-    - cd build
-    - make nuget-publish apiKey='${NUGET_API_KEY}'
+    - cd deploy
+    - ./deploy.sh ${NUGET_API_KEY}
