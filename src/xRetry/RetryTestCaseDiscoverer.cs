@@ -3,7 +3,7 @@ using System.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace XunitRetry
+namespace xRetry
 {
     public class RetryTestCaseDiscoverer : IXunitTestCaseDiscoverer
     {

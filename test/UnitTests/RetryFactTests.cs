@@ -1,5 +1,5 @@
+using xRetry;
 using Xunit;
-using XunitRetry;
 
 namespace UnitTests
 {

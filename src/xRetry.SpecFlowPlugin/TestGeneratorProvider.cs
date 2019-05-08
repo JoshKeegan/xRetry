@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
-using XunitRetry.SpecFlowPlugin.XunitProviders;
+using xRetry.SpecFlowPlugin.XunitProviders;
 
-namespace XunitRetry.SpecFlowPlugin
+namespace xRetry.SpecFlowPlugin
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
@@ -36,7 +36,7 @@ namespace XunitRetry.SpecFlowPlugin
 
                 // Add the Retry attribute
                 CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
-                    "XunitRetry.RetryFact");
+                    "xRetry.RetryFact");
 
                 if (maxRetries != null)
                 {

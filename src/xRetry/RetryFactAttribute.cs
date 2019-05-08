@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using Xunit;
 using Xunit.Sdk;
 
-namespace XunitRetry
+namespace xRetry
 {
     /// <summary>
     /// Attribute that is applied to a method to indicate that it is a fact that should be run
     /// by the test runner up to MaxRetries times, until it succeeds.
     /// </summary>
-    [XunitTestCaseDiscoverer("XunitRetry.RetryTestCaseDiscoverer", "XunitRetry")]
+    [XunitTestCaseDiscoverer("xRetry.RetryTestCaseDiscoverer", "xRetry")]
     public class RetryFactAttribute : FactAttribute
     {
         public readonly int MaxRetries;

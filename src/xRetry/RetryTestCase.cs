@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace XunitRetry
+namespace xRetry
 {
     [Serializable]
     public class RetryTestCase : XunitTestCase

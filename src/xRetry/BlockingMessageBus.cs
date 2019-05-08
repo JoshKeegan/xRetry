@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace XunitRetry
+namespace xRetry
 {
     /// <summary>
     /// An XUnit message bus that can block messages from being passed until we want them to be.

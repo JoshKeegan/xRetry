@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copied from TechTalk.SpecFlow.Generator.UnitTestProvider
  *
  * Require some methods to be changed to virtual.
@@ -16,7 +16,7 @@ using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
 using TechTalk.SpecFlow.Generator.UnitTestProvider;
 
-namespace XunitRetry.SpecFlowPlugin.XunitProviders
+namespace xRetry.SpecFlowPlugin.XunitProviders
 {
     public class XUnit2TestGeneratorProvider : XUnitTestGeneratorProvider
     {

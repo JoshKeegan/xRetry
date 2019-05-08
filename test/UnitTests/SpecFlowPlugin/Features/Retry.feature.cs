@@ -80,7 +80,7 @@ namespace UnitTests.SpecFlowPlugin.Features
         [Xunit.TraitAttribute("FeatureTitle", "Retry")]
         [Xunit.TraitAttribute("Description", "Retry three times by default")]
         [Xunit.TraitAttribute("Category", "retry")]
-        [XunitRetry.RetryFact(DisplayName="Retry three times by default")]
+        [xRetry.RetryFact(DisplayName="Retry three times by default")]
         public virtual void RetryThreeTimesByDefault()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Retry three times by default", null, new string[] {
@@ -99,7 +99,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("FeatureTitle", "Retry")]
         [Xunit.TraitAttribute("Description", "Retry five times when specified")]
         [Xunit.TraitAttribute("Category", "retry(5)")]
-        [XunitRetry.RetryFact(5, DisplayName="Retry five times when specified")]
+        [xRetry.RetryFact(5, DisplayName="Retry five times when specified")]
         public virtual void RetryFiveTimesWhenSpecified()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Retry five times when specified", null, new string[] {
