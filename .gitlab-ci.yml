@@ -3,7 +3,7 @@ stages:
   - publish
 
 build:
-  image: joshkeegan/dotnet-build:2.2.100.0
+  image: joshkeegan/dotnet-build:2.2.203
   stage: build
   script:
     - cd build
@@ -14,7 +14,7 @@ build:
       - deploy
 
 publish:
-  image: joshkeegan/dotnet-build:2.2.100.0
+  image: mcr.microsoft.com/dotnet/core/sdk:2.2.203-stretch
   only:
     - release
   stage: publish
