@@ -1,4 +1,4 @@
-﻿using TechTalk.SpecFlow.Generator.Plugins;
+using TechTalk.SpecFlow.Generator.Plugins;
 using TechTalk.SpecFlow.Generator.UnitTestProvider;
 using TechTalk.SpecFlow.Infrastructure;
 using TechTalk.SpecFlow.UnitTestProvider;
@@ -14,10 +14,10 @@ namespace XunitRetry.SpecFlowPlugin
         {
             unitTestProviderConfiguration.UseUnitTestProvider("xunit");
 
-            generatorPluginEvents.CustomizeDependencies += CustomiseDependencies;
+            generatorPluginEvents.CustomizeDependencies += customiseDependencies;
         }
 
-        private void CustomiseDependencies(object sender, CustomizeDependenciesEventArgs eventArgs)
+        private void customiseDependencies(object sender, CustomizeDependenciesEventArgs eventArgs)
         {
             eventArgs.ObjectContainer.RegisterTypeAs<TestGeneratorProvider, IUnitTestGeneratorProvider>();
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace XunitRetry.SpecFlowPlugin
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
-        private const string RetryTag = "retry";
+        private const string RETRY_TAG = "retry";
 
         public TestGeneratorProvider(CodeDomHelper codeDomHelper) : base(codeDomHelper) { }
 
@@ -21,10 +21,10 @@ namespace XunitRetry.SpecFlowPlugin
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
-            string retryTag = GetRetryTag(scenarioCategories);
+            string retryTag = getRetryTag(scenarioCategories);
             if (retryTag != null)
             {
-                int? maxRetries = GetMaxRetries(retryTag);
+                int? maxRetries = getMaxRetries(retryTag);
 
                 // Remove the Fact attribute
                 CodeAttributeDeclaration factAttribute = testMethod.CustomAttributes
@@ -54,18 +54,18 @@ namespace XunitRetry.SpecFlowPlugin
             }
         }
 
-        private string GetRetryTag(IEnumerable<string> tags) =>
-            tags.FirstOrDefault(t => t.StartsWith(RetryTag, StringComparison.OrdinalIgnoreCase));
+        private string getRetryTag(IEnumerable<string> tags) =>
+            tags.FirstOrDefault(t => t.StartsWith(RETRY_TAG, StringComparison.OrdinalIgnoreCase));
 
-        private int? GetMaxRetries(string tag)
+        private int? getMaxRetries(string tag)
         {
             // Will look like retry(5)
-            if (tag.Length <= RetryTag.Length + 2)
+            if (tag.Length <= RETRY_TAG.Length + 2)
             {
                 return null;
             }
 
-            string strNum = tag.Substring(RetryTag.Length + 1, tag.Length - 2 - RetryTag.Length);
+            string strNum = tag.Substring(RETRY_TAG.Length + 1, tag.Length - 2 - RETRY_TAG.Length);
             return int.TryParse(strNum, out int num) ? (int?)num : null;
         }
     }

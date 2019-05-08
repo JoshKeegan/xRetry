@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ namespace XunitRetry
     [Serializable]
     public class RetryTestCase : XunitTestCase
     {
-        private int _maxRetries;
+        private int maxRetries;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete(
@@ -27,7 +27,7 @@ namespace XunitRetry
             : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod,
                 testMethodArguments)
         {
-            _maxRetries = maxRetries;
+            this.maxRetries = maxRetries;
         }
 
         public override async Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
@@ -44,7 +44,7 @@ namespace XunitRetry
                         constructorArguments, aggregator, cancellationTokenSource);
 
                     // If we succeeded, or we've reached the max retries return the result
-                    if (summary.Failed == 0 || i == _maxRetries)
+                    if (summary.Failed == 0 || i == maxRetries)
                     {
                         blockingMessageBus.Flush();
                         return summary;
@@ -52,7 +52,7 @@ namespace XunitRetry
                     // Otherwise log that we've had a failed run and will retry
                     diagnosticMessageSink.OnMessage(new DiagnosticMessage(
                         "Test \"{0}\" failed but is set to retry ({1}/{2}), retrying . . .", DisplayName, i,
-                        _maxRetries));
+                        maxRetries));
                 }
             }
         }
@@ -61,14 +61,14 @@ namespace XunitRetry
         {
             base.Serialize(data);
 
-            data.AddValue("_maxRetries", _maxRetries);
+            data.AddValue("maxRetries", maxRetries);
         }
 
         public override void Deserialize(IXunitSerializationInfo data)
         {
             base.Deserialize(data);
 
-            _maxRetries = data.GetValue<int>("_maxRetries");
+            maxRetries = data.GetValue<int>("maxRetries");
         }
     }
 }

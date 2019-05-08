@@ -9,18 +9,17 @@ namespace XunitRetry
     /// </summary>
     public class BlockingMessageBus : IMessageBus
     {
-        private readonly IMessageBus _underlyingMessageBus;
-
-        private ConcurrentQueue<IMessageSinkMessage> _messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
+        private readonly IMessageBus underlyingMessageBus;
+        private ConcurrentQueue<IMessageSinkMessage> messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
 
         public BlockingMessageBus(IMessageBus underlyingMessageBus)
         {
-            _underlyingMessageBus = underlyingMessageBus;
+            this.underlyingMessageBus = underlyingMessageBus;
         }
 
         public bool QueueMessage(IMessageSinkMessage message)
         {
-            _messageQueue.Enqueue(message);
+            messageQueue.Enqueue(message);
 
             // Returns if execution should continue. Since we are intercepting the message, we
             //  have no way of checking this so always continue...
@@ -29,7 +28,7 @@ namespace XunitRetry
 
         public void Clear()
         {
-            _messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
+            messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
         }
 
         /// <summary>
@@ -37,9 +36,9 @@ namespace XunitRetry
         /// </summary>
         public void Flush()
         {
-            while (_messageQueue.TryDequeue(out IMessageSinkMessage message))
+            while (messageQueue.TryDequeue(out IMessageSinkMessage message))
             {
-                _underlyingMessageBus.QueueMessage(message);
+                underlyingMessageBus.QueueMessage(message);
             }
         }
 
