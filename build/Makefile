@@ -1,4 +1,4 @@
-PACKAGE_VERSION=0.1.0-alpha4#
+PACKAGE_VERSION=0.1.0-alpha9#
 
 clean:
 	rm -r ../artefacts || true
