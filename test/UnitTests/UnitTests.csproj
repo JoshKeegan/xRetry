@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\xRetry.SpecFlowPlugin\xRetry.SpecFlowPlugin.csproj" />
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
   </ItemGroup>
 
