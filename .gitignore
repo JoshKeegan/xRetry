@@ -330,3 +330,5 @@ ASALocalRun/
 .mfractor/
 
 *.feature.cs
+
+artefacts/

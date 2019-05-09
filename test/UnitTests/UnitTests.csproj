@@ -27,4 +27,25 @@
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="SpecFlowPlugin\Features\Retry.feature.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Retry.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SpecFlowPlugin\Features\Retry.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Retry.feature.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="SpecFlowPlugin\Features\Retry.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+    </SpecFlowFeatureFiles>
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-PACKAGE_VERSION=0.1.0-alpha9#
+PACKAGE_VERSION=0.1.0#
 
 clean:
 	rm -r ../artefacts || true
@@ -27,6 +27,7 @@ nuget-create:
 
 	dotnet pack ../src/xRetry.SpecFlowPlugin \
 		/p:Version=$(PACKAGE_VERSION) \
+		/p:NuspecFile=xRetry.SpecFlowPlugin.nuspec \
 		--no-build \
 		-c Release \
 		-o ../../artefacts/nuget

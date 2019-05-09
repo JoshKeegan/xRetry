@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>xRetry.SpecFlowPlugin</id>
+    <version>$version$</version>
+    <authors>Josh Keegan</authors>
+    <owners>Josh Keegan</owners>
+    <projectUrl>https://github.com/JoshKeegan/xRetry</projectUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Allows for a @retry(n) tag to be placed above scenarios in SpecFlow.XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</description>
+    <copyright>Copyright Josh Keegan 2019</copyright>
+    <tags>SpecFlow XUnit Retry Test-Automation</tags>
+
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="SpecFlow.CustomPlugin" version="3.0.213" />
+        <dependency id="xRetry" version="[$version$]" />
+      </group>
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="xRetry.SpecFlowPlugin.props" target="build" />
+
+    <file src="bin\Release\netstandard2.0\xRetry.SpecFlowPlugin.dll" target="build" />
+  </files>
+</package>
