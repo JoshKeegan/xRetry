@@ -14,7 +14,7 @@
 
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="SpecFlow.CustomPlugin" version="3.0.213" />
+        <dependency id="SpecFlow" version="3.0.213" />
         <dependency id="xRetry" version="[$version$]" />
       </group>
     </dependencies>
