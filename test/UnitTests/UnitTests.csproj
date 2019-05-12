@@ -7,14 +7,14 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <SpecFlowGeneratorPlugins Include="../../src/xRetry.SpecFlowPlugin/bin/Release/netstandard2.0/xRetry.SpecFlowPlugin.dll" />
+  <ItemGroup>    
+    <SpecFlowGeneratorPlugins Include="../../src/xRetry.SpecFlowPlugin/bin/Release/netstandard2.0/publish/xRetry.SpecFlowPlugin.dll" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
+    <PackageReference Include="SpecFlow" Version="3.0.213" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.0.213" />
-    <PackageReference Include="SpecFlow.xUnit" Version="3.0.213" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>

@@ -1,4 +1,4 @@
-VERSION=0.1.0#
+VERSION=0.1.1-alpha01#
 
 clean:
 	rm -r ../artefacts || true
@@ -12,6 +12,11 @@ build: clean
 
 # SpecFlowPlugin must be built before the tests
 	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../src/xRetry.SpecFlowPlugin
+
+# When building from Visual Studio (assume full fat MSBuild), you need the dependencies of the generator plugin in the
+#	same directory as the plugin, so publish now & the nuget pack will use them later
+	dotnet publish -c Release --no-build /p:Version=$(VERSION) ../src/xRetry.SpecFlowPlugin
+
 	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../test/UnitTests
 
 unit-tests-run:

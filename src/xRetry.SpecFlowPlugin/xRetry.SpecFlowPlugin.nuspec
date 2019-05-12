@@ -23,6 +23,7 @@
   <files>
     <file src="xRetry.SpecFlowPlugin.props" target="build" />
 
-    <file src="bin\Release\netstandard2.0\xRetry.SpecFlowPlugin.dll" target="build" />
+    <file src="bin\Release\netstandard2.0\publish\xRetry.SpecFlowPlugin.dll" target="build" />
+    <file src="bin\Release\netstandard2.0\publish\System.CodeDom.dll" target="build" />
   </files>
 </package>
