@@ -12,8 +12,6 @@ namespace xRetry.SpecFlowPlugin
         public void Initialize(GeneratorPluginEvents generatorPluginEvents, GeneratorPluginParameters generatorPluginParameters,
             UnitTestProviderConfiguration unitTestProviderConfiguration)
         {
-            unitTestProviderConfiguration.UseUnitTestProvider("xunit");
-
             generatorPluginEvents.CustomizeDependencies += customiseDependencies;
         }
 
