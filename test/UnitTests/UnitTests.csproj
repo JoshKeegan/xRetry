@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>    
-    <SpecFlowGeneratorPlugins Include="../../src/xRetry.SpecFlowPlugin/bin/Release/netstandard2.0/publish/xRetry.SpecFlowPlugin.dll" />
+    <SpecFlowGeneratorPlugins Condition="'$(MSBuildRuntimeType)' == 'Core'" Include="../../src/xRetry.SpecFlowPlugin/bin/Release/netstandard2.0/xRetry.SpecFlowPlugin.dll" />
+    <SpecFlowGeneratorPlugins Condition="'$(MSBuildRuntimeType)' != 'Core'" Include="../../src/xRetry.SpecFlowPlugin/bin/Release/net471/xRetry.SpecFlowPlugin.dll" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>xRetry.SpecFlowPlugin</id>
     <version>$version$</version>
@@ -13,17 +13,16 @@
     <tags>SpecFlow XUnit Retry Test-Automation</tags>
 
     <dependencies>
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="SpecFlow" version="3.0.213" />
-        <dependency id="xRetry" version="[$version$]" />
-      </group>
+      <dependency id="SpecFlow" version="3.0.213" />
+      <dependency id="xRetry" version="[$version$]" />
     </dependencies>
   </metadata>
 
   <files>
+    <file src="xRetry.SpecFlowPlugin.targets" target="build" />
     <file src="xRetry.SpecFlowPlugin.props" target="build" />
 
-    <file src="bin\Release\netstandard2.0\publish\xRetry.SpecFlowPlugin.dll" target="build" />
-    <file src="bin\Release\netstandard2.0\publish\System.CodeDom.dll" target="build" />
+    <file src="bin\Release\net471\xRetry.SpecFlowPlugin.dll" target="build\net471" />
+    <file src="bin\Release\netstandard2.0\xRetry.SpecFlowPlugin.dll" target="build\netstandard2.0" />
   </files>
 </package>
