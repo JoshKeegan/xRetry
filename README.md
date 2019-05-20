@@ -49,5 +49,20 @@ public void Default_Reaches3()
 This will retry the test up to 3 times by default. You can optionally specify a number of times
 to retry the test as an argument, e.g. `[RetryFact(5)]`.
 
+## Contributing
+Feel free to open a pull request! If you want to start any sizeable chunk of work, consider 
+opening an issue first to discuss, and make sure nobody else is working on the same problem.  
+
+### Running locally
+To run locally, always build `xRetry.SpecFlowPlugin` before the tests, to ensure MSBuild
+uses the latest version of your changes.  
+
+If you install `make` and go to the `build` directory, you can run the following from the 
+terminal to build, run tests and create the nuget packages:
+```bash
+make build unit-tests-run nuget-create
+```
+If that works, all is well!
+
 ## Licence
 [MIT](LICENSE)
