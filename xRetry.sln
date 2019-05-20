@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3A384C09-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xRetry", "src\xRetry\xRetry.csproj", "{EF1B568A-30B2-4B2E-A8EB-C94100696C7F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xRetry.SpecFlowPlugin", "src\xRetry.SpecFlowPlugin\xRetry.SpecFlowPlugin.csproj", "{20733607-C196-42E7-A257-09E15D5DAFCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xRetry.SpecFlow", "src\xRetry.SpecFlow\xRetry.SpecFlow.csproj", "{20733607-C196-42E7-A257-09E15D5DAFCC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "test\UnitTests\UnitTests.csproj", "{386D6FB2-876B-4AD0-8282-28ED26F29C4F}"
 EndProject

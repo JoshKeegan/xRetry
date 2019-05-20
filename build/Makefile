@@ -1,4 +1,4 @@
-VERSION=0.2.0#
+VERSION=0.2.0-alpha01#
 
 clean:
 	rm -r ../artefacts || true
@@ -10,8 +10,8 @@ clean:
 build: clean
 	dotnet restore ../
 
-# SpecFlowPlugin must be built before the tests
-	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../src/xRetry.SpecFlowPlugin
+# SpecFlow plugin must be built before the tests
+	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../src/xRetry.SpecFlow
 
 	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../test/UnitTests
 
@@ -26,9 +26,9 @@ nuget-create:
 		-c Release \
 		-o ../../artefacts/nuget
 
-	dotnet pack ../src/xRetry.SpecFlowPlugin \
+	dotnet pack ../src/xRetry.SpecFlow \
 		/p:Version=$(VERSION) \
-		/p:NuspecFile=xRetry.SpecFlowPlugin.nuspec \
+		/p:NuspecFile=xRetry.SpecFlow.nuspec \
 		--no-build \
 		-c Release \
 		-o ../../artefacts/nuget

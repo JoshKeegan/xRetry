@@ -12,7 +12,7 @@ using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
 using TechTalk.SpecFlow.Generator.UnitTestProvider;
 
-namespace xRetry.SpecFlowPlugin.XunitProviders
+namespace xRetry.SpecFlow.XunitProviders
 {
     public class XUnitTestGeneratorProvider : IUnitTestGeneratorProvider
     {
