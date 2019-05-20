@@ -1,4 +1,4 @@
-VERSION=0.1.1-alpha04#
+VERSION=0.2.0#
 
 clean:
 	rm -r ../artefacts || true
