@@ -4,27 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
+using xRetry.SpecFlow.Parsers;
 using xRetry.SpecFlow.XunitProviders;
 
 namespace xRetry.SpecFlow
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
-        private const string RETRY_TAG = "retry";
+        private IRetryTagParser retryTagParser;
 
-        public TestGeneratorProvider(CodeDomHelper codeDomHelper) : base(codeDomHelper) { }
+        public TestGeneratorProvider(CodeDomHelper codeDomHelper, IRetryTagParser retryTagParser) 
+            : base(codeDomHelper)
+        {
+            this.retryTagParser = retryTagParser;
+        }
 
-        public override void SetTestMethodCategories(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, IEnumerable<string> scenarioCategories)
+        public override void SetTestMethodCategories(TestClassGenerationContext generationContext,
+            CodeMemberMethod testMethod, IEnumerable<string> scenarioCategories)
         {
             // Optimisation: Prevent multiple enumerations
             scenarioCategories = scenarioCategories as string[] ?? scenarioCategories.ToArray();
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
-            string retryTag = getRetryTag(scenarioCategories);
-            if (retryTag != null)
+            string strRetryTag = getRetryTag(scenarioCategories);
+            if (strRetryTag != null)
             {
-                int? maxRetries = getMaxRetries(retryTag);
+                RetryTag retryTag = retryTagParser.Parse(strRetryTag);
 
                 // Remove the Fact attribute
                 CodeAttributeDeclaration factAttribute = testMethod.CustomAttributes
@@ -38,9 +44,16 @@ namespace xRetry.SpecFlow
                 CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
                     "xRetry.RetryFact");
 
-                if (maxRetries != null)
+                if (retryTag.MaxRetries != null)
                 {
-                    retryAttribute.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(maxRetries)));
+                    retryAttribute.Arguments.Add(
+                        new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.MaxRetries)));
+
+                    if(retryTag.DelayBetweenRetriesMs != null)
+                    {
+                        retryAttribute.Arguments.Add(
+                            new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.DelayBetweenRetriesMs)));
+                    }
                 }
 
                 // Copy arguments from the fact attribute (if there was one)
@@ -55,18 +68,9 @@ namespace xRetry.SpecFlow
         }
 
         private string getRetryTag(IEnumerable<string> tags) =>
-            tags.FirstOrDefault(t => t.StartsWith(RETRY_TAG, StringComparison.OrdinalIgnoreCase));
-
-        private int? getMaxRetries(string tag)
-        {
-            // Will look like retry(5)
-            if (tag.Length <= RETRY_TAG.Length + 2)
-            {
-                return null;
-            }
-
-            string strNum = tag.Substring(RETRY_TAG.Length + 1, tag.Length - 2 - RETRY_TAG.Length);
-            return int.TryParse(strNum, out int num) ? (int?)num : null;
-        }
+            tags.FirstOrDefault(t =>
+                t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
+                // Is just "retry", or is "retry("... for params
+                (t.Length == Constants.RETRY_TAG.Length || t[Constants.RETRY_TAG.Length] == '('));
     }
 }

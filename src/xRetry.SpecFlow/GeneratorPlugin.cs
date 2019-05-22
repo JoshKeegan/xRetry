@@ -3,6 +3,7 @@ using TechTalk.SpecFlow.Generator.UnitTestProvider;
 using TechTalk.SpecFlow.Infrastructure;
 using TechTalk.SpecFlow.UnitTestProvider;
 using xRetry.SpecFlow;
+using xRetry.SpecFlow.Parsers;
 
 [assembly: GeneratorPlugin(typeof(GeneratorPlugin))]
 namespace xRetry.SpecFlow
@@ -17,6 +18,7 @@ namespace xRetry.SpecFlow
 
         private void customiseDependencies(object sender, CustomizeDependenciesEventArgs eventArgs)
         {
+            eventArgs.ObjectContainer.RegisterTypeAs<RetryTagParser, IRetryTagParser>();
             eventArgs.ObjectContainer.RegisterTypeAs<TestGeneratorProvider, IUnitTestGeneratorProvider>();
         }
     }

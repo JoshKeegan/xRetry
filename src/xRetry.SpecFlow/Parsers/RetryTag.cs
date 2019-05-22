@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace xRetry.SpecFlow.Parsers
+{
+    public class RetryTag : IEquatable<RetryTag>
+    {
+        public readonly int? MaxRetries;
+        public readonly int? DelayBetweenRetriesMs;
+
+        public RetryTag(int? maxRetries, int? delayBetweenRetriesMs)
+        {
+            MaxRetries = maxRetries;
+            DelayBetweenRetriesMs = delayBetweenRetriesMs;
+        }
+
+        public bool Equals(RetryTag other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return MaxRetries == other.MaxRetries && DelayBetweenRetriesMs == other.DelayBetweenRetriesMs;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((RetryTag) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (MaxRetries.GetHashCode() * 397) ^ DelayBetweenRetriesMs.GetHashCode();
+            }
+        }
+    }
+}
