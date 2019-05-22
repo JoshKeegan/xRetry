@@ -9,10 +9,8 @@ namespace xRetry.SpecFlow.Parsers
 {
     public class RetryTagParser : IRetryTagParser
     {
-        // TODO: Can be simplified: specflow/cucumber tags cannot contain spaces
-
-        // unescaped: ^retry(\(([0-9]+)(,\s*([0-9]+))?\))?$
-        private readonly Regex regex = new Regex("^retry(\\(([0-9]+)(,\\s*([0-9]+))?\\))?$",
+        // unescaped: ^retry(\(([0-9]+)(,([0-9]+))?\))?$
+        private readonly Regex regex = new Regex("^retry(\\(([0-9]+)(,([0-9]+))?\\))?$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public RetryTag Parse(string tag)

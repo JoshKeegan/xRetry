@@ -49,9 +49,7 @@ namespace UnitTests.SpecFlow.Parsers
         [InlineData("Retry(5,100)", 5, 100)]
         [InlineData("RETRY(5,100)", 5, 100)]
         [InlineData("rEtRy(5,100)", 5, 100)]
-        [InlineData("retry(5, 100)", 5, 100)]
-        [InlineData("retry(5,  100)", 5, 100)]
-        [InlineData("retry(765, 87)", 765, 87)]
+        [InlineData("retry(765,87)", 765, 87)]
         public void Parse_MaxRetriesAndDelayBetweenRetriesMs_ReturnsCorrectResult(string tag, int maxRetries,
             int delayBetweenRetriesMs)
         {
