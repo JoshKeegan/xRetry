@@ -12,15 +12,26 @@ namespace xRetry
     public class RetryFactAttribute : FactAttribute
     {
         public readonly int MaxRetries;
+        public readonly int DelayBetweenRetriesMs;
 
-        public RetryFactAttribute(int maxRetries = 3)
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="maxRetries">The number of times to run a test for until it succeeds</param>
+        /// <param name="delayBetweenRetriesMs">The amount of time (in ms) to wait between each test run attempt</param>
+        public RetryFactAttribute(int maxRetries = 3, int delayBetweenRetriesMs = 0)
         {
             if (maxRetries < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxRetries) + " must be >= 1");
             }
+            if (delayBetweenRetriesMs < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(delayBetweenRetriesMs) + " must be >= 0");
+            }
 
             MaxRetries = maxRetries;
+            DelayBetweenRetriesMs = delayBetweenRetriesMs;
         }
     }
 }

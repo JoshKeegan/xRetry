@@ -34,8 +34,10 @@ namespace xRetry
             else
             {
                 int maxRetries = factAttribute.GetNamedArgument<int>(nameof(RetryFactAttribute.MaxRetries));
+                int delayBetweenRetriesMs =
+                    factAttribute.GetNamedArgument<int>(nameof(RetryFactAttribute.DelayBetweenRetriesMs));
                 testCase = new RetryTestCase(messageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries);
+                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs);
             }
 
             return new[] { testCase };

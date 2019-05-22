@@ -11,6 +11,7 @@ namespace xRetry
     public class RetryTestCase : XunitTestCase
     {
         private int maxRetries;
+        private int delayBetweenRetriesMs;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete(
@@ -23,11 +24,13 @@ namespace xRetry
             TestMethodDisplayOptions defaultMethodDisplayOptions,
             ITestMethod testMethod,
             int maxRetries,
+            int delayBetweenRetriesMs,
             object[] testMethodArguments = null)
             : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod,
                 testMethodArguments)
         {
             this.maxRetries = maxRetries;
+            this.delayBetweenRetriesMs = delayBetweenRetriesMs;
         }
 
         public override async Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
@@ -40,8 +43,11 @@ namespace xRetry
                 //  a message to mark the test as failed when we're going to retry it
                 using (BlockingMessageBus blockingMessageBus = new BlockingMessageBus(messageBus))
                 {
+                    diagnosticMessageSink.OnMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
+                        DisplayName, i, maxRetries));
+
                     RunSummary summary = await base.RunAsync(diagnosticMessageSink, blockingMessageBus,
-                        constructorArguments, aggregator, cancellationTokenSource);
+                        constructorArguments, aggregator, cancellationTokenSource).ConfigureAwait(false);
 
                     // If we succeeded, or we've reached the max retries return the result
                     if (summary.Failed == 0 || i == maxRetries)
@@ -51,8 +57,16 @@ namespace xRetry
                     }
                     // Otherwise log that we've had a failed run and will retry
                     diagnosticMessageSink.OnMessage(new DiagnosticMessage(
-                        "Test \"{0}\" failed but is set to retry ({1}/{2}), retrying . . .", DisplayName, i,
-                        maxRetries));
+                        "Test \"{0}\" failed but is set to retry ({1}/{2}) . . .", DisplayName, i, maxRetries));
+
+                    // If there is a delay between test attempts, apply it now
+                    if (delayBetweenRetriesMs > 0)
+                    {
+                        diagnosticMessageSink.OnMessage(new DiagnosticMessage(
+                            "Test \"{0}\" attempt ({1}/{2}) delayed by {3}ms. Waiting . . .", DisplayName, i,
+                            maxRetries, delayBetweenRetriesMs));
+                        await Task.Delay(delayBetweenRetriesMs, cancellationTokenSource.Token).ConfigureAwait(false);
+                    }
                 }
             }
         }
@@ -62,6 +76,7 @@ namespace xRetry
             base.Serialize(data);
 
             data.AddValue("maxRetries", maxRetries);
+            data.AddValue("delayBetweenRetriesMs", delayBetweenRetriesMs);
         }
 
         public override void Deserialize(IXunitSerializationInfo data)
@@ -69,6 +84,7 @@ namespace xRetry
             base.Deserialize(data);
 
             maxRetries = data.GetValue<int>("maxRetries");
+            delayBetweenRetriesMs = data.GetValue<int>("delayBetweenRetriesMs");
         }
     }
 }

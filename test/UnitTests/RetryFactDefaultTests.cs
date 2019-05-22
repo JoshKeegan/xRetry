@@ -14,15 +14,5 @@ namespace UnitTests
 
             Assert.Equal(3, defaultNumCalls);
         }
-
-        private static int fiveRunsNumCalls = 0;
-
-        [RetryFact(5)]
-        public void FiveRuns_Reaches5()
-        {
-            fiveRunsNumCalls++;
-
-            Assert.Equal(5, fiveRunsNumCalls);
-        }
     }
 }
