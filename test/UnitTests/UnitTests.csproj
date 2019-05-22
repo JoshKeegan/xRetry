@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="SpecFlowPlugin\Features\Retry.feature.cs">
+    <Compile Update="SpecFlow\Features\Retry.feature.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Retry.feature</DependentUpon>
@@ -43,8 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="SpecFlowPlugin\Features\Retry.feature">
+    <SpecFlowFeatureFiles Update="SpecFlow\Features\Retry.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Retry.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
   </ItemGroup>
 

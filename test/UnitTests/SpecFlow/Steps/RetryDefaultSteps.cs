@@ -1,7 +1,7 @@
 using TechTalk.SpecFlow;
 using Xunit;
 
-namespace UnitTests.SpecFlowPlugin.Steps
+namespace UnitTests.SpecFlow.Steps
 {
     [Binding]
     public class RetryDefaultSteps
