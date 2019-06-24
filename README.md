@@ -1,7 +1,7 @@
 # xRetry
 Retry flickering test cases for xUnit and SpecFlow in dotnet core.
 
-[![pipeline status](https://gitlab.com/JoshKeegan/SpecflowXunitRetry/badges/master/pipeline.svg)](https://gitlab.com/JoshKeegan/SpecflowXunitRetry/commits/master)
+[![pipeline status](https://gitlab.com/JoshKeegan/xRetry/badges/master/pipeline.svg)](https://gitlab.com/JoshKeegan/xRetry/pipelines)
 
 ## When to use this
 This is intended for use on flickering tests, where the reason for failure is an external 
