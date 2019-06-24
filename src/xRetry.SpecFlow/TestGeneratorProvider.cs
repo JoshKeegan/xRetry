@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
+using TechTalk.SpecFlow.Generator.UnitTestProvider;
 using xRetry.SpecFlow.Parsers;
-using xRetry.SpecFlow.XunitProviders;
 
 namespace xRetry.SpecFlow
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
-        private IRetryTagParser retryTagParser;
+        private readonly IRetryTagParser retryTagParser;
 
         public TestGeneratorProvider(CodeDomHelper codeDomHelper, IRetryTagParser retryTagParser) 
             : base(codeDomHelper)

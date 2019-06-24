@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
-    <PackageReference Include="SpecFlow" Version="3.0.213" />
-    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.0.213" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
+    <PackageReference Include="SpecFlow" Version="3.0.220" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.0.220" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
@@ -26,14 +26,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\xRetry.SpecFlow\xRetry.SpecFlow.csproj" />
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="SpecFlow\Features\Retry.feature.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Retry.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
