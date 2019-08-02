@@ -13,7 +13,7 @@
     <tags>SpecFlow XUnit Retry Test-Automation</tags>
 
     <dependencies>
-      <dependency id="SpecFlow" version="3.0.213" />
+      <dependency id="SpecFlow" version="3.0.220" />
       <dependency id="xRetry" version="[$version$]" />
     </dependencies>
   </metadata>
