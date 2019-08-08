@@ -3,7 +3,7 @@ stages:
   - publish
 
 build:
-  image: joshkeegan/dotnet-mixed-build:2.3
+  image: joshkeegan/dotnet-mixed-build:2.4
   stage: build
   script:
     - cd build
