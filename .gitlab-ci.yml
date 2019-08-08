@@ -14,7 +14,7 @@ build:
       - deploy
 
 publish:
-  image: mcr.microsoft.com/dotnet/core/sdk:2.2.203-stretch
+  image: mcr.microsoft.com/dotnet/core/sdk:2.2.401-stretch
   only:
     - release
   stage: publish
