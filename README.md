@@ -33,7 +33,7 @@ You can also optionally specify a delay between each retry (in milliseconds) as 
 parameter, e.g. `@retry(5,100)` will run your test 5 times until it passes, waiting 100ms
 between each attempt.  
 Note that you must not include a space between the parameters, as Cucumber/SpecFlow uses
-a space to separate tags, i.e. `retry(5, 100)` would not work due to the space after the comma.
+a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space after the comma.
 
 ## Usage: xUnit
 Add the `xRetry` nuget package to your project.
