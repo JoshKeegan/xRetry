@@ -3,7 +3,7 @@ stages:
   - publish
 
 build:
-  image: joshkeegan/dotnet-mixed-build:2.4
+  image: joshkeegan/dotnet-mixed-build:2.5
   stage: build
   script:
     - cd build
@@ -14,7 +14,7 @@ build:
       - deploy
 
 publish:
-  image: mcr.microsoft.com/dotnet/core/sdk:2.2.401-stretch
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1.102-buster
   only:
     - release
   stage: publish
