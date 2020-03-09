@@ -5,38 +5,42 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace xRetry
+namespace xRetry.TheoriesAtRuntime
 {
+    /// <summary>
+    /// Represents a test case to be retried which runs multiple tests for theory data, either because the
+    /// data was not enumerable or because the data was not serializable.
+    /// </summary>
     [Serializable]
-    public class RetryTestCase : XunitTestCase, IRetryableTestCase
+    public class RetryTheoryDiscoveryAtRuntimeCase : XunitTestCase, IRetryableTestCase
     {
         public int MaxRetries { get; private set; }
         public int DelayBetweenRetriesMs { get; private set; }
 
+        /// <summary/>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete(
-            "Called by the de-serializer; should only be called by deriving classes for de-serialization purposes", true)]
-        public RetryTestCase() { }
+        [Obsolete("Called by the de-serializer; should only be called by deriving classes for de-serialization purposes")]
+        public RetryTheoryDiscoveryAtRuntimeCase() {  }
 
-        public RetryTestCase(
+        public RetryTheoryDiscoveryAtRuntimeCase(
             IMessageSink diagnosticMessageSink,
             TestMethodDisplay defaultMethodDisplay,
             TestMethodDisplayOptions defaultMethodDisplayOptions,
             ITestMethod testMethod,
             int maxRetries,
-            int delayBetweenRetriesMs,
-            object[] testMethodArguments = null)
-            : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod,
-                testMethodArguments)
+            int delayBetweenRetriesMs)
+            : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
         {
-            MaxRetries = maxRetries;
-            DelayBetweenRetriesMs = delayBetweenRetriesMs;
+            this.MaxRetries = maxRetries;
+            this.DelayBetweenRetriesMs = delayBetweenRetriesMs;
         }
 
+        /// <inheritdoc />
         public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
             object[] constructorArguments, ExceptionAggregator aggregator,
-            CancellationTokenSource cancellationTokenSource) => RetryTestCaseRunner.RunAsync(this, diagnosticMessageSink,
-            messageBus, constructorArguments, aggregator, cancellationTokenSource);
+            CancellationTokenSource cancellationTokenSource) =>
+            new RetryTheoryTestCaseRunner(this, DisplayName, SkipReason, constructorArguments, diagnosticMessageSink,
+                messageBus, aggregator, cancellationTokenSource).RunAsync();
 
         public override void Serialize(IXunitSerializationInfo data)
         {

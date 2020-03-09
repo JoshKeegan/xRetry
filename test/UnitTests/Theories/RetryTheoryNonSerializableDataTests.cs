@@ -19,6 +19,7 @@ namespace UnitTests.Theories
         };
 
         [RetryTheory]
+        [Trait("Category", "NonSerializable")]
         [MemberData(nameof(GetTestData))]
         public void Default_Reaches3(NonSerializableTestData nonSerializableWrapper)
         {
