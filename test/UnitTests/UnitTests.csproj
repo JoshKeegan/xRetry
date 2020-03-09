@@ -7,6 +7,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>    
     <SpecFlowGeneratorPlugins Condition="'$(MSBuildRuntimeType)' == 'Core'" Include="../../src/xRetry.SpecFlow/bin/Release/netstandard2.0/xRetry.SpecFlowPlugin.dll" />
     <SpecFlowGeneratorPlugins Condition="'$(MSBuildRuntimeType)' != 'Core'" Include="../../src/xRetry.SpecFlow/bin/Release/net471/xRetry.SpecFlowPlugin.dll" />
