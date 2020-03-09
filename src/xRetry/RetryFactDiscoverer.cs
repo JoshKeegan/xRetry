@@ -5,11 +5,11 @@ using Xunit.Sdk;
 
 namespace xRetry
 {
-    public class RetryTestCaseDiscoverer : IXunitTestCaseDiscoverer
+    public class RetryFactDiscoverer : IXunitTestCaseDiscoverer
     {
         private readonly IMessageSink messageSink;
 
-        public RetryTestCaseDiscoverer(IMessageSink messageSink)
+        public RetryFactDiscoverer(IMessageSink messageSink)
         {
             this.messageSink = messageSink;
         }

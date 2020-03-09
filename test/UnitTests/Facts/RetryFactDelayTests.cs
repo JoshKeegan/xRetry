@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using xRetry;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace UnitTests
+namespace UnitTests.Facts
 {
     public class RetryFactDelayTests
     {

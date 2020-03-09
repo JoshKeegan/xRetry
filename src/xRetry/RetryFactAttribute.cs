@@ -8,7 +8,8 @@ namespace xRetry
     /// Attribute that is applied to a method to indicate that it is a fact that should be run
     /// by the test runner up to MaxRetries times, until it succeeds.
     /// </summary>
-    [XunitTestCaseDiscoverer("xRetry.RetryTestCaseDiscoverer", "xRetry")]
+    [XunitTestCaseDiscoverer("xRetry.RetryFactDiscoverer", "xRetry")]
+    [AttributeUsage(AttributeTargets.Method)]
     public class RetryFactAttribute : FactAttribute
     {
         public readonly int MaxRetries;

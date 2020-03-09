@@ -1,7 +1,7 @@
 using xRetry;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Facts
 {
     public class RetryFactTests
     {
