@@ -23,7 +23,7 @@ namespace xRetry
             {
                 testCase = new ExecutionErrorTestCase(messageSink, discoveryOptions.MethodDisplayOrDefault(),
                     discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod,
-                    "[RetryFact] methods are not allowed to have parameters. Did you mean to use [Theory]?");
+                    "[RetryFact] methods are not allowed to have parameters. Did you mean to use [RetryTheory]?");
             }
             else if (testMethod.Method.IsGenericMethodDefinition)
             {

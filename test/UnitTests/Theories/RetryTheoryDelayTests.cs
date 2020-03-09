@@ -18,7 +18,7 @@ namespace UnitTests.Theories
             this.testOutputHelper = testOutputHelper;
         }
 
-        [RetryFact(2, 100)]
+        [RetryTheory(2, 100)]
         [InlineData(0)]
         [InlineData(1)]
         public void TwoRuns100MsDelay_AtLeast90MsApart(int id)
