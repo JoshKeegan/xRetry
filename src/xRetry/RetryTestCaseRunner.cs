@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -7,13 +8,21 @@ namespace xRetry
 {
     internal static class RetryTestCaseRunner
     {
+        /// <summary>
+        /// Runs a retryable test case, handling any wait and retry logic between test runs, reporting statuses out to xunit etc...
+        /// </summary>
+        /// <param name="testCase">The test case to be retried</param>
+        /// <param name="diagnosticMessageSink">The diagnostic message sink to write messages to about retries, waits etc...</param>
+        /// <param name="messageBus">The message bus xunit is listening for statuses to report on</param>
+        /// <param name="cancellationTokenSource">The cancellation token source from xunit</param>
+        /// <param name="fnRunSingle">(async) Lambda to run this test case once (without retries) - takes the blocking message bus and returns the test run result</param>
+        /// <returns>Resulting run summary</returns>
         public static async Task<RunSummary> RunAsync(
             IRetryableTestCase testCase,
-            IMessageSink diagnosticMessageSink, 
+            IMessageSink diagnosticMessageSink,
             IMessageBus messageBus,
-            object[] constructorArguments, 
-            ExceptionAggregator aggregator,
-            CancellationTokenSource cancellationTokenSource)
+            CancellationTokenSource cancellationTokenSource,
+            Func<IMessageBus, Task<RunSummary>> fnRunSingle)
         {
             for (int i = 1; ; i++)
             {
@@ -24,12 +33,19 @@ namespace xRetry
                     diagnosticMessageSink.OnMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
                         testCase.DisplayName, i, testCase.MaxRetries));
 
-                    RunSummary summary = await RunSingleAsync(testCase, blockingMessageBus, constructorArguments,
-                        aggregator, cancellationTokenSource).ConfigureAwait(false);
+                    RunSummary summary = await fnRunSingle(blockingMessageBus).ConfigureAwait(false);
 
                     // If we succeeded, or we've reached the max retries return the result
                     if (summary.Failed == 0 || i == testCase.MaxRetries)
                     {
+                        // If we have failed (after all retries, log that)
+                        if (summary.Failed != 0)
+                        {
+                            diagnosticMessageSink.OnMessage(new DiagnosticMessage(
+                                "Test \"{0}\" has failed and been retried the maximum number of times ({1})",
+                                testCase.DisplayName, testCase.MaxRetries));
+                        }
+
                         blockingMessageBus.Flush();
                         return summary;
                     }
@@ -50,14 +66,5 @@ namespace xRetry
                 }
             }
         }
-
-        private static Task<RunSummary> RunSingleAsync(
-            IXunitTestCase testCase,
-            IMessageBus messageBus,
-            object[] constructorArguments,
-            ExceptionAggregator aggregator,
-            CancellationTokenSource cancellationTokenSource) =>
-            new XunitTestCaseRunner(testCase, testCase.DisplayName, testCase.SkipReason, constructorArguments,
-                testCase.TestMethodArguments, messageBus, aggregator, cancellationTokenSource).RunAsync();
     }
 }

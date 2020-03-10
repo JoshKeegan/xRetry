@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace xRetry.TheoriesAtRuntime
+namespace xRetry
 {
     /// <summary>
     /// Represents a test case to be retried which runs multiple tests for theory data, either because the
@@ -31,16 +31,19 @@ namespace xRetry.TheoriesAtRuntime
             int delayBetweenRetriesMs)
             : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
         {
-            this.MaxRetries = maxRetries;
-            this.DelayBetweenRetriesMs = delayBetweenRetriesMs;
+            MaxRetries = maxRetries;
+            DelayBetweenRetriesMs = delayBetweenRetriesMs;
         }
 
         /// <inheritdoc />
         public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
             object[] constructorArguments, ExceptionAggregator aggregator,
             CancellationTokenSource cancellationTokenSource) =>
-            new RetryTheoryTestCaseRunner(this, DisplayName, SkipReason, constructorArguments, diagnosticMessageSink,
-                messageBus, aggregator, cancellationTokenSource).RunAsync();
+            RetryTestCaseRunner.RunAsync(this, diagnosticMessageSink, messageBus, cancellationTokenSource,
+                async blockingMessageBus =>
+                    await new XunitTheoryTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
+                            diagnosticMessageSink, blockingMessageBus, aggregator, cancellationTokenSource)
+                        .RunAsync().ConfigureAwait(false));
 
         public override void Serialize(IXunitSerializationInfo data)
         {
