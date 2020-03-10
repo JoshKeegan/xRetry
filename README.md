@@ -38,6 +38,7 @@ a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space 
 ## Usage: xUnit
 Add the `xRetry` nuget package to your project.
 
+### Facts
 Above any `Fact` test case that should be retried, replace the `Fact` attribute, with 
 `RetryFact`, e.g:
 ```cs
@@ -58,6 +59,30 @@ to retry the test as an argument, e.g. `[RetryFact(5)]`.
 You can also optionally specify a delay between each retry (in milliseconds) as a second 
 parameter, e.g. `[RetryFact(5, 100)]` will run your test 5 times until it passes, waiting 100ms
 between each attempt.
+
+
+### Theories
+If you have used the library for retrying `Fact` tests, using it to retry a `Theory` should be very intuitive.  
+Above any `Theory` test case that should be retried, replace the `Theory` attribute with `RetryTheory`, e.g:
+```cs
+// testId => numCalls
+private static readonly Dictionary<int, int> defaultNumCalls = new Dictionary<int, int>()
+{
+    { 0, 0 },
+    { 1, 0 }
+};
+
+[RetryTheory]
+[InlineData(0)]
+[InlineData(1)]
+public void Default_Reaches3(int id)
+{
+    defaultNumCalls[id]++;
+
+    Assert.Equal(3, defaultNumCalls[id]);
+}
+```
+The same optional arguments (max retries and delay between each retry) are supported as for facts, and can be used in the same way.
 
 ## Viewing retry logs
 By default, you won't see whether your tests are being retried as we make this information available 
