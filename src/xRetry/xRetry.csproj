@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/JoshKeegan/SpecflowXunitRetry</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JoshKeegan/SpecflowXunitRetry</RepositoryUrl>
     <PackageTags>XUnit Retry Test-Automation</PackageTags>
-    <Description>Allows for a [Retry(n)] attribute to be placed above tests in XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</Description>
+    <Description>Allows for a [RetryFact(n)] or [RetryTheory(n)] attributes to be placed above tests in XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</Description>
   </PropertyGroup>
 
   <ItemGroup>
