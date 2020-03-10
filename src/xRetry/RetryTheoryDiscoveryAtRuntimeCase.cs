@@ -10,6 +10,7 @@ namespace xRetry
     /// <summary>
     /// Represents a test case to be retried which runs multiple tests for theory data, either because the
     /// data was not enumerable or because the data was not serializable.
+    /// Equivalent to xunit's XunitTheoryTestCase 
     /// </summary>
     [Serializable]
     public class RetryTheoryDiscoveryAtRuntimeCase : XunitTestCase, IRetryableTestCase
