@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
+using TechTalk.SpecFlow.Generator.Interfaces;
 using TechTalk.SpecFlow.Generator.UnitTestProvider;
 using xRetry.SpecFlow.Parsers;
 
@@ -13,8 +14,8 @@ namespace xRetry.SpecFlow
     {
         private readonly IRetryTagParser retryTagParser;
 
-        public TestGeneratorProvider(CodeDomHelper codeDomHelper, IRetryTagParser retryTagParser) 
-            : base(codeDomHelper)
+        public TestGeneratorProvider(CodeDomHelper codeDomHelper, ProjectSettings projectSettings, IRetryTagParser retryTagParser)
+            : base(codeDomHelper, projectSettings)
         {
             this.retryTagParser = retryTagParser;
         }
@@ -34,7 +35,7 @@ namespace xRetry.SpecFlow
 
                 // Remove the Fact attribute
                 CodeAttributeDeclaration factAttribute = testMethod.CustomAttributes
-                    .OfType<CodeAttributeDeclaration>().FirstOrDefault(a => a.Name == "Xunit.FactAttribute");
+                    .OfType<CodeAttributeDeclaration>().FirstOrDefault(a => a.Name == FACT_ATTRIBUTE);
                 if (factAttribute != null)
                 {
                     testMethod.CustomAttributes.Remove(factAttribute);
