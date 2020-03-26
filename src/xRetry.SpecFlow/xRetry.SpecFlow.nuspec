@@ -9,7 +9,7 @@
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Allows for a @retry(n) tag to be placed above scenarios in SpecFlow.XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</description>
-    <copyright>Copyright Josh Keegan 2019</copyright>
+    <copyright>Copyright Josh Keegan 2019-2020</copyright>
     <tags>SpecFlow XUnit Retry Test-Automation</tags>
 
     <dependencies>
