@@ -1,16 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace xRetry.SpecFlow.Parsers
 {
     public class RetryTagParser : IRetryTagParser
     {
         // unescaped: ^retry(\(([0-9]+)(,([0-9]+))?\))?$
-        private readonly Regex regex = new Regex("^retry(\\(([0-9]+)(,([0-9]+))?\\))?$",
+        private readonly Regex regex = new Regex($"^{Constants.RETRY_TAG}(\\(([0-9]+)(,([0-9]+))?\\))?$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public RetryTag Parse(string tag)

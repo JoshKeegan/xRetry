@@ -12,7 +12,6 @@ namespace xRetry.SpecFlow
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
-        private const string RETRY_TAG = "retry";
         private const string IGNORE_TAG = "ignore";
 
         private readonly IRetryTagParser retryTagParser;
@@ -83,8 +82,8 @@ namespace xRetry.SpecFlow
 
         private string getRetryTag(IEnumerable<string> tags) =>
             tags.FirstOrDefault(t =>
-                t.StartsWith(RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
+                t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
                 // Is just "retry", or is "retry("... for params
-                (t.Length == RETRY_TAG.Length || t[RETRY_TAG.Length] == '('));
+                (t.Length == Constants.RETRY_TAG.Length || t[Constants.RETRY_TAG.Length] == '('));
     }
 }
