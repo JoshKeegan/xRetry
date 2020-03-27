@@ -17,3 +17,11 @@ Scenario: Retry five times when specified
 Scenario: Retry twice, waiting 100ms between retries
 	When I start the stopwatch if not already started
 	Then the stopwatch elapsed milliseconds is greater than or equal to '90'
+
+@ignore
+Scenario: Test is ignored
+	Then fail because this test should have been skipped
+
+@ignore retry
+Scenario: Retry test is ignored
+	Then fail because this test should have been skipped
