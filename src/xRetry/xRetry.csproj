@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit.core" Version="2.*" />
+    <PackageReference Include="xunit.core" Version="2.4.*" />
   </ItemGroup>
 
 </Project>
