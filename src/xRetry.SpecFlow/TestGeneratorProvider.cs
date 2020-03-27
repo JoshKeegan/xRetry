@@ -12,6 +12,9 @@ namespace xRetry.SpecFlow
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
+        private const string RETRY_TAG = "retry";
+        private const string IGNORE_TAG = "ignore";
+
         private readonly IRetryTagParser retryTagParser;
 
         public TestGeneratorProvider(CodeDomHelper codeDomHelper, ProjectSettings projectSettings, IRetryTagParser retryTagParser)
@@ -28,50 +31,60 @@ namespace xRetry.SpecFlow
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
-            string strRetryTag = getRetryTag(scenarioCategories);
-            if (strRetryTag != null)
+            // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
+            //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
+            //  too will replace the attribute for running the test with a custom one.
+            if (scenarioCategories.Any(c => c.Equals(IGNORE_TAG, StringComparison.OrdinalIgnoreCase)))
             {
-                RetryTag retryTag = retryTagParser.Parse(strRetryTag);
+                return;
+            }
 
-                // Remove the Fact attribute
-                CodeAttributeDeclaration factAttribute = testMethod.CustomAttributes
-                    .OfType<CodeAttributeDeclaration>().FirstOrDefault(a => a.Name == FACT_ATTRIBUTE);
-                if (factAttribute != null)
-                {
-                    testMethod.CustomAttributes.Remove(factAttribute);
-                }
+            string strRetryTag = getRetryTag(scenarioCategories);
+            if (strRetryTag == null)
+            {
+                return;
+            }
 
-                // Add the Retry attribute
-                CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
-                    "xRetry.RetryFact");
+            RetryTag retryTag = retryTagParser.Parse(strRetryTag);
 
-                if (retryTag.MaxRetries != null)
+            // Remove the Fact attribute
+            CodeAttributeDeclaration factAttribute = testMethod.CustomAttributes
+                .OfType<CodeAttributeDeclaration>().FirstOrDefault(a => a.Name == FACT_ATTRIBUTE);
+            if (factAttribute != null)
+            {
+                testMethod.CustomAttributes.Remove(factAttribute);
+            }
+
+            // Add the Retry attribute
+            CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
+                "xRetry.RetryFact");
+
+            if (retryTag.MaxRetries != null)
+            {
+                retryAttribute.Arguments.Add(
+                    new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.MaxRetries)));
+
+                if(retryTag.DelayBetweenRetriesMs != null)
                 {
                     retryAttribute.Arguments.Add(
-                        new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.MaxRetries)));
-
-                    if(retryTag.DelayBetweenRetriesMs != null)
-                    {
-                        retryAttribute.Arguments.Add(
-                            new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.DelayBetweenRetriesMs)));
-                    }
+                        new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.DelayBetweenRetriesMs)));
                 }
+            }
 
-                // Copy arguments from the fact attribute (if there was one)
-                if (factAttribute != null)
+            // Copy arguments from the fact attribute (if there was one)
+            if (factAttribute != null)
+            {
+                for (int i = 0; i < factAttribute.Arguments.Count; i++)
                 {
-                    for (int i = 0; i < factAttribute.Arguments.Count; i++)
-                    {
-                        retryAttribute.Arguments.Add(factAttribute.Arguments[i]);
-                    }
+                    retryAttribute.Arguments.Add(factAttribute.Arguments[i]);
                 }
             }
         }
 
         private string getRetryTag(IEnumerable<string> tags) =>
             tags.FirstOrDefault(t =>
-                t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
+                t.StartsWith(RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
                 // Is just "retry", or is "retry("... for params
-                (t.Length == Constants.RETRY_TAG.Length || t[Constants.RETRY_TAG.Length] == '('));
+                (t.Length == RETRY_TAG.Length || t[RETRY_TAG.Length] == '('));
     }
 }
