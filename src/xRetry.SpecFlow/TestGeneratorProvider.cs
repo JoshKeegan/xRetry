@@ -33,7 +33,7 @@ namespace xRetry.SpecFlow
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
             //  too will replace the attribute for running the test with a custom one.
-            if (scenarioCategories.Any(c => c.Equals(IGNORE_TAG, StringComparison.OrdinalIgnoreCase)))
+            if (isIgnored(generationContext, scenarioCategories))
             {
                 return;
             }
@@ -80,7 +80,15 @@ namespace xRetry.SpecFlow
             }
         }
 
-        private string getRetryTag(IEnumerable<string> tags) =>
+        private static bool isIgnored(TestClassGenerationContext generationContext, IEnumerable<string> tags) =>
+            generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).Any(isIgnoreTag) ||
+            tags.Any(isIgnoreTag);
+
+        private static string stripLeadingAtSign(string s) => s.StartsWith("@") ? s.Substring(1) : s;
+
+        private static bool isIgnoreTag(string tag) => tag.Equals(IGNORE_TAG, StringComparison.OrdinalIgnoreCase);
+
+        private static string getRetryTag(IEnumerable<string> tags) =>
             tags.FirstOrDefault(t =>
                 t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
                 // Is just "retry", or is "retry("... for params
