@@ -25,8 +25,8 @@ unit-tests-run:
 
 nuget-create:
 	dotnet pack ../src/xRetry \
-		/p:Version=$(VERSION) \
-		/p:NuspecFile=xRetry.nuspec \
+		-p:Version=$(VERSION) \
+		-p:NuspecFile=xRetry.nuspec \
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
