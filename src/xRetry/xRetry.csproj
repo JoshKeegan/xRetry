@@ -4,15 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <IsPackable>true</IsPackable>
-    <Authors>Josh Keegan</Authors>
-    <PackageProjectUrl>https://github.com/JoshKeegan/SpecflowXunitRetry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/JoshKeegan/SpecflowXunitRetry</RepositoryUrl>
-    <PackageTags>XUnit Retry Test-Automation</PackageTags>
-    <Description>Allows for a [RetryFact(n)] or [RetryTheory(n)] attributes to be placed above tests in XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</Description>
+    <NuspecProperties>version=$(Version)</NuspecProperties>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit.core" Version="2.4.*" />
+    <PackageReference Include="xunit.core" Version="2.4.1" />
   </ItemGroup>
 
 </Project>

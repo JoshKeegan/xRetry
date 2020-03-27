@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>xRetry</id>
+    <version>$version$</version>
+    <authors>Josh Keegan</authors>
+    <owners>Josh Keegan</owners>
+    <projectUrl>https://github.com/JoshKeegan/xRetry</projectUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Allows for a [RetryFact(n)] or [RetryTheory(n)] attributes to be placed above tests in XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</description>
+    <copyright>Copyright Josh Keegan 2019-2020</copyright>
+    <tags>XUnit Retry Test-Automation</tags>
+
+    <dependencies>
+      <dependency id="xunit.core" version="[2.4.0,3.0.0)" />
+    </dependencies>
+  </metadata>
+</package>
