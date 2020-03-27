@@ -11,9 +11,13 @@ build: clean
 	dotnet restore ../
 
 # SpecFlow plugin must be built before the tests
-	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../src/xRetry.SpecFlow
+	cd ../src/xRetry.SpecFlow && \
+		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
-	dotnet build -c Release --no-restore /p:Version=$(VERSION) ../test/UnitTests
+# Env var works around bug in MSBuild &/or SpecFlow that affects SpecFlow building feature files: https://github.com/SpecFlowOSS/SpecFlow/issues/1912
+	export MSBUILDSINGLELOADCONTEXT=1 && \
+		cd ../test/UnitTests && \
+		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
 unit-tests-run:
 	cd ../test/UnitTests && \
@@ -25,11 +29,11 @@ nuget-create:
 		/p:NuspecFile=xRetry.nuspec \
 		--no-build \
 		-c Release \
-		-o ../../artefacts/nuget
+		-o ../artefacts/nuget
 
 	dotnet pack ../src/xRetry.SpecFlow \
-		/p:Version=$(VERSION) \
-		/p:NuspecFile=xRetry.SpecFlow.nuspec \
+		-p:Version=$(VERSION) \
+		-p:NuspecFile=xRetry.SpecFlow.nuspec \
 		--no-build \
 		-c Release \
-		-o ../../artefacts/nuget
+		-o ../artefacts/nuget
