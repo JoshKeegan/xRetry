@@ -3,8 +3,3 @@ update_configs:
   - package_manager: "dotnet:nuget"
     directory: "/"
     update_schedule: "live"
-    ignored_updates:
-      - match:
-          dependency_name: "SpecFlow"
-      - match:
-          dependency_name: "SpecFlow.*"
