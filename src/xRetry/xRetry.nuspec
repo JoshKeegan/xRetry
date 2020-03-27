@@ -16,4 +16,8 @@
       <dependency id="xunit.core" version="[2.4.0,3.0.0)" />
     </dependencies>
   </metadata>
+
+  <files>
+    <file src="bin\Release\netstandard2.0\xRetry.dll" target="lib\netstandard2.0" />
+  </files>
 </package>
