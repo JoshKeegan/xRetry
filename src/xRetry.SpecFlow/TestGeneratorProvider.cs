@@ -46,17 +46,18 @@ namespace xRetry.SpecFlow
 
             RetryTag retryTag = retryTagParser.Parse(strRetryTag);
 
-            // Remove the Fact attribute
-            CodeAttributeDeclaration factAttribute = testMethod.CustomAttributes
-                .OfType<CodeAttributeDeclaration>().FirstOrDefault(a => a.Name == FACT_ATTRIBUTE);
-            if (factAttribute != null)
+            // Remove the original fact or theory attribute
+            CodeAttributeDeclaration originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
+                .FirstOrDefault(a => a.Name == FACT_ATTRIBUTE || a.Name == THEORY_ATTRIBUTE);
+            if (originalAttribute == null)
             {
-                testMethod.CustomAttributes.Remove(factAttribute);
+                return;
             }
+            testMethod.CustomAttributes.Remove(originalAttribute);
 
             // Add the Retry attribute
             CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
-                "xRetry.RetryFact");
+                "xRetry.Retry" + (originalAttribute.Name == FACT_ATTRIBUTE ? "Fact" : "Theory"));
 
             if (retryTag.MaxRetries != null)
             {
@@ -70,13 +71,10 @@ namespace xRetry.SpecFlow
                 }
             }
 
-            // Copy arguments from the fact attribute (if there was one)
-            if (factAttribute != null)
+            // Copy arguments from the original attribute
+            for (int i = 0; i < originalAttribute.Arguments.Count; i++)
             {
-                for (int i = 0; i < factAttribute.Arguments.Count; i++)
-                {
-                    retryAttribute.Arguments.Add(factAttribute.Arguments[i]);
-                }
+                retryAttribute.Arguments.Add(originalAttribute.Arguments[i]);
             }
         }
 
