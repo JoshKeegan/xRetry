@@ -1,7 +1,7 @@
 using TechTalk.SpecFlow;
 using Xunit;
 
-namespace UnitTests.SpecFlow.Steps
+namespace UnitTests.SpecFlow.Steps.Scenarios
 {
     [Binding]
     public class RetryDefaultSteps
@@ -14,7 +14,7 @@ namespace UnitTests.SpecFlow.Steps
             retryCount++;
         }
 
-        [Then(@"the default result should be (.*)")]
+        [Then(@"the default result should be (\d+)")]
         public void ThenTheDefaultResultShouldBe(int expected)
         {
             Assert.Equal(expected, retryCount);

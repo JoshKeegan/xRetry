@@ -1,7 +1,7 @@
-Feature: Retry
+Feature: Retry Scenarios
 	In order to allow for transient failures
 	As a QA engineer
-	I want to be able to run tests multiple times until they pass
+	I want to be able to run scenario tests multiple times until they pass
 
 @retry
 Scenario: Retry three times by default
@@ -16,7 +16,7 @@ Scenario: Retry five times when specified
 @retry(2,100)
 Scenario: Retry twice, waiting 100ms between retries
 	When I start the stopwatch if not already started
-	Then the stopwatch elapsed milliseconds is greater than or equal to '90'
+	Then the elapsed time on the stopwatch is greater than or equal to 90ms
 
 @ignore
 Scenario: Test is ignored

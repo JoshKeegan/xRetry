@@ -1,7 +1,7 @@
 using TechTalk.SpecFlow;
 using Xunit;
 
-namespace UnitTests.SpecFlow.Steps
+namespace UnitTests.SpecFlow.Steps.Scenarios
 {
     [Binding]
     public class RetrySteps
@@ -14,7 +14,7 @@ namespace UnitTests.SpecFlow.Steps
             retryCount++;
         }
 
-        [Then(@"the result should be (.*)")]
+        [Then(@"the result should be (\d+)")]
         public void ThenTheResultShouldBe(int expected)
         {
             Assert.Equal(expected, retryCount);

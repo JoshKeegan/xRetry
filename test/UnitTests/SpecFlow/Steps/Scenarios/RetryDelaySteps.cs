@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using TechTalk.SpecFlow;
 using Xunit;
 
-namespace UnitTests.SpecFlow.Steps
+namespace UnitTests.SpecFlow.Steps.Scenarios
 {
     [Binding]
     public class RetryDelaySteps
@@ -22,11 +19,10 @@ namespace UnitTests.SpecFlow.Steps
             }
         }
 
-        [Then(@"the stopwatch elapsed milliseconds is greater than or equal to '(.*)'")]
-        public void ThenTheStopwatchElapsedMillisecondsIsGreaterThan(int minElapsedMs)
+        [Then(@"the elapsed time on the stopwatch is greater than or equal to (\d+)ms")]
+        public void TheElapsedTimeOnTheStopwatchIsGreaterThanOrEqualToMs(int minElapsedMs)
         {
             Assert.True(sw.ElapsedMilliseconds >= minElapsedMs);
         }
-
     }
 }

@@ -40,9 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="SpecFlow\Features\Retry.feature">
+    <SpecFlowFeatureFiles Update="SpecFlow\Features\RetryScenarios.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Retry.feature.cs</LastGenOutput>
+      <LastGenOutput>RetryScenarios.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
   </ItemGroup>
 
