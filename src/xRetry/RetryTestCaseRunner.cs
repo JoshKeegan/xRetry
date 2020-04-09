@@ -33,7 +33,7 @@ namespace xRetry
                     diagnosticMessageSink.OnMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
                         testCase.DisplayName, i, testCase.MaxRetries));
 
-                    RunSummary summary = await fnRunSingle(blockingMessageBus).ConfigureAwait(false);
+                    RunSummary summary = await fnRunSingle(blockingMessageBus).ConfigureAwait(true);
 
                     // If we succeeded, or we've reached the max retries return the result
                     if (summary.Failed == 0 || i == testCase.MaxRetries)
@@ -61,7 +61,7 @@ namespace xRetry
                             "Test \"{0}\" attempt ({1}/{2}) delayed by {3}ms. Waiting . . .", testCase.DisplayName, i,
                             testCase.MaxRetries, testCase.DelayBetweenRetriesMs));
                         await Task.Delay(testCase.DelayBetweenRetriesMs, cancellationTokenSource.Token)
-                            .ConfigureAwait(false);
+                            .ConfigureAwait(true);
                     }
                 }
             }

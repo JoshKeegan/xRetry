@@ -40,7 +40,7 @@ namespace xRetry
                 async blockingMessageBus =>
                     await new XunitTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
                             TestMethodArguments, blockingMessageBus, aggregator, cancellationTokenSource)
-                        .RunAsync().ConfigureAwait(false));
+                        .RunAsync().ConfigureAwait(true));
 
         public override void Serialize(IXunitSerializationInfo data)
         {
