@@ -332,3 +332,5 @@ ASALocalRun/
 *.feature.cs
 
 artefacts/
+
+test/*/SpecFlow/userid
