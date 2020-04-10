@@ -19,7 +19,7 @@ this library should **not** be used to cover it up!
 ## Usage: SpecFlow 3
 Add the `xRetry.SpecFlow` nuget package to your project.  
 
-Above any scenario that should be retried, add a `@retry` tag, e.g:
+Above any scenario or scenario outline that should be retried, add a `@retry` tag, e.g:
 ```gherkin
 @retry
 Scenario: Retry three times by default
