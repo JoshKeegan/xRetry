@@ -1,4 +1,4 @@
-VERSION=0.5.0#
+VERSION=1.0.0#
 
 clean:
 	rm -r ../artefacts || true
@@ -14,13 +14,10 @@ build: clean
 	cd ../src/xRetry.SpecFlow && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
-# Env var works around bug in MSBuild &/or SpecFlow that affects SpecFlow building feature files: https://github.com/SpecFlowOSS/SpecFlow/issues/1912
-	export MSBUILDSINGLELOADCONTEXT=1 && \
-		cd ../test/UnitTests && \
+	cd ../test/UnitTests && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
-	export MSBUILDSINGLELOADCONTEXT=1 && \
-		cd ../test/UnitTests.SingleThreaded && \
+	cd ../test/UnitTests.SingleThreaded && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
 unit-tests-run:

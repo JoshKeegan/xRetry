@@ -13,7 +13,7 @@
     <tags>SpecFlow XUnit Retry Test-Automation</tags>
 
     <dependencies>
-      <dependency id="SpecFlow.xUnit" version="[3.1.62,3.2.0)" />
+      <dependency id="SpecFlow.xUnit" version="[3.3.30,3.4.0)" />
       <dependency id="xRetry" version="[$version$]" />
     </dependencies>
   </metadata>
@@ -22,7 +22,7 @@
     <file src="xRetry.SpecFlow.targets" target="build" />
     <file src="xRetry.SpecFlow.props" target="build" />
 
-    <file src="bin\Release\net471\xRetry.SpecFlowPlugin.dll" target="build\net471" />
+    <file src="bin\Release\net461\xRetry.SpecFlowPlugin.dll" target="build\net461" />
     <file src="bin\Release\netstandard2.0\xRetry.SpecFlowPlugin.dll" target="build\netstandard2.0" />
   </files>
 </package>
