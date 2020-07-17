@@ -14,7 +14,7 @@ build:
       - deploy
 
 publish:
-  image: mcr.microsoft.com/dotnet/core/sdk:3.1.301-buster
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1.302-buster
   only:
     - release
   stage: publish
