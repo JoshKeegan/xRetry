@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SpecFlow.CustomPlugin" Version="3.3.74" />
+    <PackageReference Include="SpecFlow.CustomPlugin" Version="3.4.3" />
   </ItemGroup>
 
 </Project>
