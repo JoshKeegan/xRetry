@@ -1,5 +1,5 @@
 # xRetry
-Retry flickering test cases for xUnit and SpecFlow in dotnet core.
+Retry flickering test cases for xUnit and SpecFlow in dotnet.
 
 [![pipeline status](https://gitlab.com/JoshKeegan/xRetry/badges/master/pipeline.svg)](https://gitlab.com/JoshKeegan/xRetry/pipelines)
 
