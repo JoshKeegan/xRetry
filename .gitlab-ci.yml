@@ -7,7 +7,7 @@ build:
   stage: build
   script:
     - cd build
-    - make build unit-tests-run nuget-create
+    - make ci
   artifacts:
     paths:
       - artefacts

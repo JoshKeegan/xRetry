@@ -102,7 +102,7 @@ uses the latest version of your changes.
 If you install `make` and go to the `build` directory, you can run the following from the 
 terminal to build, run tests and create the nuget packages:
 ```bash
-make build unit-tests-run nuget-create
+make ci
 ```
 If that works, all is well!
 

@@ -43,3 +43,5 @@ nuget-create:
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
+
+ci: build unit-tests-run nuget-create
