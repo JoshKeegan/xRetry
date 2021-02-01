@@ -3,7 +3,7 @@ stages:
   - publish
 
 build:
-  image: joshkeegan/dotnet-mixed-build:5.1
+  image: joshkeegan/dotnet-mixed-build:5.2
   stage: build
   script:
     - cd build
@@ -14,7 +14,7 @@ build:
       - deploy
 
 publish:
-  image: mcr.microsoft.com/dotnet/sdk:5.0.100-buster-slim
+  image: mcr.microsoft.com/dotnet/sdk:5.0.102-1-buster-slim
   only:
     - release
   stage: publish
