@@ -12,19 +12,30 @@ namespace xRetry.SpecFlow
 {
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
-        private const string IGNORE_TAG = "ignore";
-
         private readonly IRetryTagParser retryTagParser;
+        private readonly ILogger logger;
+        private readonly IRetrySettings retrySettings;
 
-        public TestGeneratorProvider(CodeDomHelper codeDomHelper, ProjectSettings projectSettings, IRetryTagParser retryTagParser)
+        public TestGeneratorProvider(
+            CodeDomHelper codeDomHelper,
+            ProjectSettings projectSettings,
+            IRetryTagParser retryTagParser,
+            ILogger logger,
+            IRetrySettings retrySettings)
             : base(codeDomHelper, projectSettings)
         {
             this.retryTagParser = retryTagParser;
+            this.logger = logger;
+            this.retrySettings = retrySettings;
         }
 
-        public override void SetTestMethodCategories(TestClassGenerationContext generationContext,
-            CodeMemberMethod testMethod, IEnumerable<string> scenarioCategories)
+        public override void SetTestMethodCategories(
+            TestClassGenerationContext generationContext,
+            CodeMemberMethod testMethod,
+            IEnumerable<string> scenarioCategories)
         {
+            logger.Log($"{nameof(SetTestMethodCategories)}");
+
             // Optimisation: Prevent multiple enumerations
             scenarioCategories = scenarioCategories as string[] ?? scenarioCategories.ToArray();
 
@@ -33,30 +44,63 @@ namespace xRetry.SpecFlow
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
             //  too will replace the attribute for running the test with a custom one.
-            if (isIgnored(generationContext, scenarioCategories))
+            if (IsIgnored(generationContext, scenarioCategories))
+            {
+                logger.Log("test must be skipped");
+                
+                var removeThisAttribute = testMethod.CustomAttributes
+                    .OfType<CodeAttributeDeclaration>()
+                    .FirstOrDefault(declaration => declaration.Name.StartsWith(Constants.RETRY_ATTRIBUTE));
+                
+                if(removeThisAttribute != null)
+                {
+                    testMethod.CustomAttributes.Remove(removeThisAttribute);
+                }
+                
+                return;
+            }
+
+            var strRetryTag = GetRetryTag(scenarioCategories);
+            if (strRetryTag == null && !retrySettings.Global)
             {
                 return;
             }
 
-            string strRetryTag = getRetryTag(scenarioCategories);
-            if (strRetryTag == null)
+            logger.Log($"strRetryTag : {strRetryTag}");
+
+            if (retrySettings.isVerbose)
             {
-                return;
+                var attributes = testMethod.CustomAttributes
+                    .OfType<CodeAttributeDeclaration>()
+                    .Select(f => f.Name)
+                    .Aggregate((m, n) => $"{m}, {n}");
+                logger.Log($"attributes : {attributes}");
             }
 
-            RetryTag retryTag = retryTagParser.Parse(strRetryTag);
+            var globalRetryAttribute = testMethod.CustomAttributes
+                .OfType<CodeAttributeDeclaration>()
+                .FirstOrDefault(declaration => declaration.Name.StartsWith(Constants.RETRY_ATTRIBUTE));
+
+            if (globalRetryAttribute != null)
+            {
+                testMethod.CustomAttributes.Remove(globalRetryAttribute);
+            }
+
+            var retryTag = retryTagParser.Parse(strRetryTag);
 
             // Remove the original fact or theory attribute
-            CodeAttributeDeclaration originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
+            var originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
                 .FirstOrDefault(a => a.Name == FACT_ATTRIBUTE || a.Name == THEORY_ATTRIBUTE);
             if (originalAttribute == null)
             {
                 return;
             }
+
             testMethod.CustomAttributes.Remove(originalAttribute);
 
             // Add the Retry attribute
-            CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
+            var retryAttribute = CodeDomHelper.AddAttribute(
+                testMethod,
                 "xRetry.Retry" + (originalAttribute.Name == FACT_ATTRIBUTE ? "Fact" : "Theory"));
 
             if (retryTag.MaxRetries != null)
@@ -64,32 +108,43 @@ namespace xRetry.SpecFlow
                 retryAttribute.Arguments.Add(
                     new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.MaxRetries)));
 
-                if(retryTag.DelayBetweenRetriesMs != null)
-                {
+                if (retryTag.DelayBetweenRetriesMs != null)
                     retryAttribute.Arguments.Add(
                         new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.DelayBetweenRetriesMs)));
-                }
             }
 
             // Copy arguments from the original attribute
-            for (int i = 0; i < originalAttribute.Arguments.Count; i++)
+            for (var i = 0; i < originalAttribute.Arguments.Count; i++)
             {
                 retryAttribute.Arguments.Add(originalAttribute.Arguments[i]);
+                logger.Log($"Attribute added : {originalAttribute.Arguments[i].Name}");
             }
         }
 
-        private static bool isIgnored(TestClassGenerationContext generationContext, IEnumerable<string> tags) =>
-            generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).Any(isIgnoreTag) ||
-            tags.Any(isIgnoreTag);
+        private static bool IsIgnored(TestClassGenerationContext generationContext, IEnumerable<string> tags)
+        {
+            return generationContext.Feature.Tags
+                    .Select(t => StripLeadingAtSign(t.Name))
+                    .Any(IsIgnoreTag) ||
+                tags.Any(IsIgnoreTag);
+        }
 
-        private static string stripLeadingAtSign(string s) => s.StartsWith("@") ? s.Substring(1) : s;
+        private static string StripLeadingAtSign(string s)
+        {
+            return s.StartsWith("@") ? s.Substring(1) : s;
+        }
 
-        private static bool isIgnoreTag(string tag) => tag.Equals(IGNORE_TAG, StringComparison.OrdinalIgnoreCase);
+        private static bool IsIgnoreTag(string tag)
+        {
+            return tag.Equals(Constants.IGNORE_TAG, StringComparison.OrdinalIgnoreCase);
+        }
 
-        private static string getRetryTag(IEnumerable<string> tags) =>
-            tags.FirstOrDefault(t =>
-                t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
-                // Is just "retry", or is "retry("... for params
-                (t.Length == Constants.RETRY_TAG.Length || t[Constants.RETRY_TAG.Length] == '('));
+        private static string GetRetryTag(IEnumerable<string> tags)
+        {
+            return tags.FirstOrDefault(
+                t => t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
+                    // Is just "retry", or is "retry("... for params
+                    (t.Length == Constants.RETRY_TAG.Length || t[Constants.RETRY_TAG.Length] == '('));
+        }
     }
 }

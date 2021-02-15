@@ -3,6 +3,10 @@ Feature: Retry Scenarios
 	As a QA engineer
 	I want to be able to run scenario tests multiple times until they pass
 
+Scenario: Retry implicit three times by default
+	When I increment the default retry count
+	Then the default result should be 3
+
 @retry
 Scenario: Retry three times by default
 	When I increment the default retry count

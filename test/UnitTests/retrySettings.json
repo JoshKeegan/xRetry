@@ -1,0 +1,6 @@
+{
+  "isVerbose": true,
+  "Global": true,
+  "MaxRetry": 3,
+  "DelayBetweenRetriesMs": 500
+} 

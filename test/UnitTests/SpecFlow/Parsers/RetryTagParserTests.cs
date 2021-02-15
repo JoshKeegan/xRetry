@@ -1,4 +1,4 @@
-using System;
+using xRetry.SpecFlow;
 using xRetry.SpecFlow.Parsers;
 using Xunit;
 
@@ -7,18 +7,27 @@ namespace UnitTests.SpecFlow.Parsers
     public class RetryTagParserTests
     {
         [Fact]
-        public void Parse_Null_ThrowsArgumentNullException() =>
-            Assert.Throws<ArgumentNullException>(() => getParser().Parse(null));
+        public void Parse_Null_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var expected = new RetryTag(3, 5000);
+
+            // Act
+            var actual = getParser().Parse(null);
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
         [Fact]
         public void Parse_NoParams_CorrectResult()
         {
             // Arrange
-            RetryTagParser parser = getParser();
-            RetryTag expected = new RetryTag(null, null);
+            var parser = getParser();
+            var expected = new RetryTag(3, 5000);
 
             // Act
-            RetryTag actual = parser.Parse("retry");
+            var actual = parser.Parse("retry");
 
             // Assert
             Assert.Equal(expected, actual);
@@ -32,11 +41,11 @@ namespace UnitTests.SpecFlow.Parsers
         public void Parse_MaxRetries_ReturnsCorrectResult(string tag, int maxRetries)
         {
             // Arrange
-            RetryTagParser parser = getParser();
-            RetryTag expected = new RetryTag(maxRetries, null);
+            var parser = getParser();
+            var expected = new RetryTag(maxRetries, 5000);
 
             // Act
-            RetryTag actual = parser.Parse(tag);
+            var actual = parser.Parse(tag);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -48,20 +57,25 @@ namespace UnitTests.SpecFlow.Parsers
         [InlineData("RETRY(5,100)", 5, 100)]
         [InlineData("rEtRy(5,100)", 5, 100)]
         [InlineData("retry(765,87)", 765, 87)]
-        public void Parse_MaxRetriesAndDelayBetweenRetriesMs_ReturnsCorrectResult(string tag, int maxRetries,
+        public void Parse_MaxRetriesAndDelayBetweenRetriesMs_ReturnsCorrectResult(
+            string tag,
+            int maxRetries,
             int delayBetweenRetriesMs)
         {
             // Arrange
-            RetryTagParser parser = getParser();
-            RetryTag expected = new RetryTag(maxRetries, delayBetweenRetriesMs);
+            var parser = getParser();
+            var expected = new RetryTag(maxRetries, delayBetweenRetriesMs);
 
             // Act
-            RetryTag actual = parser.Parse(tag);
+            var actual = parser.Parse(tag);
 
             // Assert
             Assert.Equal(expected, actual);
         }
 
-        private RetryTagParser getParser() => new RetryTagParser();
+        private RetryTagParser getParser()
+        {
+            return new(new RetrySettings());
+        }
     }
 }
