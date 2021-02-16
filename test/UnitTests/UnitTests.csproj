@@ -32,18 +32,4 @@
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="SpecFlowPlugin\Features\Retry.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Retry.feature.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowFeatureFiles Update="SpecFlow\Features\RetryScenarios.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>RetryScenarios.feature.cs</LastGenOutput>
-    </SpecFlowFeatureFiles>
-  </ItemGroup>
-
 </Project>

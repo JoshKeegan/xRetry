@@ -40,6 +40,16 @@ namespace xRetry.SpecFlow
             scenarioCategories = scenarioCategories as string[] ?? scenarioCategories.ToArray();
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
+            
+            // Remove all retry attribute to have a clean desk 
+            var removeThisAttribute = testMethod.CustomAttributes
+                .OfType<CodeAttributeDeclaration>()
+                .FirstOrDefault(declaration => declaration.Name.StartsWith(Constants.RETRY_ROOT_ATTRIBUTE));
+                
+            if(removeThisAttribute != null)
+            {
+                testMethod.CustomAttributes.Remove(removeThisAttribute);
+            }
 
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
@@ -47,16 +57,6 @@ namespace xRetry.SpecFlow
             if (IsIgnored(generationContext, scenarioCategories))
             {
                 logger.Log("test must be skipped");
-                
-                var removeThisAttribute = testMethod.CustomAttributes
-                    .OfType<CodeAttributeDeclaration>()
-                    .FirstOrDefault(declaration => declaration.Name.StartsWith(Constants.RETRY_ATTRIBUTE));
-                
-                if(removeThisAttribute != null)
-                {
-                    testMethod.CustomAttributes.Remove(removeThisAttribute);
-                }
-                
                 return;
             }
 
