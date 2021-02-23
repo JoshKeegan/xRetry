@@ -18,7 +18,7 @@ namespace UnitTests.Facts.ThreadHopping
         }
 
         [RetryFact(NUM_ITERATIONS, 10)]
-        public void SyncFact_NoDelay_AlwaysRunsOnSameThread()
+        public void SyncFact_WithDelay_AlwaysRunsOnSameThread()
         {
             fixture.AddAttempt();
 

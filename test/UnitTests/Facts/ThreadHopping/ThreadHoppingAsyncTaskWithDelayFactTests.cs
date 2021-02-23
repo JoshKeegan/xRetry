@@ -24,7 +24,7 @@ namespace UnitTests.Facts.ThreadHopping
 
         [RetryFact(NUM_ITERATIONS, 10)]
 #pragma warning disable 1998
-        public async Task SyncFact_NoDelay_AlwaysRunsOnSameThread()
+        public async Task SyncFact_WithDelay_AlwaysRunsOnSameThread()
 #pragma warning restore 1998
         {
             // No await within the test method. Having that would potentially cause the test to thread hop, and if the user is doing that
