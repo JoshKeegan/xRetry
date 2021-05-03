@@ -5,16 +5,3 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: SpecFlow.xUnit
-    versions:
-    - 3.7.13
-    - 3.7.38
-  - dependency-name: SpecFlow.Tools.MsBuild.Generation
-    versions:
-    - 3.7.13
-    - 3.7.38
-  - dependency-name: SpecFlow.CustomPlugin
-    versions:
-    - 3.7.13
-    - 3.7.38
