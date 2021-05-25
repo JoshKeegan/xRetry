@@ -13,15 +13,16 @@ build:
       - artefacts
       - deploy
 
-publish:
-  image: mcr.microsoft.com/dotnet/sdk:5.0.300-buster-slim
-  only:
-    - release
-  stage: publish
-  dependencies:
-    - build
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - cd deploy
-    - /bin/bash deploy.sh ${NUGET_API_KEY}
+# Replaced with GH Actions - will all be deleted once it's been working for a release cycle
+#publish:
+#  image: mcr.microsoft.com/dotnet/sdk:5.0.300-buster-slim
+#  only:
+#    - release
+#  stage: publish
+#  dependencies:
+#    - build
+#  variables:
+#    GIT_STRATEGY: none
+#  script:
+#    - cd deploy
+#    - /bin/bash deploy.sh ${NUGET_API_KEY}
