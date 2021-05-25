@@ -1,6 +1,8 @@
 # xRetry
 Retry flickering test cases for xUnit and SpecFlow in dotnet.
 
+test to see if PR triggers action
+
 [![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
 [![pipeline status](https://gitlab.com/JoshKeegan/xRetry/badges/master/pipeline.svg)](https://gitlab.com/JoshKeegan/xRetry/pipelines)
 
