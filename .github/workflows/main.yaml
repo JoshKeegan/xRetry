@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     container: joshkeegan/dotnet-mixed-build:5.2
     steps:
-      - name: Debug
-        run: ls ..
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Build
         working-directory: build
