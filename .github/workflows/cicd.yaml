@@ -36,6 +36,9 @@ jobs:
         with:
           name: deploy
           path: deploy
+      
+      - name: Test fail
+        run: exit 1
   
   cd:
     runs-on: ubuntu-latest
