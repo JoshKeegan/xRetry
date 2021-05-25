@@ -48,11 +48,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: deploy
+          path: deploy
       
       - name: Download artefacts
         uses: actions/download-artifact@v2
         with:
           name: artefacts
+          path: artefacts
 
       - name: Release
         working-directory: deploy
