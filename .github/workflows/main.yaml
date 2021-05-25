@@ -10,7 +10,7 @@ jobs:
     container: joshkeegan/dotnet-mixed-build:5.2
     steps:
       - name: Debug
-        run: pwd && ls
+        run: ls ..
 
       - name: Build
         working-directory: build
