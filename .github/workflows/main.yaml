@@ -23,5 +23,37 @@ jobs:
       - name: Create Nuget Packages
         working-directory: build
         run: make nuget-create
-        
-        
+      
+      - name: Upload artefacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artefacts
+          path: artefacts
+        if: ${{ always() }}
+      
+      - name: Upload deployment scripts
+        uses: actions/upload-artifact@v2
+        with:
+          name: deploy
+          path: deploy
+  
+  cd:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/dotnet/sdk:5.0.300-buster-slim
+    needs: ci
+# TODO: Change to release branch
+    if: github.ref == 'refs/heads/ghActions'
+    steps:
+      - name: Download deployment scripts
+        uses: actions/download-artifact@v2
+        with:
+          name: deploy
+      
+      - name: Download artefacts
+        uses: actions/download-artifact@v2
+        with:
+          name: artefacts
+
+      - name: Release
+        working-directory: deploy
+        run: deploy.sh ${NUGET_API_KEY}

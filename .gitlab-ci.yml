@@ -14,7 +14,7 @@ build:
       - deploy
 
 publish:
-  image: mcr.microsoft.com/dotnet/sdk:5.0.102-1-buster-slim
+  image: mcr.microsoft.com/dotnet/sdk:5.0.300-buster-slim
   only:
     - release
   stage: publish
