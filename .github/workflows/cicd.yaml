@@ -36,16 +36,12 @@ jobs:
         with:
           name: deploy
           path: deploy
-      
-      - name: Test fail
-        run: exit 1
   
   cd:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/sdk:5.0.300-buster-slim
     needs: ci
-# TODO: Change to release branch
-    if: github.ref == 'refs/heads/ghActions'
+    if: github.ref == 'refs/heads/release'
     steps:
       - name: Download deployment scripts
         uses: actions/download-artifact@v2
