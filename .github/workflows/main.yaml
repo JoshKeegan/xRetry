@@ -58,4 +58,4 @@ jobs:
 
       - name: Release
         working-directory: deploy
-        run: deploy.sh ${NUGET_API_KEY}
+        run: ./deploy.sh ${NUGET_API_KEY}
