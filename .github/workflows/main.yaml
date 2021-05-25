@@ -1,0 +1,24 @@
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    container: joshkeegan/dotnet-mixed-build:5.2
+    steps:
+      - name: Build
+        working-directory: build
+        run: make build
+      
+      - name: Run Unit Tests
+        working-directory: build
+        run: make unit-tests-run
+
+      - name: Create Nuget Packages
+        working-directory: build
+        run: make nuget-create
+        
+        
