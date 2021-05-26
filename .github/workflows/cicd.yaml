@@ -36,13 +36,6 @@ jobs:
         with:
           name: deploy
           path: deploy
-      
-      - name: Parse Test Results
-        uses: NasAmin/trx-parser@v0.1.1
-        with:
-          TRX_PATH: artefacts/testResults
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ always() }}
   
   cd:
     runs-on: ubuntu-latest
