@@ -25,3 +25,7 @@ Scenario: Test is ignored
 @ignore @retry
 Scenario: Retry test is ignored
 	Then fail because this test should have been skipped
+
+@retry @ignore
+Scenario: Retry test is ignored regardless of tag order
+	Then fail because this test should have been skipped

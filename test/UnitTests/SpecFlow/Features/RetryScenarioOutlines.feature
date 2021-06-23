@@ -45,3 +45,11 @@ Scenario Outline: Retry test is ignored
 	| n |
 	| 1 |
 	| 2 |
+
+@retry @ignore
+Scenario Outline: Retry test is ignored regardless of tag order
+	Then fail because this test <n> should have been skipped
+	Examples:
+	| n |
+	| 1 |
+	| 2 |
