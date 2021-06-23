@@ -38,7 +38,7 @@ Scenario Outline: Test is ignored
 	| 1 |
 	| 2 |
 
-@ignore retry
+@ignore @retry
 Scenario Outline: Retry test is ignored
 	Then fail because this test <n> should have been skipped
 	Examples:

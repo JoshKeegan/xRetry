@@ -22,6 +22,6 @@ Scenario: Retry twice, waiting 100ms between retries
 Scenario: Test is ignored
 	Then fail because this test should have been skipped
 
-@ignore retry
+@ignore @retry
 Scenario: Retry test is ignored
 	Then fail because this test should have been skipped
