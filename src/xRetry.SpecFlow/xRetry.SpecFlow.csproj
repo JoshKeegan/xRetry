@@ -12,4 +12,8 @@
     <PackageReference Include="SpecFlow.CustomPlugin" Version="3.9.22" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\xRetry\xRetry.csproj" />
+  </ItemGroup>
+
 </Project>
