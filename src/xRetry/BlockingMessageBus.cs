@@ -22,7 +22,7 @@ namespace xRetry
 
         public bool QueueMessage(IMessageSinkMessage message)
         {
-            // If this is a message saying that the test has been skipped, we can interrupt execution at this point
+            // If this is a message saying that the test has been skipped, replace the message with skipping the test
             if (message is TestFailed failed && failed.ExceptionTypes.Contains(typeof(SkipTestException).FullName))
             {
                 string reason = failed.Messages?.FirstOrDefault();
@@ -31,7 +31,7 @@ namespace xRetry
             }
             else
             {
-                // Otherwise this isn't a message saying the test is skipped, follow usual intercept & replay later behaviour
+                // Otherwise this isn't a message saying the test is skipped, follow usual intercept for replay later behaviour
                 messageQueue.Enqueue(message);
             }
 
