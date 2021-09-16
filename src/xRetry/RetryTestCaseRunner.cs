@@ -35,7 +35,13 @@ namespace xRetry
 
                     RunSummary summary = await fnRunSingle(blockingMessageBus);
 
-                    // If we succeeded, or we've reached the max retries return the result
+                    if (blockingMessageBus.Skipped)
+                    {
+                        summary.Failed = 0;
+                        summary.Skipped = 1;
+                    }
+
+                    // If we succeeded, skipped, or we've reached the max retries return the result
                     if (summary.Failed == 0 || i == testCase.MaxRetries)
                     {
                         // If we have failed (after all retries, log that)
