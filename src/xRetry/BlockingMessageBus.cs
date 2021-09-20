@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
-using xRetry.Exceptions;
+using xRetry.Extensions;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -12,18 +12,20 @@ namespace xRetry
     public class BlockingMessageBus : IMessageBus
     {
         private readonly IMessageBus underlyingMessageBus;
+        private readonly string[] skipOnExceptionFullNames;
         private ConcurrentQueue<IMessageSinkMessage> messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
         public bool Skipped { get; private set; } = false;
 
-        public BlockingMessageBus(IMessageBus underlyingMessageBus)
+        public BlockingMessageBus(IMessageBus underlyingMessageBus, string[] skipOnExceptionFullNames)
         {
             this.underlyingMessageBus = underlyingMessageBus;
+            this.skipOnExceptionFullNames = skipOnExceptionFullNames;
         }
 
         public bool QueueMessage(IMessageSinkMessage message)
         {
             // If this is a message saying that the test has been skipped, replace the message with skipping the test
-            if (message is TestFailed failed && failed.ExceptionTypes.Contains(typeof(SkipTestException).FullName))
+            if (message is TestFailed failed && failed.ExceptionTypes.ContainsAny(skipOnExceptionFullNames))
             {
                 string reason = failed.Messages?.FirstOrDefault();
                 messageQueue.Enqueue(new TestSkipped(failed.Test, reason));

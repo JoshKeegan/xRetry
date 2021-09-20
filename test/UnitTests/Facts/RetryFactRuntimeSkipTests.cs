@@ -1,3 +1,4 @@
+using UnitTests.TestClasses;
 using xRetry;
 using Xunit;
 using Skip = xRetry.Skip;
@@ -14,6 +15,12 @@ namespace UnitTests.Facts
             Skip.Always();
 
             Assert.True(false, "Should have been skipped . . .");
+        }
+
+        [RetryFact(typeof(TestException))]
+        public void CustomException_SkipsAtRuntime()
+        {
+            throw new TestException();
         }
 
         private static int skippedNumCalls = 0;

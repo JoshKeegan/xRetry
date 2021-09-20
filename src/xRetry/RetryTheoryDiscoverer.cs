@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -18,6 +19,8 @@ namespace xRetry
             int maxRetries = theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.MaxRetries));
             int delayBetweenRetriesMs =
                 theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.DelayBetweenRetriesMs));
+            Type[] skipOnExceptions =
+                theoryAttribute.GetNamedArgument<Type[]>(nameof(RetryTheoryAttribute.SkipOnExceptions));
             return new[]
             {
                 new RetryTestCase(
@@ -27,6 +30,7 @@ namespace xRetry
                     testMethod, 
                     maxRetries, 
                     delayBetweenRetriesMs,
+                    skipOnExceptions,
                     dataRow)
             };
         }
@@ -37,11 +41,13 @@ namespace xRetry
             int maxRetries = theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.MaxRetries));
             int delayBetweenRetriesMs =
                 theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.DelayBetweenRetriesMs));
+            Type[] skipOnExceptions =
+                theoryAttribute.GetNamedArgument<Type[]>(nameof(RetryTheoryAttribute.SkipOnExceptions));
 
             return new[]
             {
                 new RetryTheoryDiscoveryAtRuntimeCase(DiagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs)
+                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs, skipOnExceptions)
             };
         }
     }

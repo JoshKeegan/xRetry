@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using xRetry.Exceptions;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -12,6 +13,7 @@ namespace xRetry
     {
         public int MaxRetries { get; private set; }
         public int DelayBetweenRetriesMs { get; private set; }
+        public string[] SkipOnExceptionFullNames { get; private set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete(
@@ -25,12 +27,14 @@ namespace xRetry
             ITestMethod testMethod,
             int maxRetries,
             int delayBetweenRetriesMs,
+            Type[] skipOnExceptions,
             object[] testMethodArguments = null)
             : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod,
                 testMethodArguments)
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
+            SkipOnExceptionFullNames = GetSkipOnExceptionFullNames(skipOnExceptions);
         }
 
         public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
@@ -47,6 +51,7 @@ namespace xRetry
 
             data.AddValue("MaxRetries", MaxRetries);
             data.AddValue("DelayBetweenRetriesMs", DelayBetweenRetriesMs);
+            data.AddValue("SkipOnExceptionFullNames", SkipOnExceptionFullNames);
         }
 
         public override void Deserialize(IXunitSerializationInfo data)
@@ -55,6 +60,18 @@ namespace xRetry
 
             MaxRetries = data.GetValue<int>("MaxRetries");
             DelayBetweenRetriesMs = data.GetValue<int>("DelayBetweenRetriesMs");
+            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames");
+        }
+
+        public static string[] GetSkipOnExceptionFullNames(Type[] customSkipOnExceptions)
+        {
+            string[] toRet = new string[customSkipOnExceptions.Length + 1];
+            for (int i = 0; i < customSkipOnExceptions.Length; i++)
+            {
+                toRet[i] = customSkipOnExceptions[i].FullName;
+            }
+            toRet[toRet.Length - 1] = typeof(SkipTestException).FullName;
+            return toRet;
         }
     }
 }

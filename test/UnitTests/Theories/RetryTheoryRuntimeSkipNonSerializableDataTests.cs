@@ -6,12 +6,11 @@ using Skip = xRetry.Skip;
 
 namespace UnitTests.Theories
 {
-    public class RetryTheoryRuntimeSkipTests
+    public class RetryTheoryRuntimeSkipNonSerializableDataTests
     {
         [RetryTheory]
-        [InlineData(0)]
-        [InlineData(1)]
-        public void SkipAtRuntime(int _)
+        [MemberData(nameof(GetTestData))]
+        public void SkipAtRuntime(NonSerializableTestData _)
         {
             // Note: All we're doing with this test is checking that the rest of the test doesn't get run
             //  checking it's skipped (and doesn't pass) would need to be done manually.
@@ -21,9 +20,8 @@ namespace UnitTests.Theories
         }
 
         [RetryTheory(typeof(TestException))]
-        [InlineData(0)]
-        [InlineData(1)]
-        public void CustomException_SkipsAtRuntime(int _)
+        [MemberData(nameof(GetTestData))]
+        public void CustomException_SkipsAtRuntime(NonSerializableTestData _)
         {
             throw new TestException();
         }
@@ -36,15 +34,20 @@ namespace UnitTests.Theories
         };
 
         [RetryTheory]
-        [InlineData(0)]
-        [InlineData(1)]
-        public void Skip_DoesNotRetry(int id)
+        [MemberData(nameof(GetTestData))]
+        public void Skip_DoesNotRetry(NonSerializableTestData nonSerializableWrapper)
         {
             // Assertion would fail on subsequent attempts, before reaching the skip
-            skippedNumCalls[id]++;
-            Assert.Equal(1, skippedNumCalls[id]);
+            skippedNumCalls[nonSerializableWrapper.Id]++;
+            Assert.Equal(1, skippedNumCalls[nonSerializableWrapper.Id]);
 
             Skip.Always();
         }
+
+        public static IEnumerable<object[]> GetTestData() => new[]
+        {
+            new object[] { new NonSerializableTestData(0) },
+            new object[] { new NonSerializableTestData(1) }
+        };
     }
 }
