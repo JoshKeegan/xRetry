@@ -3,8 +3,6 @@ using System.Runtime.Serialization;
 
 namespace xRetry.Exceptions
 {
-    // TODO: Is serialisation implementation good enough?
-    //  Maybe json etc... would fail. See RetryTestCase for example
     [Serializable]
     public class SkipTestException : Exception
     {
