@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit.Abstractions;
@@ -36,8 +37,12 @@ namespace xRetry
                 int maxRetries = factAttribute.GetNamedArgument<int>(nameof(RetryFactAttribute.MaxRetries));
                 int delayBetweenRetriesMs =
                     factAttribute.GetNamedArgument<int>(nameof(RetryFactAttribute.DelayBetweenRetriesMs));
+                Type[] skipOnExceptions =
+                    factAttribute.GetNamedArgument<Type[]>(nameof(RetryTheoryAttribute.SkipOnExceptions));
+
                 testCase = new RetryTestCase(messageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs);
+                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs,
+                    skipOnExceptions);
             }
 
             return new[] { testCase };

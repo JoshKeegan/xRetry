@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnitTests.TestClasses;
 using xRetry;
 using Xunit;
 
@@ -32,15 +33,5 @@ namespace UnitTests.Theories
             new object[] { new NonSerializableTestData(0) },
             new object[] { new NonSerializableTestData(1) }
         };
-
-        public class NonSerializableTestData
-        {
-            public readonly int Id;
-
-            public NonSerializableTestData(int id)
-            {
-                Id = id;
-            }
-        }
     }
 }

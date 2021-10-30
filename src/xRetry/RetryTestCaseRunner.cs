@@ -28,14 +28,21 @@ namespace xRetry
             {
                 // Prevent messages from the test run from being passed through, as we don't want 
                 //  a message to mark the test as failed when we're going to retry it
-                using (BlockingMessageBus blockingMessageBus = new BlockingMessageBus(messageBus))
+                MessageTransformer messageTransformer = new MessageTransformer(testCase.SkipOnExceptionFullNames);
+                using (BlockingMessageBus blockingMessageBus = new BlockingMessageBus(messageBus, messageTransformer))
                 {
                     diagnosticMessageSink.OnMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
                         testCase.DisplayName, i, testCase.MaxRetries));
 
                     RunSummary summary = await fnRunSingle(blockingMessageBus);
 
-                    // If we succeeded, or we've reached the max retries return the result
+                    if (messageTransformer.Skipped)
+                    {
+                        summary.Failed = 0;
+                        summary.Skipped = 1;
+                    }
+
+                    // If we succeeded, skipped, or we've reached the max retries return the result
                     if (summary.Failed == 0 || i == testCase.MaxRetries)
                     {
                         // If we have failed (after all retries, log that)

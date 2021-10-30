@@ -17,6 +17,7 @@ namespace xRetry
     {
         public int MaxRetries { get; private set; }
         public int DelayBetweenRetriesMs { get; private set; }
+        public string[] SkipOnExceptionFullNames { get; private set; }
 
         /// <summary/>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -29,11 +30,13 @@ namespace xRetry
             TestMethodDisplayOptions defaultMethodDisplayOptions,
             ITestMethod testMethod,
             int maxRetries,
-            int delayBetweenRetriesMs)
+            int delayBetweenRetriesMs,
+            Type[] skipOnExceptions)
             : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
+            SkipOnExceptionFullNames = RetryTestCase.GetSkipOnExceptionFullNames(skipOnExceptions);
         }
 
         /// <inheritdoc />
@@ -51,6 +54,7 @@ namespace xRetry
 
             data.AddValue("MaxRetries", MaxRetries);
             data.AddValue("DelayBetweenRetriesMs", DelayBetweenRetriesMs);
+            data.AddValue("SkipOnExceptionFullNames", SkipOnExceptionFullNames);
         }
 
         public override void Deserialize(IXunitSerializationInfo data)
@@ -59,6 +63,7 @@ namespace xRetry
 
             MaxRetries = data.GetValue<int>("MaxRetries");
             DelayBetweenRetriesMs = data.GetValue<int>("DelayBetweenRetriesMs");
+            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames");
         }
     }
 }

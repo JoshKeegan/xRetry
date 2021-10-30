@@ -59,17 +59,21 @@ namespace xRetry.SpecFlow
             CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
                 "xRetry.Retry" + (originalAttribute.Name == FACT_ATTRIBUTE ? "Fact" : "Theory"));
 
-            if (retryTag.MaxRetries != null)
-            {
-                retryAttribute.Arguments.Add(
-                    new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.MaxRetries)));
+            retryAttribute.Arguments.Add(new CodeAttributeArgument(
+                new CodePrimitiveExpression(retryTag.MaxRetries ?? RetryFactAttribute.DEFAULT_MAX_RETRIES)));
+            retryAttribute.Arguments.Add(new CodeAttributeArgument(
+                new CodePrimitiveExpression(retryTag.DelayBetweenRetriesMs ??
+                                            RetryFactAttribute.DEFAULT_DELAY_BETWEEN_RETRIES_MS)));
 
-                if(retryTag.DelayBetweenRetriesMs != null)
-                {
-                    retryAttribute.Arguments.Add(
-                        new CodeAttributeArgument(new CodePrimitiveExpression(retryTag.DelayBetweenRetriesMs)));
-                }
-            }
+            // Always skip on Xunit.SkipException (from Xunit.SkippableFact) which is used by SpecFlow.xUnit to implement
+            //  dynamic test skipping. This way we can intercept the exception that is already thrown without also having
+            //  our own runtime plugin.
+            retryAttribute.Arguments.Add(new CodeAttributeArgument(
+                new CodeArrayCreateExpression(new CodeTypeReference(typeof(Type)),
+                    new CodeExpression[]
+                    {
+                        new CodeTypeOfExpression(typeof(Xunit.SkipException))
+                    })));
 
             // Copy arguments from the original attribute
             for (int i = 0; i < originalAttribute.Arguments.Count; i++)

@@ -85,6 +85,22 @@ public void Default_Reaches3(int id)
 ```
 The same optional arguments (max retries and delay between each retry) are supported as for facts, and can be used in the same way.
 
+### Skipping tests at Runtime
+In addition to retries, `RetryFact` and `RetryTheory` both support dynamically skipping tests at runtime. To make a test skip just use `Skip.Always()`
+within your test code.  
+It also supports custom exception types so you can skip a test if a type of exception gets thrown. You do this by specifying the exception type to the 
+attribute above your test, e.g.
+```cs
+[RetryFact(typeof(TestException))]
+public void CustomException_SkipsAtRuntime()
+{
+    throw new TestException();
+}
+```
+This functionality also allows for skipping to work when you are already using another library for dynamically skipping tests by specifying the exception
+type that is used by that library to the `RetryFact`. e.g. if you are using the popular Xunit.SkippableFact nuget package and want to add retries, converting the 
+test is as simple as replacing `[SkippableFact]` with `[RetryFact(typeof(Xunit.SkipException))]` above the test and you don't need to change the test itself.
+
 ## Viewing retry logs
 By default, you won't see whether your tests are being retried as we make this information available 
 via the xunit diagnostic logs but test runners will hide these detailed logs by default.  
