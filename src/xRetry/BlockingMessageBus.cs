@@ -1,6 +1,4 @@
 using System.Collections.Concurrent;
-using System.Linq;
-using xRetry.Extensions;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -12,30 +10,20 @@ namespace xRetry
     public class BlockingMessageBus : IMessageBus
     {
         private readonly IMessageBus underlyingMessageBus;
-        private readonly string[] skipOnExceptionFullNames;
+        private readonly MessageTransformer messageTransformer;
         private ConcurrentQueue<IMessageSinkMessage> messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
-        public bool Skipped { get; private set; } = false;
 
-        public BlockingMessageBus(IMessageBus underlyingMessageBus, string[] skipOnExceptionFullNames)
+        public BlockingMessageBus(IMessageBus underlyingMessageBus, MessageTransformer messageTransformer)
         {
             this.underlyingMessageBus = underlyingMessageBus;
-            this.skipOnExceptionFullNames = skipOnExceptionFullNames;
+            this.messageTransformer = messageTransformer;
         }
 
-        public bool QueueMessage(IMessageSinkMessage message)
+        public bool QueueMessage(IMessageSinkMessage rawMessage)
         {
-            // If this is a message saying that the test has been skipped, replace the message with skipping the test
-            if (message is TestFailed failed && failed.ExceptionTypes.ContainsAny(skipOnExceptionFullNames))
-            {
-                string reason = failed.Messages?.FirstOrDefault();
-                messageQueue.Enqueue(new TestSkipped(failed.Test, reason));
-                Skipped = true;
-            }
-            else
-            {
-                // Otherwise this isn't a message saying the test is skipped, follow usual intercept for replay later behaviour
-                messageQueue.Enqueue(message);
-            }
+            // Transform the message to apply any additional functionality, then intercept & store it for replay later
+            IMessageSinkMessage transformedMessage = messageTransformer.Transform(rawMessage);
+            messageQueue.Enqueue(transformedMessage);
 
             // Returns if execution should continue. Since we are intercepting the message, we
             //  have no way of checking this so always continue...
