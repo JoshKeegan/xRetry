@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.22" />
     <PackageReference Include="SpecFlow.xUnit" Version="3.9.22" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -27,7 +27,7 @@
     </PackageReference>
 
     <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.11.0" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.0.0" />
   </ItemGroup>
 
   <ItemGroup>
