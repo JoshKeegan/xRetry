@@ -1,6 +1,6 @@
 @retry @ignore
-Feature: Ignored Retriable Feature
-	In order to temorarily disable retriable features
+Feature: Ignored Retryable Feature
+	In order to temorarily disable retryable features
 	As a QA engineer
 	I want to be able to ignore entire features marked for retries
 
