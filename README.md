@@ -19,6 +19,7 @@ this library should **not** be used to cover it up!
 ## Usage: SpecFlow 3
 Add the `xRetry.SpecFlow` nuget package to your project.  
 
+### Scenarios (and outlines)
 Above any scenario or scenario outline that should be retried, add a `@retry` tag, e.g:
 ```gherkin
 @retry
@@ -34,6 +35,22 @@ parameter, e.g. `@retry(5,100)` will run your test 5 times until it passes, wait
 between each attempt.  
 Note that you must not include a space between the parameters, as Cucumber/SpecFlow uses
 a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space after the comma.
+
+
+### Features
+You can also make every test in a feature retryable at once by adding the `@retry` tag to the feature, e.g:
+```gherkin
+@retry
+Feature: Retryable Feature
+
+Scenario: Retry scenario three times by default
+	When I increment the retry count
+	Then the result should be 3
+```
+All options that can be used against an individual scenario can also be applied like this at the feature level.  
+If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
+precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried 
+by default but for some cases also wanted to wait some time before each retry attempt.
 
 ## Usage: xUnit
 Add the `xRetry` nuget package to your project.
