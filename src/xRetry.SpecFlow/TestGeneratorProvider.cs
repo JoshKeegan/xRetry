@@ -5,12 +5,11 @@ using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
 using TechTalk.SpecFlow.Generator.Interfaces;
-using TechTalk.SpecFlow.Generator.UnitTestProvider;
 using xRetry.SpecFlow.Parsers;
 
 namespace xRetry.SpecFlow
 {
-    public class TestGeneratorProvider : XUnit2TestGeneratorProvider
+    public class TestGeneratorProvider : CustomXUnit2TestGeneratorProvider
     {
         private const string IGNORE_TAG = "ignore";
 
@@ -22,6 +21,24 @@ namespace xRetry.SpecFlow
             this.retryTagParser = retryTagParser;
         }
 
+        public override void SetRowTest(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string scenarioTitle)
+        {
+            base.SetRowTest(generationContext, testMethod, scenarioTitle);
+
+            string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
+
+            applyRetryTags(featureTags, testMethod);
+        }
+
+        public override void SetTestMethod(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string friendlyTestName)
+        {
+            base.SetTestMethod(generationContext, testMethod, friendlyTestName);
+
+            string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
+
+            applyRetryTags(featureTags, testMethod);
+        }
+
         public override void SetTestMethodCategories(TestClassGenerationContext generationContext,
             CodeMemberMethod testMethod, IEnumerable<string> scenarioCategories)
         {
@@ -30,15 +47,24 @@ namespace xRetry.SpecFlow
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
+            // Put scenario tags first as they take precedent over feature tags
+            List<string> combinedTags = new List<string>(scenarioCategories);
+            combinedTags.AddRange(generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)));
+
+            applyRetryTags(combinedTags, testMethod);
+        }
+
+        private void applyRetryTags(IList<string> tags, CodeMemberMethod testMethod)
+        {
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
             //  too will replace the attribute for running the test with a custom one.
-            if (isIgnored(generationContext, scenarioCategories))
+            if (isIgnored(tags))
             {
                 return;
             }
 
-            string strRetryTag = getRetryTag(scenarioCategories);
+            string strRetryTag = getRetryTag(tags);
             if (strRetryTag == null)
             {
                 return;
@@ -82,8 +108,7 @@ namespace xRetry.SpecFlow
             }
         }
 
-        private static bool isIgnored(TestClassGenerationContext generationContext, IEnumerable<string> tags) =>
-            generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).Any(isIgnoreTag) ||
+        private static bool isIgnored(IEnumerable<string> tags) =>
             tags.Any(isIgnoreTag);
 
         private static string stripLeadingAtSign(string s) => s.StartsWith("@") ? s.Substring(1) : s;
