@@ -38,6 +38,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="SpecFlow\Features\RetryScenarios.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="SpecFlowPlugin\Features\Retry.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Retry.feature.cs</LastGenOutput>
