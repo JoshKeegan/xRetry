@@ -35,26 +35,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\xRetry.SpecFlow\xRetry.SpecFlow.csproj" />
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="SpecFlow\Features\RetryScenarios.feature.cs">
-      <DesignTime>True</DesignTime>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="SpecFlowPlugin\Features\Retry.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Retry.feature.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowFeatureFiles Update="SpecFlow\Features\RetryScenarios.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>RetryScenarios.feature.cs</LastGenOutput>
-    </SpecFlowFeatureFiles>
-  </ItemGroup>
+  </ItemGroup>  
 
 </Project>
