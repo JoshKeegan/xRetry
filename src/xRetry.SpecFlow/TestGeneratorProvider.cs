@@ -29,7 +29,7 @@ namespace xRetry.SpecFlow
 
             string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
 
-            applyRetryTags(featureTags, testMethod);
+            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod);
         }
 
         public override void SetTestMethod(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string friendlyTestName)
@@ -38,7 +38,7 @@ namespace xRetry.SpecFlow
 
             string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
 
-            applyRetryTags(featureTags, testMethod);
+            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod);
         }
 
         public override void SetTestMethodCategories(TestClassGenerationContext generationContext,
@@ -49,19 +49,22 @@ namespace xRetry.SpecFlow
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
-            // Put scenario tags first as they take precedent over feature tags
-            List<string> combinedTags = new List<string>(scenarioCategories);
-            combinedTags.AddRange(generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)));
-
-            applyRetryTags(combinedTags, testMethod);
+            IEnumerable<string> featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name));
+            applyRetry((string[]) scenarioCategories, featureTags, testMethod);
         }
 
-        private void applyRetryTags(IList<string> tags, CodeMemberMethod testMethod)
+        /// <summary>
+        /// Apply retry tags to the current test
+        /// </summary>
+        /// <param name="tags">Tags that haven't yet been processed. If the test has just been created these will be for the feature, otherwise for the scenario</param>
+        /// <param name="processedTags">Tags that have already been processed. If the test has just been created this will be empty, otherwise they will be the feature tags</param>
+        /// <param name="testMethod">Test method we are applying retries for</param>
+        private void applyRetry(IList<string> tags, IEnumerable<string> processedTags, CodeMemberMethod testMethod)
         {
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
             //  too will replace the attribute for running the test with a custom one.
-            if (isIgnored(tags))
+            if (tags.Any(isIgnoreTag) || processedTags.Any(isIgnoreTag))
             {
                 return;
             }
@@ -120,9 +123,6 @@ namespace xRetry.SpecFlow
                 retryAttribute.Arguments.Add(originalAttribute.Arguments[i]);
             }
         }
-
-        private static bool isIgnored(IEnumerable<string> tags) =>
-            tags.Any(isIgnoreTag);
 
         private static string stripLeadingAtSign(string s) => s.StartsWith("@") ? s.Substring(1) : s;
 
