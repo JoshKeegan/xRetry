@@ -5,11 +5,12 @@ using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
 using TechTalk.SpecFlow.Generator.Interfaces;
+using TechTalk.SpecFlow.Generator.UnitTestProvider;
 using xRetry.SpecFlow.Parsers;
 
 namespace xRetry.SpecFlow
 {
-    public class TestGeneratorProvider : CustomXUnit2TestGeneratorProvider
+    public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
         private const string IGNORE_TAG = "ignore";
         private const string RETRY_FACT_ATTRIBUTE = "xRetry.RetryFact";
