@@ -7,7 +7,7 @@ namespace xRetry
 {
     /// <summary>
     /// Attribute that is applied to a method to indicate that it is a fact that should be run
-    /// by the test runner up to MaxRetries times, until it succeeds.
+    /// by the test runner up to <see cref="MaxRetries"/> times, until it succeeds.
     /// </summary>
     [XunitTestCaseDiscoverer("xRetry.RetryFactDiscoverer", "xRetry")]
     [AttributeUsage(AttributeTargets.Method)]
@@ -37,7 +37,7 @@ namespace xRetry
         /// <summary>
         /// Ctor (full)
         /// </summary>
-        /// <param name="maxRetries">The number of times to run a test for until it succeeds</param>
+        /// <param name="maxRetries">The number of times to attempt to run a test for until it succeeds</param>
         /// <param name="delayBetweenRetriesMs">The amount of time (in ms) to wait between each test run attempt</param>
         /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
         public RetryFactAttribute(

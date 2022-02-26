@@ -13,6 +13,8 @@ namespace xRetry.SpecFlow
     public class TestGeneratorProvider : XUnit2TestGeneratorProvider
     {
         private const string IGNORE_TAG = "ignore";
+        private const string RETRY_FACT_ATTRIBUTE = "xRetry.RetryFact";
+        private const string RETRY_THEORY_ATTRIBUTE = "xRetry.RetryTheory";
 
         private readonly IRetryTagParser retryTagParser;
 
@@ -22,6 +24,29 @@ namespace xRetry.SpecFlow
             this.retryTagParser = retryTagParser;
         }
 
+        // Called for scenario outlines, even when it has no tags.
+        // We don't yet have access to tags against the scenario at this point, but can handle feature tags now.
+        public override void SetRowTest(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string scenarioTitle)
+        {
+            base.SetRowTest(generationContext, testMethod, scenarioTitle);
+
+            string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
+
+            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod);
+        }
+
+        // Called for scenarios, even when it has no tags.
+        // We don't yet have access to tags against the scenario at this point, but can handle feature tags now.
+        public override void SetTestMethod(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string friendlyTestName)
+        {
+            base.SetTestMethod(generationContext, testMethod, friendlyTestName);
+
+            string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
+
+            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod);
+        }
+
+        // Called for both scenarios & scenario outlines, but only if it has tags
         public override void SetTestMethodCategories(TestClassGenerationContext generationContext,
             CodeMemberMethod testMethod, IEnumerable<string> scenarioCategories)
         {
@@ -30,15 +55,28 @@ namespace xRetry.SpecFlow
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
+            // Feature tags will have already been processed in one of the methods above, which are executed before this
+            IEnumerable<string> featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name));
+            applyRetry((string[]) scenarioCategories, featureTags, testMethod);
+        }
+
+        /// <summary>
+        /// Apply retry tags to the current test
+        /// </summary>
+        /// <param name="tags">Tags that haven't yet been processed. If the test has just been created these will be for the feature, otherwise for the scenario</param>
+        /// <param name="processedTags">Tags that have already been processed. If the test has just been created this will be empty, otherwise they will be the feature tags</param>
+        /// <param name="testMethod">Test method we are applying retries for</param>
+        private void applyRetry(IList<string> tags, IEnumerable<string> processedTags, CodeMemberMethod testMethod)
+        {
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
             //  too will replace the attribute for running the test with a custom one.
-            if (isIgnored(generationContext, scenarioCategories))
+            if (tags.Any(isIgnoreTag) || processedTags.Any(isIgnoreTag))
             {
                 return;
             }
 
-            string strRetryTag = getRetryTag(scenarioCategories);
+            string strRetryTag = getRetryTag(tags);
             if (strRetryTag == null)
             {
                 return;
@@ -48,7 +86,11 @@ namespace xRetry.SpecFlow
 
             // Remove the original fact or theory attribute
             CodeAttributeDeclaration originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
-                .FirstOrDefault(a => a.Name == FACT_ATTRIBUTE || a.Name == THEORY_ATTRIBUTE);
+                .FirstOrDefault(a =>
+                    a.Name == FACT_ATTRIBUTE || 
+                    a.Name == THEORY_ATTRIBUTE || 
+                    a.Name == RETRY_FACT_ATTRIBUTE ||
+                    a.Name == RETRY_THEORY_ATTRIBUTE);
             if (originalAttribute == null)
             {
                 return;
@@ -57,7 +99,9 @@ namespace xRetry.SpecFlow
 
             // Add the Retry attribute
             CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
-                "xRetry.Retry" + (originalAttribute.Name == FACT_ATTRIBUTE ? "Fact" : "Theory"));
+                originalAttribute.Name == FACT_ATTRIBUTE || originalAttribute.Name == RETRY_FACT_ATTRIBUTE
+                    ? RETRY_FACT_ATTRIBUTE
+                    : RETRY_THEORY_ATTRIBUTE);
 
             retryAttribute.Arguments.Add(new CodeAttributeArgument(
                 new CodePrimitiveExpression(retryTag.MaxRetries ?? RetryFactAttribute.DEFAULT_MAX_RETRIES)));
@@ -75,16 +119,17 @@ namespace xRetry.SpecFlow
                         new CodeTypeOfExpression(typeof(Xunit.SkipException))
                     })));
 
-            // Copy arguments from the original attribute
-            for (int i = 0; i < originalAttribute.Arguments.Count; i++)
+            // Copy arguments from the original attribute. If it's already a retry attribute, don't copy the retry arguments though
+            for (int i = originalAttribute.Name == RETRY_FACT_ATTRIBUTE ||
+                         originalAttribute.Name == RETRY_THEORY_ATTRIBUTE
+                     ? retryAttribute.Arguments.Count
+                     : 0;
+                 i < originalAttribute.Arguments.Count;
+                 i++)
             {
                 retryAttribute.Arguments.Add(originalAttribute.Arguments[i]);
             }
         }
-
-        private static bool isIgnored(TestClassGenerationContext generationContext, IEnumerable<string> tags) =>
-            generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).Any(isIgnoreTag) ||
-            tags.Any(isIgnoreTag);
 
         private static string stripLeadingAtSign(string s) => s.StartsWith("@") ? s.Substring(1) : s;
 

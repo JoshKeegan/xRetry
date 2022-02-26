@@ -5,8 +5,8 @@ Feature: Retry Scenario Outlines
 
 @retry
 Scenario Outline: Retry three times by default
-	When I increment the default retry count for test <n>
-	Then the default retry could for test <n> should be 3
+	When I increment the retry count for test <n>
+	Then the retry count for test <n> should be 3
 	Examples:
 	| n |
 	| 1 |

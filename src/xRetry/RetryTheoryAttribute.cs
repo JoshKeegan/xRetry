@@ -5,7 +5,7 @@ namespace xRetry
 {
     /// <summary>
     /// Attribute that is applied to a method to indicate that it is a theory that should be run
-    /// by the test runner up to MaxRetries times, until it succeeds.
+    /// by the test runner up to <see cref="RetryFactAttribute.MaxRetries"/> times, until it succeeds.
     /// </summary>
     [XunitTestCaseDiscoverer("xRetry.RetryTheoryDiscoverer", "xRetry")]
     [AttributeUsage(AttributeTargets.Method)]

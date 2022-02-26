@@ -1,14 +1,14 @@
-@ignore
-Feature: Ignored Feature
-	In order to temorarily disable features containing retryable scenarios
+@retry @ignore
+Feature: Ignored Retryable Feature
+	In order to temorarily disable retryable features
 	As a QA engineer
-	I want to be able to ignore entire features that contain retryable tests
+	I want to be able to ignore entire features marked for retries
 
 Scenario: Test is ignored
 	Then fail because this test should have been skipped
 
 @retry
-Scenario: Retry test is ignored
+Scenario: Explicit retry test is ignored
 	Then fail because this test should have been skipped
 
 Scenario Outline: Scenario outline test is ignored
@@ -19,7 +19,7 @@ Scenario Outline: Scenario outline test is ignored
 	| 2 |
 
 @retry
-Scenario Outline: Retry scenario outline test is ignored
+Scenario Outline: Explicit retry scenario outline test is ignored
 	Then fail because this test should have been skipped
 	Examples:
 	| n |

@@ -6,13 +6,13 @@ using Xunit;
 
 namespace UnitTests
 {
-    public class RetryFactAttributeTests
+    public class RetryTheoryAttributeTests
     {
         [Fact]
         public void Ctor_Empty_NoSkipOnExceptions()
         {
             // Arrange & Act
-            RetryFactAttribute attr = new RetryFactAttribute();
+            RetryTheoryAttribute attr = new RetryTheoryAttribute();
 
             // Assert
             attr.SkipOnExceptions.Should().BeEmpty();
@@ -29,7 +29,7 @@ namespace UnitTests
             };
 
             // Act
-            RetryFactAttribute attr = new RetryFactAttribute(expected);
+            RetryTheoryAttribute attr = new RetryTheoryAttribute(expected);
 
             // Assert
             attr.SkipOnExceptions.Should().BeEquivalentTo(expected);
@@ -47,27 +47,27 @@ namespace UnitTests
             };
 
             // Act
-            RetryFactAttribute attr = new RetryFactAttribute(fixture.Create<int>(), fixture.Create<int>(), expected);
-            
+            RetryTheoryAttribute attr = new RetryTheoryAttribute(fixture.Create<int>(), fixture.Create<int>(), expected);
+
             // Assert
             attr.SkipOnExceptions.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
         public void Ctor_NonExceptionTypes_ShouldThrow() =>
-            Assert.Throws<ArgumentException>(() => new RetryFactAttribute(typeof(RetryFactAttributeTests)));
+            Assert.Throws<ArgumentException>(() => new RetryTheoryAttribute(typeof(RetryFactAttributeTests)));
 
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
         [InlineData(-1337)]
         public void Ctor_LessThanOneMaxRetries_ShouldThrow(int maxRetries) =>
-            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryFactAttribute(maxRetries));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryTheoryAttribute(maxRetries));
 
         [Theory]
         [InlineData(-1)]
         [InlineData(-1337)]
         public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs) =>
-            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryFactAttribute(delayBetweenRetriesMs: delayBetweenRetriesMs));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryTheoryAttribute(delayBetweenRetriesMs: delayBetweenRetriesMs));
     }
 }
