@@ -24,6 +24,8 @@ namespace xRetry.SpecFlow
             this.retryTagParser = retryTagParser;
         }
 
+        // Called for scenario outlines, even when it has no tags.
+        // We don't yet have access to tags against the scenario at this point, but can handle feature tags now.
         public override void SetRowTest(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string scenarioTitle)
         {
             base.SetRowTest(generationContext, testMethod, scenarioTitle);
@@ -33,6 +35,8 @@ namespace xRetry.SpecFlow
             applyRetry(featureTags, Enumerable.Empty<string>(), testMethod);
         }
 
+        // Called for scenarios, even when it has no tags.
+        // We don't yet have access to tags against the scenario at this point, but can handle feature tags now.
         public override void SetTestMethod(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string friendlyTestName)
         {
             base.SetTestMethod(generationContext, testMethod, friendlyTestName);
@@ -42,6 +46,7 @@ namespace xRetry.SpecFlow
             applyRetry(featureTags, Enumerable.Empty<string>(), testMethod);
         }
 
+        // Called for both scenarios & scenario outlines, but only if it has tags
         public override void SetTestMethodCategories(TestClassGenerationContext generationContext,
             CodeMemberMethod testMethod, IEnumerable<string> scenarioCategories)
         {
@@ -50,6 +55,7 @@ namespace xRetry.SpecFlow
 
             base.SetTestMethodCategories(generationContext, testMethod, scenarioCategories);
 
+            // Feature tags will have already been processed in one of the methods above, which are executed before this
             IEnumerable<string> featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name));
             applyRetry((string[]) scenarioCategories, featureTags, testMethod);
         }
