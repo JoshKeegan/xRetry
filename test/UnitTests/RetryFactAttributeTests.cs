@@ -56,5 +56,18 @@ namespace UnitTests
         [Fact]
         public void Ctor_NonExceptionTypes_ShouldThrow() =>
             Assert.Throws<ArgumentException>(() => new RetryFactAttribute(typeof(RetryFactAttributeTests)));
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(-1337)]
+        public void Ctor_LessThanOneMaxRetries_ShouldThrow(int maxRetries) =>
+            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryFactAttribute(maxRetries));
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-1337)]
+        public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs) =>
+            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryFactAttribute(delayBetweenRetriesMs: delayBetweenRetriesMs));
     }
 }
