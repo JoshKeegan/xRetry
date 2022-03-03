@@ -22,7 +22,7 @@ namespace xRetry
         /// <summary/>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Called by the de-serializer; should only be called by deriving classes for de-serialization purposes")]
-        public RetryTheoryDiscoveryAtRuntimeCase() {  }
+        public RetryTheoryDiscoveryAtRuntimeCase() { }
 
         public RetryTheoryDiscoveryAtRuntimeCase(
             IMessageSink diagnosticMessageSink,

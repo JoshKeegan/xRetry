@@ -17,7 +17,7 @@ namespace xRetry.Extensions
                 comparer = EqualityComparer<T>.Default;
             }
 
-            return searchFor.Length != 0 && 
+            return searchFor.Length != 0 &&
                    values.Any(val => searchFor.Any(search => comparer.Equals(val, search)));
         }
     }

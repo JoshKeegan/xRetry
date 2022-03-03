@@ -15,7 +15,7 @@ namespace UnitTests.SpecFlow.TestClasses
             this.scenarioInfo = scenarioInfo;
 
             // FeatureInfo & ScenarioInfo don't implement equals checks, so build up a simple string that we can use as an internal ID
-            internalId = $"{featureInfo.FolderPath} - {featureInfo.Title} - {scenarioInfo.Title}";;
+            internalId = $"{featureInfo.FolderPath} - {featureInfo.Title} - {scenarioInfo.Title}"; ;
         }
 
         public override bool Equals(object obj)

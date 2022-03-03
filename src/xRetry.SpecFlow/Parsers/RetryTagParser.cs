@@ -23,7 +23,7 @@ namespace xRetry.SpecFlow.Parsers
             if (match.Success)
             {
                 // Group 2 is max retries
-                if(match.Groups[2].Success)
+                if (match.Groups[2].Success)
                 {
                     maxRetries = int.Parse(match.Groups[2].Value);
 

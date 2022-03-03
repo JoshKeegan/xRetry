@@ -7,8 +7,8 @@ namespace xRetry
 {
     public class RetryTheoryDiscoverer : TheoryDiscoverer
     {
-        public RetryTheoryDiscoverer(IMessageSink diagnosticMessageSink) 
-            : base(diagnosticMessageSink) {  }
+        public RetryTheoryDiscoverer(IMessageSink diagnosticMessageSink)
+            : base(diagnosticMessageSink) { }
 
         protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(
             ITestFrameworkDiscoveryOptions discoveryOptions,
@@ -24,11 +24,11 @@ namespace xRetry
             return new[]
             {
                 new RetryTestCase(
-                    DiagnosticMessageSink, 
+                    DiagnosticMessageSink,
                     discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), 
-                    testMethod, 
-                    maxRetries, 
+                    discoveryOptions.MethodDisplayOptionsOrDefault(),
+                    testMethod,
+                    maxRetries,
                     delayBetweenRetriesMs,
                     skipOnExceptions,
                     dataRow)

@@ -5,13 +5,22 @@ root = true
 end_of_line = lf
 charset = utf-8
 
-[*.cs]
-indent_style = space
-indent_size = 4
-
 [Makefile]
 indent_style = tab
 
 [{*.yml,*.yaml}]
 indent_style = space
 indent_size = 2
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+#
+# C# language specific formatting
+#   Docs: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/code-style-rule-options
+#   Roslyn is a good real-world example: https://github.com/dotnet/roslyn/blob/main/.editorconfig
+#
+
+# Visual Studio default, specify explicitly because it's not the dotnet format default
+csharp_space_after_cast = true

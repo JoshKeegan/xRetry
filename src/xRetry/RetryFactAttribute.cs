@@ -41,8 +41,8 @@ namespace xRetry
         /// <param name="delayBetweenRetriesMs">The amount of time (in ms) to wait between each test run attempt</param>
         /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
         public RetryFactAttribute(
-            int maxRetries = DEFAULT_MAX_RETRIES, 
-            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS, 
+            int maxRetries = DEFAULT_MAX_RETRIES,
+            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS,
             params Type[] skipOnExceptions)
             : this(skipOnExceptions)
         {

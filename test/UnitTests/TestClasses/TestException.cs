@@ -2,5 +2,5 @@ using System;
 
 namespace UnitTests.TestClasses
 {
-    public class TestException : Exception {  }
+    public class TestException : Exception { }
 }

@@ -87,8 +87,8 @@ namespace xRetry.SpecFlow
             // Remove the original fact or theory attribute
             CodeAttributeDeclaration originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
                 .FirstOrDefault(a =>
-                    a.Name == FACT_ATTRIBUTE || 
-                    a.Name == THEORY_ATTRIBUTE || 
+                    a.Name == FACT_ATTRIBUTE ||
+                    a.Name == THEORY_ATTRIBUTE ||
                     a.Name == RETRY_FACT_ATTRIBUTE ||
                     a.Name == RETRY_THEORY_ATTRIBUTE);
             if (originalAttribute == null)

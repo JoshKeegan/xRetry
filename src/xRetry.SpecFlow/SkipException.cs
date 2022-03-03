@@ -10,5 +10,5 @@ namespace Xunit
     /// makes use of. That way we can intercept the exception that is throwing without also having our own runtime
     /// plugin, or adding a direct dependency on either of these other libraries.
     /// </summary>
-    internal class SkipException : Exception {  }
+    internal class SkipException : Exception { }
 }

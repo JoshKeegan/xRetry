@@ -48,7 +48,7 @@ namespace UnitTests
 
             // Act
             RetryFactAttribute attr = new RetryFactAttribute(fixture.Create<int>(), fixture.Create<int>(), expected);
-            
+
             // Assert
             attr.SkipOnExceptions.Should().BeEquivalentTo(expected);
         }
