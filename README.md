@@ -131,7 +131,7 @@ opening an issue first to discuss, and make sure nobody else is working on the s
 To build and run locally, always build `xRetry.SpecFlowPlugin` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the UnitTests project.  
 
 #### From the terminal
-If you install `make` and go to the `build` directory, you can run the following to run CI locally (run lint, build, run tests and create the nuget packages):
+If you install `make` and go to the `build` directory, you can run the following command to run CI locally (run lint, build, run tests and create the nuget packages):
 ```bash
 make ci
 ```
