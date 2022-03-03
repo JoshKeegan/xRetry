@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Lint
+        working-directory: build
+        run: make lint
 
       - name: Build
         working-directory: build

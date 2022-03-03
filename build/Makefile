@@ -7,6 +7,10 @@ clean:
 
 	mkdir -p ../artefacts/nuget
 
+lint:
+	dotnet format --verify-no-changes ../ || \
+		(echo "Lint check failed. You can automatically fix all formatting issues by running \"dotnet format\""; exit 1)
+
 build: clean
 	dotnet restore ../
 
@@ -44,4 +48,4 @@ nuget-create:
 		-c Release \
 		-o ../artefacts/nuget
 
-ci: build unit-tests-run nuget-create
+ci: lint build unit-tests-run nuget-create
