@@ -48,13 +48,13 @@ jobs:
     if: github.ref == 'refs/heads/release'
     steps:
       - name: Download deployment scripts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: deploy
           path: deploy
       
       - name: Download artefacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: artefacts
           path: artefacts
