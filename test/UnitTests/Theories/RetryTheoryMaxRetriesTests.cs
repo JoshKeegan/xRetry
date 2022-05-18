@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FluentAssertions;
 using xRetry;
 using Xunit;
 
@@ -19,8 +20,8 @@ namespace UnitTests.Theories
         public void FiveRuns_Reaches5(int id)
         {
             fiveRunsNumCalls[id]++;
-
-            Assert.Equal(5, fiveRunsNumCalls[id]);
+            
+            fiveRunsNumCalls[id].Should().Be(5);
         }
     }
 }
