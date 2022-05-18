@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using FluentAssertions;
 using xRetry;
 using Xunit;
 using Xunit.Abstractions;
@@ -29,7 +30,8 @@ namespace UnitTests.Theories
 
             long elapsedMs = sw.ElapsedMilliseconds;
             testOutputHelper.WriteLine("Elapsed {0}ms in test ID {1}", elapsedMs, id);
-            Assert.True(elapsedMs >= 90);
+
+            elapsedMs.Should().BeGreaterOrEqualTo(90);
         }
     }
 }
