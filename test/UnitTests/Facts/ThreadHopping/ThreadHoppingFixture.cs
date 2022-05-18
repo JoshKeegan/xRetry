@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using FluentAssertions;
 using Xunit.Abstractions;
 
 namespace UnitTests.Facts.ThreadHopping
@@ -23,7 +24,7 @@ namespace UnitTests.Facts.ThreadHopping
             foreach (int threadId in ThreadHistory)
             {
                 testOutputHelper.WriteLine($"Thread ID: {threadId}");
-                Xunit.Assert.Equal(ThreadId, threadId);
+                threadId.Should().Be(ThreadId);
             }
         }
     }
