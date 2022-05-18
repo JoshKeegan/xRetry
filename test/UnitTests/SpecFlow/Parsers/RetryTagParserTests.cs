@@ -1,3 +1,4 @@
+using FluentAssertions;
 using System;
 using xRetry.SpecFlow.Parsers;
 using Xunit;
@@ -7,8 +8,12 @@ namespace UnitTests.SpecFlow.Parsers
     public class RetryTagParserTests
     {
         [Fact]
-        public void Parse_Null_ThrowsArgumentNullException() =>
-            Assert.Throws<ArgumentNullException>(() => getParser().Parse(null));
+        public void Parse_Null_ThrowsArgumentNullException()
+        {
+            var act = () => getParser().Parse(null);
+
+            act.Should().Throw<ArgumentNullException>();
+        }
 
         [Fact]
         public void Parse_NoParams_CorrectResult()
@@ -21,7 +26,7 @@ namespace UnitTests.SpecFlow.Parsers
             RetryTag actual = parser.Parse("retry");
 
             // Assert
-            Assert.Equal(expected, actual);
+            actual.Should().Be(expected);
         }
 
         [Theory]
@@ -39,7 +44,7 @@ namespace UnitTests.SpecFlow.Parsers
             RetryTag actual = parser.Parse(tag);
 
             // Assert
-            Assert.Equal(expected, actual);
+            actual.Should().Be(expected);
         }
 
         [Theory]
@@ -59,7 +64,7 @@ namespace UnitTests.SpecFlow.Parsers
             RetryTag actual = parser.Parse(tag);
 
             // Assert
-            Assert.Equal(expected, actual);
+            actual.Should().Be(expected);
         }
 
         private RetryTagParser getParser() => new RetryTagParser();
