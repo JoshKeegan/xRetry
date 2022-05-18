@@ -1,6 +1,6 @@
 using System.Diagnostics;
+using FluentAssertions;
 using xRetry;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace UnitTests.Facts
@@ -27,7 +27,8 @@ namespace UnitTests.Facts
 
             long elapsedMs = sw.ElapsedMilliseconds;
             testOutputHelper.WriteLine("Elapsed {0}ms", elapsedMs);
-            Assert.True(elapsedMs >= 90);
+            
+            elapsedMs.Should().BeGreaterOrEqualTo(90);
         }
     }
 }
