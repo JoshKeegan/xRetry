@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FluentAssertions;
 using UnitTests.TestClasses;
 using xRetry;
 using Xunit;
@@ -39,7 +40,8 @@ namespace UnitTests.Theories
         {
             // Assertion would fail on subsequent attempts, before reaching the skip
             skippedNumCalls[nonSerializableWrapper.Id]++;
-            Assert.Equal(1, skippedNumCalls[nonSerializableWrapper.Id]);
+
+            skippedNumCalls[nonSerializableWrapper.Id].Should().Be(1);
 
             Skip.Always();
         }
