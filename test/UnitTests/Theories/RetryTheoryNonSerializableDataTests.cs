@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FluentAssertions;
 using UnitTests.TestClasses;
 using xRetry;
 using Xunit;
@@ -24,8 +25,8 @@ namespace UnitTests.Theories
         public void Default_Reaches3(NonSerializableTestData nonSerializableWrapper)
         {
             defaultNumCalls[nonSerializableWrapper.Id]++;
-
-            Assert.Equal(3, defaultNumCalls[nonSerializableWrapper.Id]);
+            
+            defaultNumCalls[nonSerializableWrapper.Id].Should().Be(3);
         }
 
         public static IEnumerable<object[]> GetTestData() => new[]

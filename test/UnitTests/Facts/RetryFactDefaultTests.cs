@@ -1,9 +1,9 @@
+using FluentAssertions;
 using xRetry;
-using Xunit;
 
 namespace UnitTests.Facts
 {
-    public class RetryFactTests
+    public class RetryFactDefaultTests
     {
         private static int defaultNumCalls = 0;
 
@@ -11,8 +11,8 @@ namespace UnitTests.Facts
         public void Default_Reaches3()
         {
             defaultNumCalls++;
-
-            Assert.Equal(3, defaultNumCalls);
+            
+            defaultNumCalls.Should().Be(3);
         }
     }
 }

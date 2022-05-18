@@ -1,3 +1,4 @@
+using FluentAssertions;
 using xRetry;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,7 +23,7 @@ namespace UnitTests.Facts.ThreadHopping
         {
             fixture.AddAttempt();
 
-            Assert.Equal(NUM_ITERATIONS, fixture.NumAttempts);
+            fixture.NumAttempts.Should().Be(NUM_ITERATIONS);
 
             fixture.Assert(testOutputHelper);
         }
