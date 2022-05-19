@@ -11,7 +11,7 @@ namespace UnitTests.Facts
         public void FiveRuns_Reaches5()
         {
             fiveRunsNumCalls++;
-            
+
             fiveRunsNumCalls.Should().Be(5);
         }
     }

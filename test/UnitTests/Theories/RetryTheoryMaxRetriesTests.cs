@@ -20,7 +20,7 @@ namespace UnitTests.Theories
         public void FiveRuns_Reaches5(int id)
         {
             fiveRunsNumCalls[id]++;
-            
+
             fiveRunsNumCalls[id].Should().Be(5);
         }
     }

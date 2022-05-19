@@ -11,7 +11,7 @@ namespace UnitTests.Facts
         public void Default_Reaches3()
         {
             defaultNumCalls++;
-            
+
             defaultNumCalls.Should().Be(3);
         }
     }

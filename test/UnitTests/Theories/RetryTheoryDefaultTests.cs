@@ -20,7 +20,7 @@ namespace UnitTests.Theories
         public void Default_Reaches3(int id)
         {
             defaultNumCalls[id]++;
-            
+
             defaultNumCalls[id].Should().Be(3);
         }
     }

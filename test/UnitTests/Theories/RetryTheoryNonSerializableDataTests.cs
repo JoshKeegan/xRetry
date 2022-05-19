@@ -25,7 +25,7 @@ namespace UnitTests.Theories
         public void Default_Reaches3(NonSerializableTestData nonSerializableWrapper)
         {
             defaultNumCalls[nonSerializableWrapper.Id]++;
-            
+
             defaultNumCalls[nonSerializableWrapper.Id].Should().Be(3);
         }
 

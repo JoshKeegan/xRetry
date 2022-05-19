@@ -32,7 +32,7 @@ namespace UnitTests.Facts.ThreadHopping
             //  then they must be ok with thread hopping anyway
 
             fixture.AddAttempt();
-            
+
             fixture.NumAttempts.Should().Be(NUM_ITERATIONS);
 
             fixture.Assert(testOutputHelper);

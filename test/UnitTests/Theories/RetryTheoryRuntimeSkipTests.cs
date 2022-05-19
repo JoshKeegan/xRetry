@@ -43,7 +43,7 @@ namespace UnitTests.Theories
         {
             // Assertion would fail on subsequent attempts, before reaching the skip
             skippedNumCalls[id]++;
-            
+
             skippedNumCalls[id].Should().Be(1);
 
             Skip.Always();

@@ -27,7 +27,7 @@ namespace UnitTests.Facts
 
             long elapsedMs = sw.ElapsedMilliseconds;
             testOutputHelper.WriteLine("Elapsed {0}ms", elapsedMs);
-            
+
             elapsedMs.Should().BeGreaterOrEqualTo(90);
         }
     }
