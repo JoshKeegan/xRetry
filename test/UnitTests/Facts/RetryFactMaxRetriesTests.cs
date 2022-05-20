@@ -1,5 +1,5 @@
+using FluentAssertions;
 using xRetry;
-using Xunit;
 
 namespace UnitTests.Facts
 {
@@ -12,7 +12,7 @@ namespace UnitTests.Facts
         {
             fiveRunsNumCalls++;
 
-            Assert.Equal(5, fiveRunsNumCalls);
+            fiveRunsNumCalls.Should().Be(5);
         }
     }
 }

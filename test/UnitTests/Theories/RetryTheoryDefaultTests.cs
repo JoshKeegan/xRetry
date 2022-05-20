@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FluentAssertions;
 using xRetry;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace UnitTests.Theories
         {
             defaultNumCalls[id]++;
 
-            Assert.Equal(3, defaultNumCalls[id]);
+            defaultNumCalls[id].Should().Be(3);
         }
     }
 }

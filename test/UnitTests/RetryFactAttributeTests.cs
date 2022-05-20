@@ -54,20 +54,32 @@ namespace UnitTests
         }
 
         [Fact]
-        public void Ctor_NonExceptionTypes_ShouldThrow() =>
-            Assert.Throws<ArgumentException>(() => new RetryFactAttribute(typeof(RetryFactAttributeTests)));
+        public void Ctor_NonExceptionTypes_ShouldThrow()
+        {
+            Action act = () => new RetryFactAttribute(typeof(RetryFactAttributeTests));
+
+            act.Should().Throw<ArgumentException>();
+        }
 
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
         [InlineData(-1337)]
-        public void Ctor_LessThanOneMaxRetries_ShouldThrow(int maxRetries) =>
-            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryFactAttribute(maxRetries));
+        public void Ctor_LessThanOneMaxRetries_ShouldThrow(int maxRetries)
+        {
+            Action act = () => new RetryFactAttribute(maxRetries);
+
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(-1337)]
-        public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs) =>
-            Assert.Throws<ArgumentOutOfRangeException>(() => new RetryFactAttribute(delayBetweenRetriesMs: delayBetweenRetriesMs));
+        public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs)
+        {
+            Action act = () => new RetryFactAttribute(delayBetweenRetriesMs: delayBetweenRetriesMs);
+
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using FluentAssertions;
 using UnitTests.TestClasses;
 using xRetry;
 using Xunit;
@@ -30,7 +31,8 @@ namespace UnitTests.Facts
         {
             // Assertion would fail on subsequent attempts, before reaching the skip
             skippedNumCalls++;
-            Assert.Equal(1, skippedNumCalls);
+
+            skippedNumCalls.Should().Be(1);
 
             Skip.Always();
         }
