@@ -10,7 +10,7 @@ namespace UnitTests.SpecFlow.Parsers
         [Fact]
         public void Parse_Null_ThrowsArgumentNullException()
         {
-            var act = () => getParser().Parse(null);
+            Action act = () => getParser().Parse(null);
 
             act.Should().Throw<ArgumentNullException>();
         }
