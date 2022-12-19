@@ -1,0 +1,18 @@
+name: Docs
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate docs
+        working-directory: build
+        run: make docs
+
+      - name: Check no modified files (docs must be generated locally & checked in)
+        run: |
+          git update-index --refresh
+          git diff-index --quiet HEAD --
