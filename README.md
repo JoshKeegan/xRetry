@@ -161,5 +161,3 @@ Code formatting rules followed for xRetry are fairly standard for C# and are enf
 
 ## Licence
 [MIT](LICENSE)
-
-Test should fail
