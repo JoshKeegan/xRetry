@@ -1,0 +1,8 @@
+<Project>
+
+	<PropertyGroup>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\build\keyPair.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+</Project>
