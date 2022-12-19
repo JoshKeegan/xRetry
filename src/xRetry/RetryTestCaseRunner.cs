@@ -6,7 +6,9 @@ using Xunit.Sdk;
 
 namespace xRetry
 {
-    internal static class RetryTestCaseRunner
+    // Note: public so that other xunit extensions can call this, allowing xRetry to be 
+    //  integrated into them. e.g. Xunit.DependencyInjection.xRetry
+    public static class RetryTestCaseRunner
     {
         /// <summary>
         /// Runs a retryable test case, handling any wait and retry logic between test runs, reporting statuses out to xunit etc...
