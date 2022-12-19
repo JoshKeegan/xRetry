@@ -8,9 +8,12 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Generate docs
-        working-directory: build
-        run: make docs
+        working-directory: docs
+        run: make all
 
       - name: Check no modified files (docs must be generated locally & checked in)
         run: |
