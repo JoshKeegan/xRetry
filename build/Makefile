@@ -37,6 +37,11 @@ unit-tests-run:
 	cd ../test/UnitTests.SingleThreaded && \
 		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.trx
 
+.PHONY: docs
+docs:
+	cd ../docs && \
+		make all
+
 .PHONY: nuget-create
 nuget-create:
 	dotnet pack ../src/xRetry \
@@ -54,4 +59,4 @@ nuget-create:
 		-o ../artefacts/nuget
 
 .PHONY: ci
-ci: lint build unit-tests-run nuget-create
+ci: lint build unit-tests-run docs nuget-create
