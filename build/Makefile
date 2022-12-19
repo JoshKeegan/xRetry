@@ -1,5 +1,6 @@
 VERSION=1.8.0#
 
+.PHONY: clean
 clean:
 	rm -r ../artefacts || true
 	rm -r ../*/*/obj || true
@@ -7,10 +8,12 @@ clean:
 
 	mkdir -p ../artefacts/nuget
 
+.PHONY: lint
 lint:
 	dotnet format --verify-no-changes ../ || \
 		(echo "Lint check failed. You can automatically fix all formatting issues by running \"dotnet format\""; exit 1)
 
+.PHONY: build
 build: clean
 	dotnet restore ../
 
@@ -24,6 +27,7 @@ build: clean
 	cd ../test/UnitTests.SingleThreaded && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
+.PHONY: unit-tests-run
 unit-tests-run:
 	cd ../test/UnitTests && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.trx
@@ -33,6 +37,7 @@ unit-tests-run:
 	cd ../test/UnitTests.SingleThreaded && \
 		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.trx
 
+.PHONY: nuget-create
 nuget-create:
 	dotnet pack ../src/xRetry \
 		-p:Version=$(VERSION) \
@@ -48,4 +53,5 @@ nuget-create:
 		-c Release \
 		-o ../artefacts/nuget
 
+.PHONY: ci
 ci: lint build unit-tests-run nuget-create
