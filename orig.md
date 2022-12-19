@@ -1,16 +1,7 @@
-[//]: # (This file is auto-generated, do not modify it directly. Instead, update the files under docs/)
-
-
-[//]: \# (Src: repo/header.md)
-
 # xRetry
 Retry flickering test cases for xUnit and SpecFlow in dotnet.
 
-[//]: \# (Src: ciBadge.md)
-
 [![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
-
-[//]: \# (Src: whenToUse.md)
 
 ## When to use this
 This is intended for use on flickering tests, where the reason for failure is an external 
@@ -24,8 +15,6 @@ This is the intended use case of the library.
 
 If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
 this library should **not** be used to cover it up!
-
-[//]: \# (Src: xRetry.SpecFlow/usage.md)
 
 ## Usage: SpecFlow 3
 Add the `xRetry.SpecFlow` nuget package to your project.  
@@ -61,8 +50,6 @@ All options that can be used against an individual scenario can also be applied 
 If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
 precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried 
 by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
-
-[//]: \# (Src: xRetry/usage.md)
 
 ## Usage: xUnit
 Add the `xRetry` nuget package to your project.
@@ -128,16 +115,12 @@ This functionality also allows for skipping to work when you are already using a
 type that is used by that library to the `RetryFact`. e.g. if you are using the popular Xunit.SkippableFact nuget package and want to add retries, converting the 
 test is as simple as replacing `[SkippableFact]` with `[RetryFact(typeof(Xunit.SkipException))]` above the test and you don't need to change the test itself.
 
-[//]: \# (Src: logs.md)
-
 ## Viewing retry logs
 By default, you won't see whether your tests are being retried as we make this information available 
 via the xunit diagnostic logs but test runners will hide these detailed logs by default.  
 To enable them you must configure your xUnit test project to have `diagnosticMessages` set to `true` in the `xunit.runner.json`. 
 See the [xUnit docs](https://xunit.net/docs/configuration-files) for a full setup guide of their config file, or see
 this projects own unit tests which has been set up with this enabled.
-
-[//]: \# (Src: contributing.md)
 
 ## Contributing
 Feel free to open a pull request! If you want to start any sizeable chunk of work, consider 
@@ -156,8 +139,6 @@ If that works, all is well!
 
 ### Code formatting
 Code formatting rules followed for xRetry are fairly standard for C# and are enforced during CI via `dotnet format`. You can see any non-standard rules in the [.editorconfig](.editorconfig) file. If you find your build fails due to this lint check, you can fix all formatting issues by running the `dotnet format` command from the root of the project.
-
-[//]: \# (Src: repo/footer.md)
 
 ## Licence
 [MIT](LICENSE)

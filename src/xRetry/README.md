@@ -1,10 +1,10 @@
 [//]: # (This file is auto-generated, do not modify it directly. Instead, update the files under docs/)
 
 
-[//]: \# (Src: repo/header.md)
+[//]: \# (Src: xRetry/header.md)
 
 # xRetry
-Retry flickering test cases for xUnit and SpecFlow in dotnet.
+Retry flickering test cases for xUnit.
 
 [//]: \# (Src: ciBadge.md)
 
@@ -24,43 +24,6 @@ This is the intended use case of the library.
 
 If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
 this library should **not** be used to cover it up!
-
-[//]: \# (Src: xRetry.SpecFlow/usage.md)
-
-## Usage: SpecFlow 3
-Add the `xRetry.SpecFlow` nuget package to your project.  
-
-### Scenarios (and outlines)
-Above any scenario or scenario outline that should be retried, add a `@retry` tag, e.g:
-```gherkin
-@retry
-Scenario: Retry three times by default
-	When I increment the default retry count
-	Then the default result should be 3
-```
-This will attempt to run the test until it passes, up to 3 times by default. 
-You can optionally specify a number of times to attempt to run the test in brackets, e.g. `@retry(5)`.  
-
-You can also optionally specify a delay between each retry (in milliseconds) as a second 
-parameter, e.g. `@retry(5,100)` will run your test up to 5 times, waiting 100ms between each attempt.  
-Note that you must not include a space between the parameters, as Cucumber/SpecFlow uses
-a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space after the comma.
-
-
-### Features
-You can also make every test in a feature retryable by adding the `@retry` tag to the feature, e.g:
-```gherkin
-@retry
-Feature: Retryable Feature
-
-Scenario: Retry scenario three times by default
-	When I increment the retry count
-	Then the result should be 3
-```
-All options that can be used against an individual scenario can also be applied like this at the feature level.  
-If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
-precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried 
-by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
 
 [//]: \# (Src: xRetry/usage.md)
 
@@ -137,27 +100,7 @@ To enable them you must configure your xUnit test project to have `diagnosticMes
 See the [xUnit docs](https://xunit.net/docs/configuration-files) for a full setup guide of their config file, or see
 this projects own unit tests which has been set up with this enabled.
 
-[//]: \# (Src: contributing.md)
+[//]: \# (Src: issues.md)
 
-## Contributing
-Feel free to open a pull request! If you want to start any sizeable chunk of work, consider 
-opening an issue first to discuss, and make sure nobody else is working on the same problem.  
-
-### Developing locally
-#### In an IDE
-To build and run locally, always build `xRetry.SpecFlowPlugin` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the UnitTests project.  
-
-#### From the terminal
-If you install `make` and go to the `build` directory, you can run the following command to run CI locally (run lint, build, run tests and create the nuget packages):
-```bash
-make ci
-```
-If that works, all is well!
-
-### Code formatting
-Code formatting rules followed for xRetry are fairly standard for C# and are enforced during CI via `dotnet format`. You can see any non-standard rules in the [.editorconfig](.editorconfig) file. If you find your build fails due to this lint check, you can fix all formatting issues by running the `dotnet format` command from the root of the project.
-
-[//]: \# (Src: repo/footer.md)
-
-## Licence
-[MIT](LICENSE)
+## Issues
+If you find a bug whilst using this library, please report it [on GitHub](https://github.com/JoshKeegan/xRetry/issues).
