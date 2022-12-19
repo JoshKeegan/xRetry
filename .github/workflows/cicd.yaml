@@ -5,7 +5,8 @@ on:
   pull_request:
 
 jobs:
-  ci:
+  ci_build:
+    name: CI Build
     runs-on: ubuntu-latest
     container: joshkeegan/dotnet-mixed-build:6.1
     steps:
@@ -41,10 +42,29 @@ jobs:
           name: deploy
           path: deploy
   
+  ci_docs:
+    name: CI Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Generate docs
+        working-directory: docs
+        run: make all
+
+      - name: Check no modified files (docs must be generated locally & checked in)
+        run: |
+          git update-index --refresh
+          git diff-index --quiet HEAD --
+  
   cd:
+    name: CD
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/sdk:6.0.102-bullseye-slim
-    needs: ci
+    needs: 
+      - ci_build
+      - ci_docs
     if: github.ref == 'refs/heads/release'
     steps:
       - name: Download deployment scripts
