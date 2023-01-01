@@ -18,7 +18,7 @@ namespace UnitTests.Theories
             //  checking it's skipped (and doesn't pass) would need to be done manually.
             Skip.Always();
 
-            Assert.True(false, "Should have been skipped . . .");
+            Assert.Fail("Should have been skipped . . .");
         }
 
         [RetryTheory(typeof(TestException))]

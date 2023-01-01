@@ -9,7 +9,7 @@ namespace UnitTests.SpecFlow.Steps
         [Then(@"fail because (.+)")]
         public void ThenFail(string reason)
         {
-            Assert.True(false, reason);
+            Assert.Fail(reason);
         }
     }
 }
