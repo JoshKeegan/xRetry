@@ -1,6 +1,5 @@
 using System;
 using System.CodeDom;
-using System.Collections.Generic;
 using System.Linq;
 using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
@@ -9,6 +8,7 @@ using xRetry.SpecFlow.Parsers;
 
 namespace xRetry.SpecFlow
 {
+    // Called for each tag on a generated test method, allowing for scenario level tags to be applied.
     public class RetryTagDecorator : ITestMethodTagDecorator
     {
         private const string IGNORE_TAG = "ignore";
@@ -17,9 +17,9 @@ namespace xRetry.SpecFlow
         private const string RETRY_FACT_ATTRIBUTE = "xRetry.RetryFact";
         private const string RETRY_THEORY_ATTRIBUTE = "xRetry.RetryTheory";
 
-        public bool RemoveProcessedTags => false;
+        public bool RemoveProcessedTags => true;
 
-        public bool ApplyOtherDecoratorsForProcessedTags => true;
+        public bool ApplyOtherDecoratorsForProcessedTags => false;
 
         private readonly IRetryTagParser retryTagParser;
         private readonly CodeDomHelper codeDomHelper;
@@ -32,28 +32,19 @@ namespace xRetry.SpecFlow
             this.codeDomHelper = codeDomHelper;
         }
 
-        public bool CanDecorateFrom(string tagName, TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
-        {
-            // Note: the skip check is onbly checking feature tags, as I don't know of a way to access all tags for this scenario here
-            // TODO: Can be reworked
-            List<string> tags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToList();
-
-            // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
-            //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
-            //  too will replace the attribute for running the test with a custom one.
-            if (tags.Any(isIgnoreTag))
-            {
-                return false;
-            }
-
-            return isRetryTag(tagName);
-        }
+        public bool CanDecorateFrom(string tagName, TestClassGenerationContext generationContext,
+            CodeMemberMethod testMethod) => isRetryTag(tagName);
 
         public void DecorateFrom(string tagName, TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
         {
-            // TODO: Could already have been skipped if another tag on this scenario was a skip tag
-            //  Handle of off attribs..?
-            //  Or a later tag could be a skip tag, handle off of priorities?
+            // SpecFlow xUnit handles ignore tags on the feature as a special case (XUnit2TestGeneratorProvider.SetTestClassIgnore).
+            //  I'm not clear why there are different mechanisms in the code being generated for this (probably due to compatibility
+            //  with nunit & mstest, but could be tech debt in SpecFlow).
+            // Anyway, do not modify scenarios that are part of an ignored feature.
+            if (generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).Any(isIgnoreTag))
+            {
+                return;
+            }
 
             RetryTag retryTag = retryTagParser.Parse(tagName);
 

@@ -6,10 +6,10 @@ using TechTalk.SpecFlow.Generator;
 using TechTalk.SpecFlow.Generator.CodeDom;
 using TechTalk.SpecFlow.Generator.UnitTestConverter;
 using xRetry.SpecFlow.Parsers;
-using Xunit;
 
 namespace xRetry.SpecFlow
 {
+    // Called for each test method generated, regardless of whether it has tags, allowing for feature level tags to be applied.
     public class RetryDecorator : ITestMethodDecorator
     {
         private const string IGNORE_TAG = "ignore";
@@ -29,27 +29,21 @@ namespace xRetry.SpecFlow
             this.codeDomHelper = codeDomHelper;
         }
 
-        public bool CanDecorateFrom(TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
-        {
-            // TODO: Can be reworked
-            List<string> tags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToList();
-
-            // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
-            //  This allows for the new (for SpecFlow 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
-            //  too will replace the attribute for running the test with a custom one.
-            if (tags.Any(isIgnoreTag))
-            {
-                return false;
-            }
-
-            string strRetryTag = getRetryTag(tags);
-            return strRetryTag != null;
-        }
+        public bool CanDecorateFrom(TestClassGenerationContext generationContext, CodeMemberMethod testMethod) =>
+            getRetryTag(generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name))) != null;
 
         public void DecorateFrom(TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
         {
-            // TODO: Can be reworked
             List<string> tags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToList();
+
+            // SpecFlow xUnit handles ignore tags on the feature as a special case (XUnit2TestGeneratorProvider.SetTestClassIgnore).
+            //  I'm not clear why there are different mechanisms in the code being generated for this (probably due to compatibility
+            //  with nunit & mstest, but could be tech debt in SpecFlow).
+            // Anyway, do not modify scenarios that are part of an ignored feature.
+            if (tags.Any(isIgnoreTag))
+            {
+                return;
+            }
 
             string strRetryTag = getRetryTag(tags);
             if (strRetryTag == null)
