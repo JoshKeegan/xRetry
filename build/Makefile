@@ -1,4 +1,4 @@
-VERSION=1.9.0-alpha1#
+VERSION=1.9.0#
 
 .PHONY: clean
 clean:
