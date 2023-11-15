@@ -1,10 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net48</TargetFrameworks>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
 
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
+      
+    <!-- Required to enable BinaryFormatter so we can test [Serializable] exceptions. 
+         I don't know if anyone uses them, but it would be a breaking change to stop exceptions being serialisable, 
+         and the BinaryFormatter is only required in this test project. -->  
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>

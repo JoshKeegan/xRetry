@@ -18,11 +18,11 @@ namespace UnitTests.Exceptions
 
             // Act
             SkipTestException actual;
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
+#pragma warning disable 618
             BinaryFormatter formatter = new BinaryFormatter();
             using (MemoryStream s = new MemoryStream())
             {
-#pragma warning disable SYSLIB0011 // Type or member is obsolete
-#pragma warning disable 618
                 formatter.Serialize(s, expected);
                 s.Position = 0;
                 actual = (SkipTestException) formatter.Deserialize(s);
