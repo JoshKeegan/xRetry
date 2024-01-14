@@ -9,7 +9,7 @@
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Allows for a [RetryFact(n)] or [RetryTheory(n)] attributes to be placed above tests in XUnit. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</description>
-    <copyright>Copyright Josh Keegan 2019-2023</copyright>
+    <copyright>Copyright Josh Keegan 2019-2024</copyright>
     <tags>XUnit Retry Test-Automation</tags>
     <readme>docs\README.md</readme>
 
