@@ -17,8 +17,11 @@ lint:
 build: clean
 	dotnet restore ../
 
-# SpecFlow plugin must be built before the tests
+# SpecFlow & Reqnroll plugins must be built before the tests
 	cd ../src/xRetry.SpecFlow && \
+		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+	
+	cd ../src/xRetry.Reqnroll && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
 	cd ../test/UnitTests && \
@@ -29,6 +32,9 @@ build: clean
 	
 	cd ../test/UnitTests.SpecFlow && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+	
+	cd ../test/UnitTests.Reqnroll && \
+		dotnet build -c Release --no-restore -p:Version=$(VERSION)	
 
 .PHONY: unit-tests-run
 unit-tests-run:
@@ -42,6 +48,9 @@ unit-tests-run:
 	
 	cd ../test/UnitTests.SpecFlow && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.trx
+	
+	cd ../test/UnitTests.Reqnroll && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.trx
 
 .PHONY: docs
 docs:
