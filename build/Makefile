@@ -26,6 +26,9 @@ build: clean
 
 	cd ../test/UnitTests.SingleThreaded && \
 		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+	
+	cd ../test/UnitTests.SpecFlow && \
+		dotnet build -c Release --no-restore -p:Version=$(VERSION)
 
 .PHONY: unit-tests-run
 unit-tests-run:
@@ -36,6 +39,9 @@ unit-tests-run:
 #	You can tell if this times out as it returns exit code 124, which make prints as "Error 124"
 	cd ../test/UnitTests.SingleThreaded && \
 		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.trx
+	
+	cd ../test/UnitTests.SpecFlow && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.trx
 
 .PHONY: docs
 docs:
