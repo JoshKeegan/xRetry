@@ -72,6 +72,13 @@ nuget-create:
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
+	
+	dotnet pack ../src/xRetry.Reqnroll \
+		-p:Version=$(VERSION) \
+		-p:NuspecFile=xRetry.Reqnroll.nuspec \
+		--no-build \
+		-c Release \
+		-o ../artefacts/nuget
 
 .PHONY: ci
 ci: lint build unit-tests-run docs nuget-create
