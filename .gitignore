@@ -333,4 +333,4 @@ ASALocalRun/
 
 artefacts/
 
-test/*/SpecFlow/userid
+test/*/*/userid
