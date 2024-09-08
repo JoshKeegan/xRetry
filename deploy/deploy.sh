@@ -14,5 +14,5 @@ apiKey=$2
 dotnet nuget push \
 	--source https://api.nuget.org/v3/index.json \
 	--api-key $apiKey \
-	--no-symbols ../artefacts/nuget/$package.\*.nupkg \
+	--no-symbols \
 	../artefacts/nuget/$package.\*.nupkg
