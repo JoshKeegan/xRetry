@@ -19,7 +19,10 @@
     </dependencies>
   </metadata>
 
-  <files>      
+  <files>
+    <file src="xRetry.Reqnroll.targets" target="build" />
+    <file src="xRetry.Reqnroll.props" target="build" />
+    
     <file src="bin\Release\netstandard2.0\xRetry.ReqnrollPlugin.dll" target="build\netstandard2.0" />
 
     <file src="README.md" target="docs\" />
