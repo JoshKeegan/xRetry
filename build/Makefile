@@ -1,4 +1,6 @@
-VERSION=1.9.0#
+XRETRY_VERSION			=1.9.0#
+XRETRY_SPECFLOW_VERSION	=1.9.0#
+XRETRY_REQNOLL_VERSION	=1.0.0-alpha1#
 
 .PHONY: clean
 clean:
@@ -19,22 +21,22 @@ build: clean
 
 # SpecFlow & Reqnroll plugins must be built before the tests
 	cd ../src/xRetry.SpecFlow && \
-		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+		dotnet build -c Release --no-restore -p:Version=$(XRETRY_SPECFLOW_VERSION)
 	
 	cd ../src/xRetry.Reqnroll && \
-		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+		dotnet build -c Release --no-restore -p:Version=$(XRETRY_REQNOLL_VERSION)
 
 	cd ../test/UnitTests && \
-		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+		dotnet build -c Release --no-restore
 
 	cd ../test/UnitTests.SingleThreaded && \
-		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+		dotnet build -c Release --no-restore
 	
 	cd ../test/UnitTests.SpecFlow && \
-		dotnet build -c Release --no-restore -p:Version=$(VERSION)
+		dotnet build -c Release --no-restore
 	
 	cd ../test/UnitTests.Reqnroll && \
-		dotnet build -c Release --no-restore -p:Version=$(VERSION)	
+		dotnet build -c Release --no-restore
 
 .PHONY: unit-tests-run
 unit-tests-run:
@@ -60,21 +62,23 @@ docs:
 .PHONY: nuget-create
 nuget-create:
 	dotnet pack ../src/xRetry \
-		-p:Version=$(VERSION) \
+		-p:Version=$(XRETRY_VERSION) \
 		-p:NuspecFile=xRetry.nuspec \
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
 
 	dotnet pack ../src/xRetry.SpecFlow \
-		-p:Version=$(VERSION) \
+		-p:Version=$(XRETRY_SPECFLOW_VERSION) \
+		-p:xRetryVersion=$(XRETRY_VERSION) \
 		-p:NuspecFile=xRetry.SpecFlow.nuspec \
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
 	
 	dotnet pack ../src/xRetry.Reqnroll \
-		-p:Version=$(VERSION) \
+		-p:Version=$(XRETRY_REQNOLL_VERSION) \
+		-p:xRetryVersion=$(XRETRY_VERSION) \
 		-p:NuspecFile=xRetry.Reqnroll.nuspec \
 		--no-build \
 		-c Release \

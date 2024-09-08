@@ -1,14 +1,18 @@
+#!/bin/bash
+set -euxo pipefail
+
 #
 # Deploy script
 # Args:
-#	NuGet API Key
-#
+# - Package name (e.g. xRetry)
+# - NuGet API Key
 
-apiKey=$1
+package=$1
+apiKey=$2
 
 # Must explicitly say there are no symbols for the nuget package, or it will error saying there aren't any accompanying *.snupkg files
 dotnet nuget push \
 	--source https://api.nuget.org/v3/index.json \
 	--api-key $apiKey \
-	--no-symbols ../artefacts/nuget/\*.nupkg \
-	../artefacts/nuget/\*.nupkg
+	--no-symbols ../artefacts/nuget/$package.\*.nupkg \
+	../artefacts/nuget/$package.\*.nupkg

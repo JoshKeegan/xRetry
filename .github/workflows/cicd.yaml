@@ -61,11 +61,11 @@ jobs:
   cd:
     name: CD
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/dotnet/sdk:6.0.102-bullseye-slim
+    container: mcr.microsoft.com/dotnet/sdk:8.0
     needs: 
       - ci_build
       - ci_docs
-    if: github.ref == 'refs/heads/release'
+    if: github.ref_type == 'tag'
     steps:
       - name: Download deployment scripts
         uses: actions/download-artifact@v4
@@ -79,6 +79,17 @@ jobs:
           name: artefacts
           path: artefacts
 
-      - name: Release
+      - name: "Release: xRetry"
+        if: startsWith(github.ref, 'refs/tags/xRetry_v')
         working-directory: deploy
-        run: /bin/bash deploy.sh ${{ secrets.NUGET_API_KEY }}
+        run: /bin/bash deploy.sh xRetry ${{ secrets.NUGET_API_KEY }}
+
+      - name: "Release: xRetry.SpecFlow"
+        if: startsWith(github.ref, 'refs/tags/xRetry.SpecFlow_v')
+        working-directory: deploy
+        run: /bin/bash deploy.sh xRetry.SpecFlow ${{ secrets.NUGET_API_KEY }}
+
+      - name: "Release: xRetry.Reqnroll"
+        if: startsWith(github.ref, 'refs/tags/xRetry.Reqnroll_v')
+        working-directory: deploy
+        run: /bin/bash deploy.sh xRetry.Reqnroll ${{ secrets.NUGET_API_KEY }}
