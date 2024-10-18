@@ -5,7 +5,7 @@
 
 # xRetry
 
-Retry flickering test cases for xUnit and SpecFlow in .NET.
+Retry flickering test cases for xUnit, Reqnroll and SpecFlow in .NET.
 
 
 [//]: \# (Src: ciBadge.md)
@@ -13,7 +13,7 @@ Retry flickering test cases for xUnit and SpecFlow in .NET.
 [![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
 [![xRetry NuGet package](https://buildstats.info/nuget/xRetry)](https://www.nuget.org/packages/xRetry "Download xRetry from NuGet")
 [![xRetry.SpecFlow NuGet package](https://buildstats.info/nuget/xRetry.SpecFlow)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.SpecFlow from NuGet")
-[![xRetry.Reqnroll NuGet package](https://buildstats.info/nuget/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.Reqnroll from NuGet")
+[![xRetry.Reqnroll NuGet package](https://buildstats.info/nuget/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet")
 
 
 [//]: \# (Src: whenToUse.md)
@@ -216,11 +216,11 @@ opening an issue first to discuss, and make sure nobody else is working on the s
 
 #### In an IDE
 
-To build and run locally, always build `xRetry.SpecFlowPlugin` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the UnitTests project.  
+To build and run locally, always build `xRetry.Reqnroll` and `xRetry.SpecFlow` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the test projects.  
 
 #### From the terminal
 
-If you install `make` and go to the `build` directory, you can run the following command to run CI locally (run lint, build, run tests and create the NuGet packages):
+If you install `make` and go to the `build` directory, you can run the following command to run CI locally (run lint, build, run tests, generate docs and create the NuGet packages):
 
 ```bash
 make ci

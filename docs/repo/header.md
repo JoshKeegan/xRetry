@@ -1,3 +1,3 @@
 # xRetry
 
-Retry flickering test cases for xUnit and SpecFlow in .NET.
+Retry flickering test cases for xUnit, Reqnroll and SpecFlow in .NET.
