@@ -21,9 +21,21 @@ jobs:
         working-directory: build
         run: make build
       
-      - name: Run Unit Tests
+      - name: Run Unit Tests (Main)
         working-directory: build
-        run: make unit-tests-run
+        run: make unit-tests-run-main
+      
+      - name: Run Unit Tests (Single Threaded)
+        working-directory: build
+        run: make unit-tests-run-single-threaded
+      
+      - name: Run Unit Tests (SpecFlow)
+        working-directory: build
+        run: make unit-tests-run-specflow
+      
+      - name: Run Unit Tests (Reqnroll)
+        working-directory: build
+        run: make unit-tests-run-reqnroll
 
       - name: Create Nuget Packages
         working-directory: build

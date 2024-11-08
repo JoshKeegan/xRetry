@@ -39,18 +39,27 @@ build: clean
 		dotnet build -c Release --no-restore
 
 .PHONY: unit-tests-run
-unit-tests-run:
+unit-tests-run: unit-tests-run-main unit-tests-run-single-threaded unit-tests-run-specflow unit-tests-run-reqnroll
+
+.PHONY: unit-tests-run-main
+unit-tests-run-main:
 	cd ../test/UnitTests && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.trx
 
+.PHONY: unit-tests-run-single-threaded
+unit-tests-run-single-threaded:
 #  Run the single threaded tests with a timeout, as they test deadlock scenarios which would never return if failing
 #	You can tell if this times out as it returns exit code 124, which make prints as "Error 124"
 	cd ../test/UnitTests.SingleThreaded && \
 		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.trx
-	
+
+.PHONY: unit-tests-run-specflow
+unit-tests-run-specflow:
 	cd ../test/UnitTests.SpecFlow && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.trx
-	
+
+.PHONY: unit-tests-run-reqnroll
+unit-tests-run-reqnroll:
 	cd ../test/UnitTests.Reqnroll && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.trx
 
