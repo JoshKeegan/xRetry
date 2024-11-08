@@ -11,10 +11,15 @@ Retry flickering test cases for xUnit, Reqnroll and SpecFlow in .NET.
 [//]: \# (Src: ciBadge.md)
 
 [![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
-[![xRetry NuGet package](https://buildstats.info/nuget/xRetry)](https://www.nuget.org/packages/xRetry "Download xRetry from NuGet")
-[![xRetry.SpecFlow NuGet package](https://buildstats.info/nuget/xRetry.SpecFlow)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.SpecFlow from NuGet")
-[![xRetry.Reqnroll NuGet package](https://buildstats.info/nuget/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet")
 
+
+[//]: \# (Src: nugetBadges.md)
+
+| Testing Tool                  | Plugin | NuGet Package |
+|-------------------------------|--------|---------------|
+| [xUnit](#usage-xunit)         | xRetry | [![xRetry NuGet Version](https://img.shields.io/nuget/v/xRetry)](https://www.nuget.org/packages/xRetry "Download xRetry from NuGet") [![xRetry NuGet Downloads](https://img.shields.io/nuget/dt/xRetry)](https://www.nuget.org/packages/xRetry "Download xRetry from NuGet")  |
+| [SpecFlow](#usage-specflow-3) | xRetry.SpecFlow | [![xRetry.SpecFlow NuGet Version](https://img.shields.io/nuget/v/xRetry.SpecFlow)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.SpecFlow from NuGet") [![xRetry.SpecFlow NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.SpecFlow)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.SpecFlow from NuGet") |
+| [Reqnroll](#usage-reqnroll-2) | xRetry.Reqnroll | [![xRetry.Reqnroll NuGet Version](https://img.shields.io/nuget/v/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet") [![xRetry.Reqnroll NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet") |
 
 [//]: \# (Src: whenToUse.md)
 

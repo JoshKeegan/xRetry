@@ -17,7 +17,7 @@ repo:
 	echo $(GENERATED_DISCLAIMER) > ../README.md
 	$(call append,repo/header.md,../README.md,0)
 	$(call append,ciBadge.md,../README.md,0)
-	$(call append,nugetBadges.md,../README.md,1)
+	$(call append,nugetBadges.md,../README.md,0)
 	$(call append,whenToUse.md,../README.md,0)
 	$(call append,xRetry/usage.md,../README.md,0)
 	$(call append,xRetry.SpecFlow/usage.md,../README.md,0)
