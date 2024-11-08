@@ -12,8 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ReqnrollGeneratorPlugins Condition="'$(MSBuildRuntimeType)' == 'Core'" Include="../../src/xRetry.Reqnroll/bin/Release/netstandard2.0/xRetry.ReqnrollPlugin.dll" />
-        <ReqnrollGeneratorPlugins Condition="'$(MSBuildRuntimeType)' != 'Core'" Include="../../src/xRetry.Reqnroll/bin/Release/net461/xRetry.ReqnrollPlugin.dll" />
+        <ReqnrollGeneratorPlugins Include="../../src/xRetry.Reqnroll/bin/Release/netstandard2.0/xRetry.ReqnrollPlugin.dll" />
     </ItemGroup>
 
     <ItemGroup>
