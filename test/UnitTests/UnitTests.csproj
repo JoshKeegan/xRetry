@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <TargetFrameworks>net9.0;net48</TargetFrameworks>
 
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
@@ -32,6 +32,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
+  </ItemGroup>
+
+  <!-- Required for BinaryFormatter in .Net9.0+ -->  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.0" />
   </ItemGroup>  
 
 </Project>
