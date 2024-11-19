@@ -27,7 +27,7 @@
         </PackageReference>
 
         <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
-        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.11.1" />
+        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.12.0" />
     </ItemGroup>
 
     <ItemGroup>
