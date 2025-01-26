@@ -10,7 +10,7 @@ updates:
     # See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
     - dependency-name: "FluentAssertions"
       update-types: 
-        - major
+        - version-update:semver-major
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
