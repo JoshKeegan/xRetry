@@ -5,6 +5,12 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  ignore:
+    # Do not upgrade FluentAssertions beyond 7.x, as the license changes in v8.
+    # See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
+    - dependency-name: "FluentAssertions"
+      update-types: 
+        - major
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:

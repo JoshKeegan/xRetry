@@ -18,6 +18,10 @@
 
     <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.18.1" />
+        <!-- 
+            Do not upgrade FluentAssertions beyond 7.x, as the license changes in v8.
+            See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
+        -->
         <PackageReference Include="FluentAssertions" Version="7.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
         <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
