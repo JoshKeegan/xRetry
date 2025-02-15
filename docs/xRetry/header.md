@@ -1,2 +1,2 @@
 # xRetry
-Retry flickering test cases for xUnit.
+Retry flickering test cases for xUnit v2.

@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net48</TargetFrameworks>
+
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+      
+    <!-- Required to enable BinaryFormatter so we can test [Serializable] exceptions. 
+         I don't know if anyone uses them, but it would be a breaking change to stop exceptions being serialisable, 
+         and the BinaryFormatter is only required in this test project. -->  
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.18.1" />
+    <!-- 
+      Do not upgrade FluentAssertions beyond 7.x, as the license changes in v8.
+      See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
+    -->
+    <PackageReference Include="FluentAssertions" Version="7.1.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    
+    <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\xRetry.v3\xRetry.v3.csproj" />
+  </ItemGroup>
+
+  <!-- Required for BinaryFormatter in .Net9.0+ -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>

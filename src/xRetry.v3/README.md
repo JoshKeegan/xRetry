@@ -1,10 +1,10 @@
 [//]: # (This file is auto-generated, do not modify it directly. Instead, update the files under docs/)
 
 
-[//]: \# (Src: xRetry/header.md)
+[//]: \# (Src: xRetry.v3/header.md)
 
-# xRetry
-Retry flickering test cases for xUnit v2.
+# xRetry.v3
+Retry flickering test cases for xUnit v3.
 
 [//]: \# (Src: ciBadge.md)
 
@@ -26,11 +26,11 @@ This is the intended use case of the library.
 If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
 this library should **not** be used to cover it up!
 
-[//]: \# (Src: xRetry/usage.md)
+[//]: \# (Src: xRetry.v3/usage.md)
 
 ## Usage: xUnit
 
-Add the [`xRetry` NuGet package](https://www.nuget.org/packages/xRetry "xRetry NuGet package") to your project.
+Add the [`xRetry.v3` NuGet package](https://www.nuget.org/packages/xRetry.v3 "xRetry.v3 NuGet package") to your project.
 
 ### Facts
 

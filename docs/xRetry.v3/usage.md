@@ -1,36 +1,6 @@
-[//]: # (This file is auto-generated, do not modify it directly. Instead, update the files under docs/)
-
-
-[//]: \# (Src: xRetry/header.md)
-
-# xRetry
-Retry flickering test cases for xUnit v2.
-
-[//]: \# (Src: ciBadge.md)
-
-[![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
-
-
-[//]: \# (Src: whenToUse.md)
-
-## When to use this
-This is intended for use on flickering tests, where the reason for failure is an external 
-dependency and the failure is transient, e.g:
- - HTTP request over the network
- - Database call that could deadlock, timeout etc...
-
-Whenever a test includes real-world infrastructure, particularly when communicated with via the
-internet, there is a risk of the test randomly failing so we want to try and run it again. 
-This is the intended use case of the library.  
-
-If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
-this library should **not** be used to cover it up!
-
-[//]: \# (Src: xRetry/usage.md)
-
 ## Usage: xUnit
 
-Add the [`xRetry` NuGet package](https://www.nuget.org/packages/xRetry "xRetry NuGet package") to your project.
+Add the [`xRetry.v3` NuGet package](https://www.nuget.org/packages/xRetry.v3 "xRetry.v3 NuGet package") to your project.
 
 ### Facts
 
@@ -101,18 +71,3 @@ public void CustomException_SkipsAtRuntime()
 This functionality also allows for skipping to work when you are already using another library for dynamically skipping tests by specifying the exception
 type that is used by that library to the `RetryFact`. e.g. if you are using the popular Xunit.SkippableFact NuGet package and want to add retries, converting the
 test is as simple as replacing `[SkippableFact]` with `[RetryFact(typeof(Xunit.SkipException))]` above the test and you don't need to change the test itself.
-
-
-[//]: \# (Src: logs.md)
-
-## Viewing retry logs
-By default, you won't see whether your tests are being retried as we make this information available 
-via the xunit diagnostic logs but test runners will hide these detailed logs by default.  
-To enable them you must configure your xUnit test project to have `diagnosticMessages` set to `true` in the `xunit.runner.json`. 
-See the [xUnit docs](https://xunit.net/docs/configuration-files) for a full setup guide of their config file, or see
-this projects own unit tests which has been set up with this enabled.
-
-[//]: \# (Src: issues.md)
-
-## Issues
-If you find a bug whilst using this library, please report it [on GitHub](https://github.com/JoshKeegan/xRetry/issues).
