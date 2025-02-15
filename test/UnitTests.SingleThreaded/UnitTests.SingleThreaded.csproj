@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\xRetry.SpecFlow\xRetry.SpecFlow.csproj" />
     <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
   </ItemGroup>
 
