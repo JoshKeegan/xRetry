@@ -31,53 +31,51 @@ namespace xRetry.v3
                 // Prevent messages from the test run from being passed through, as we don't want 
                 //  a message to mark the test as failed when we're going to retry it
                 MessageTransformer messageTransformer = new MessageTransformer(testCase.SkipOnExceptionFullNames);
-                using (BlockingMessageBus blockingMessageBus = new BlockingMessageBus(messageBus, messageTransformer))
+                using BlockingMessageBus blockingMessageBus = new BlockingMessageBus(messageBus, messageTransformer);
+                diagnosticMessageSink.OnMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
+                    testCase.DisplayName, i, testCase.MaxRetries));
+
+                RunSummary summary = await fnRunSingle(blockingMessageBus);
+
+                if (messageTransformer.Skipped)
                 {
-                    diagnosticMessageSink.OnMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
-                        testCase.DisplayName, i, testCase.MaxRetries));
+                    summary.Failed = 0;
+                    summary.Skipped = 1;
+                }
 
-                    RunSummary summary = await fnRunSingle(blockingMessageBus);
-
-                    if (messageTransformer.Skipped)
-                    {
-                        summary.Failed = 0;
-                        summary.Skipped = 1;
-                    }
-
-                    // If we succeeded, skipped, or we've reached the max retries return the result
-                    if (summary.Failed == 0 || i == testCase.MaxRetries)
-                    {
-                        // If we have failed (after all retries, log that)
-                        if (summary.Failed != 0)
-                        {
-                            diagnosticMessageSink.OnMessage(new DiagnosticMessage(
-                                "Test \"{0}\" has failed and been retried the maximum number of times ({1})",
-                                testCase.DisplayName, testCase.MaxRetries));
-                        }
-
-                        blockingMessageBus.Flush();
-                        return summary;
-                    }
-                    // Otherwise log that we've had a failed run and will retry
-                    diagnosticMessageSink.OnMessage(new DiagnosticMessage(
-                        "Test \"{0}\" failed but is set to retry ({1}/{2}) . . .", testCase.DisplayName, i,
-                        testCase.MaxRetries));
-
-                    // If there is a delay between test attempts, apply it now
-                    if (testCase.DelayBetweenRetriesMs > 0)
+                // If we succeeded, skipped, or we've reached the max retries return the result
+                if (summary.Failed == 0 || i == testCase.MaxRetries)
+                {
+                    // If we have failed (after all retries, log that)
+                    if (summary.Failed != 0)
                     {
                         diagnosticMessageSink.OnMessage(new DiagnosticMessage(
-                            "Test \"{0}\" attempt ({1}/{2}) delayed by {3}ms. Waiting . . .", testCase.DisplayName, i,
-                            testCase.MaxRetries, testCase.DelayBetweenRetriesMs));
-
-                        // Don't await to prevent thread hopping.
-                        //  If all of a users test cases in a collection/class are synchronous and expecting to not thread-hop
-                        //  (because they're making use of thread static/thread local/managed thread ID to share data between tests rather than
-                        //  a more modern async-friendly mechanism) then if a thread-hop were to happen here we'd get flickering tests.
-                        //  SpecFlow relies on this as they use the managed thread ID to separate instances of some of their internal classes, which caused
-                        //  a this problem for xRetry.SpecFlow: https://github.com/JoshKeegan/xRetry/issues/18
-                        Task.Delay(testCase.DelayBetweenRetriesMs, cancellationTokenSource.Token).Wait();
+                            "Test \"{0}\" has failed and been retried the maximum number of times ({1})",
+                            testCase.DisplayName, testCase.MaxRetries));
                     }
+
+                    blockingMessageBus.Flush();
+                    return summary;
+                }
+                // Otherwise log that we've had a failed run and will retry
+                diagnosticMessageSink.OnMessage(new DiagnosticMessage(
+                    "Test \"{0}\" failed but is set to retry ({1}/{2}) . . .", testCase.DisplayName, i,
+                    testCase.MaxRetries));
+
+                // If there is a delay between test attempts, apply it now
+                if (testCase.DelayBetweenRetriesMs > 0)
+                {
+                    diagnosticMessageSink.OnMessage(new DiagnosticMessage(
+                        "Test \"{0}\" attempt ({1}/{2}) delayed by {3}ms. Waiting . . .", testCase.DisplayName, i,
+                        testCase.MaxRetries, testCase.DelayBetweenRetriesMs));
+
+                    // Don't await to prevent thread hopping.
+                    //  If all of a users test cases in a collection/class are synchronous and expecting to not thread-hop
+                    //  (because they're making use of thread static/thread local/managed thread ID to share data between tests rather than
+                    //  a more modern async-friendly mechanism) then if a thread-hop were to happen here we'd get flickering tests.
+                    //  SpecFlow relies on this as they use the managed thread ID to separate instances of some of their internal classes, which caused
+                    //  a this problem for xRetry.SpecFlow: https://github.com/JoshKeegan/xRetry/issues/18
+                    Task.Delay(testCase.DelayBetweenRetriesMs, cancellationTokenSource.Token).Wait();
                 }
             }
         }

@@ -5,6 +5,8 @@
 
     <IsPackable>true</IsPackable>
     <NuspecProperties>version=$(Version)</NuspecProperties>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -21,8 +21,12 @@ namespace xRetry.v3
 
         /// <summary/>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Called by the de-serializer; should only be called by deriving classes for de-serialization purposes")]
-        public RetryTheoryDiscoveryAtRuntimeCase() { }
+        [Obsolete(
+            "Called by the de-serializer; should only be called by deriving classes for de-serialization purposes")]
+        public RetryTheoryDiscoveryAtRuntimeCase()
+        {
+            SkipOnExceptionFullNames = [];
+        }
 
         public RetryTheoryDiscoveryAtRuntimeCase(
             IMessageSink diagnosticMessageSink,

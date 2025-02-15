@@ -6,9 +6,9 @@ namespace xRetry.v3.Exceptions
     [Serializable]
     public class SkipTestException : Exception
     {
-        public readonly string Reason;
+        public readonly string? Reason;
 
-        public SkipTestException(string reason)
+        public SkipTestException(string? reason)
             : base("Test skipped. Reason: " + reason)
         {
             Reason = reason;

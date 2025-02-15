@@ -17,8 +17,12 @@ namespace xRetry.v3
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete(
-            "Called by the de-serializer; should only be called by deriving classes for de-serialization purposes", true)]
-        public RetryTestCase() { }
+            "Called by the de-serializer; should only be called by deriving classes for de-serialization purposes",
+            true)]
+        public RetryTestCase()
+        {
+            SkipOnExceptionFullNames = [];
+        }
 
         public RetryTestCase(
             IMessageSink diagnosticMessageSink,
@@ -28,7 +32,7 @@ namespace xRetry.v3
             int maxRetries,
             int delayBetweenRetriesMs,
             Type[] skipOnExceptions,
-            object[] testMethodArguments = null)
+            object[]? testMethodArguments = null)
             : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod,
                 testMethodArguments)
         {
@@ -68,9 +72,9 @@ namespace xRetry.v3
             string[] toRet = new string[customSkipOnExceptions.Length + 1];
             for (int i = 0; i < customSkipOnExceptions.Length; i++)
             {
-                toRet[i] = customSkipOnExceptions[i].FullName;
+                toRet[i] = customSkipOnExceptions[i].FullName ?? "";
             }
-            toRet[toRet.Length - 1] = typeof(SkipTestException).FullName;
+            toRet[toRet.Length - 1] = typeof(SkipTestException).FullName ?? "";
             return toRet;
         }
     }

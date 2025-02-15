@@ -27,7 +27,7 @@ namespace xRetry.v3
             // If this is a message saying that the test has been skipped, replace the message with skipping the test
             if (message is TestFailed failed && failed.ExceptionTypes.ContainsAny(skipOnExceptionFullNames))
             {
-                string reason = failed.Messages?.FirstOrDefault();
+                string? reason = failed.Messages?.FirstOrDefault();
                 Skipped = true;
                 return new TestSkipped(failed.Test, reason);
             }
