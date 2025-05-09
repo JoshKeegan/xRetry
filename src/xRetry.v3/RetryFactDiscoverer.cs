@@ -1,51 +1,66 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xunit.Abstractions;
+using System.Threading.Tasks;
+using Xunit.Internal;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {
     public class RetryFactDiscoverer : IXunitTestCaseDiscoverer
     {
-        private readonly IMessageSink messageSink;
-
-        public RetryFactDiscoverer(IMessageSink messageSink)
+        public ValueTask<IReadOnlyCollection<IXunitTestCase>> Discover(
+            ITestFrameworkDiscoveryOptions discoveryOptions,
+            IXunitTestMethod testMethod,
+            IFactAttribute factAttribute)
         {
-            this.messageSink = messageSink;
-        }
-
-        public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod,
-            IAttributeInfo factAttribute)
-        {
+            var details = TestIntrospectionHelper.GetTestCaseDetails(discoveryOptions, testMethod, factAttribute);
             IXunitTestCase testCase;
 
             if (testMethod.Method.GetParameters().Any())
             {
-                testCase = new ExecutionErrorTestCase(messageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod,
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
                     "[RetryFact] methods are not allowed to have parameters. Did you mean to use [RetryTheory]?");
             }
             else if (testMethod.Method.IsGenericMethodDefinition)
             {
-                testCase = new ExecutionErrorTestCase(messageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod,
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
                     "[RetryFact] methods are not allowed to be generic.");
+            }
+            else if (factAttribute is not RetryFactAttribute retryFactAttribute)
+            {
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "RetryFactDiscoverer only supports RetryFactAttribute.");
             }
             else
             {
-                int maxRetries = factAttribute.GetNamedArgument<int>(nameof(RetryFactAttribute.MaxRetries));
-                int delayBetweenRetriesMs =
-                    factAttribute.GetNamedArgument<int>(nameof(RetryFactAttribute.DelayBetweenRetriesMs));
-                Type[] skipOnExceptions =
-                    factAttribute.GetNamedArgument<Type[]>(nameof(RetryTheoryAttribute.SkipOnExceptions));
-
-                testCase = new RetryTestCase(messageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs,
-                    skipOnExceptions);
+                testCase = new RetryTestCase(
+                    retryFactAttribute.MaxRetries,
+                    retryFactAttribute.DelayBetweenRetriesMs,
+                    retryFactAttribute.SkipOnExceptions,
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    details.Explicit,
+                    details.SkipReason,
+                    details.SkipType,
+                    details.SkipUnless,
+                    details.SkipWhen,
+                    testMethod.Traits.ToReadWrite(StringComparer.OrdinalIgnoreCase),
+                    timeout: details.Timeout);
             }
 
-            return new[] { testCase };
+            return new ValueTask<IReadOnlyCollection<IXunitTestCase>>([testCase]);
         }
     }
 }

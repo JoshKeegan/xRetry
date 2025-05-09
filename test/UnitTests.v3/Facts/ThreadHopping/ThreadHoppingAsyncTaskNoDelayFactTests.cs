@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using xRetry.v3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace UnitTests.v3.Facts.ThreadHopping
 {

@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using Xunit.Abstractions;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {

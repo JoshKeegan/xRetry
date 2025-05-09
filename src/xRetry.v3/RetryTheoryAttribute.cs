@@ -1,5 +1,5 @@
 using System;
-using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {
@@ -7,10 +7,13 @@ namespace xRetry.v3
     /// Attribute that is applied to a method to indicate that it is a theory that should be run
     /// by the test runner up to <see cref="RetryFactAttribute.MaxRetries"/> times, until it succeeds.
     /// </summary>
-    [XunitTestCaseDiscoverer("xRetry.v3.RetryTheoryDiscoverer", "xRetry.v3")]
+    [XunitTestCaseDiscoverer(typeof(RetryTheoryDiscoverer))]
     [AttributeUsage(AttributeTargets.Method)]
-    public class RetryTheoryAttribute : RetryFactAttribute
+    public class RetryTheoryAttribute : RetryFactAttribute, ITheoryAttribute
     {
+        public bool DisableDiscoveryEnumeration { get; set; }
+        public bool SkipTestWithoutData { get; set; }
+
         /// <inheritdoc/>
         public RetryTheoryAttribute(params Type[] skipOnExceptions)
             : base(skipOnExceptions) { }

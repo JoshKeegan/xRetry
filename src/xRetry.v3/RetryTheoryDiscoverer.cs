@@ -1,54 +1,124 @@
 using System;
 using System.Collections.Generic;
-using Xunit.Abstractions;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Internal;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {
     public class RetryTheoryDiscoverer : TheoryDiscoverer
     {
-        public RetryTheoryDiscoverer(IMessageSink diagnosticMessageSink)
-            : base(diagnosticMessageSink) { }
-
-        protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(
+        protected override ValueTask<IReadOnlyCollection<IXunitTestCase>> CreateTestCasesForDataRow(
             ITestFrameworkDiscoveryOptions discoveryOptions,
-            ITestMethod testMethod,
-            IAttributeInfo theoryAttribute,
-            object[] dataRow)
+            IXunitTestMethod testMethod,
+            ITheoryAttribute theoryAttribute,
+            ITheoryDataRow dataRow,
+            object?[] testMethodArguments)
         {
-            int maxRetries = theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.MaxRetries));
-            int delayBetweenRetriesMs =
-                theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.DelayBetweenRetriesMs));
-            Type[] skipOnExceptions =
-                theoryAttribute.GetNamedArgument<Type[]>(nameof(RetryTheoryAttribute.SkipOnExceptions));
-            return new[]
+            var details = TestIntrospectionHelper.GetTestCaseDetails(discoveryOptions, testMethod, theoryAttribute);
+            IXunitTestCase testCase;
+
+            if (!testMethod.Method.GetParameters().Any())
             {
-                new RetryTestCase(
-                    DiagnosticMessageSink,
-                    discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(),
-                    testMethod,
-                    maxRetries,
-                    delayBetweenRetriesMs,
-                    skipOnExceptions,
-                    dataRow)
-            };
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "[RetryTheory] methods must have parameters. Did you mean to use [RetryFact]?");
+            }
+            else if (testMethod.Method.IsGenericMethodDefinition)
+            {
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "[RetryTheory] methods are not allowed to be generic.");
+            }
+            else if (theoryAttribute is not RetryTheoryAttribute retryTheoryAttribute)
+            {
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "RetryTheoryDiscoverer only supports RetryTheoryAttribute.");
+            }
+            else
+            {
+                testCase = new RetryTestCase(
+                    retryTheoryAttribute.MaxRetries,
+                    retryTheoryAttribute.DelayBetweenRetriesMs,
+                    retryTheoryAttribute.SkipOnExceptions,
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    details.Explicit,
+                    details.SkipReason,
+                    details.SkipType,
+                    details.SkipUnless,
+                    details.SkipWhen,
+                    testMethod.Traits.ToReadWrite(StringComparer.OrdinalIgnoreCase),
+                    testMethodArguments,
+                    timeout: details.Timeout);
+            }
+
+            return new ValueTask<IReadOnlyCollection<IXunitTestCase>>([testCase]);
         }
 
-        protected override IEnumerable<IXunitTestCase> CreateTestCasesForTheory(
-            ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
+        protected override ValueTask<IReadOnlyCollection<IXunitTestCase>> CreateTestCasesForTheory(
+            ITestFrameworkDiscoveryOptions discoveryOptions,
+            IXunitTestMethod testMethod,
+            ITheoryAttribute theoryAttribute)
         {
-            int maxRetries = theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.MaxRetries));
-            int delayBetweenRetriesMs =
-                theoryAttribute.GetNamedArgument<int>(nameof(RetryTheoryAttribute.DelayBetweenRetriesMs));
-            Type[] skipOnExceptions =
-                theoryAttribute.GetNamedArgument<Type[]>(nameof(RetryTheoryAttribute.SkipOnExceptions));
+            var details = TestIntrospectionHelper.GetTestCaseDetails(discoveryOptions, testMethod, theoryAttribute);
+            IXunitTestCase testCase;
 
-            return new[]
+            if (!testMethod.Method.GetParameters().Any())
             {
-                new RetryTheoryDiscoveryAtRuntimeCase(DiagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(),
-                    discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod, maxRetries, delayBetweenRetriesMs, skipOnExceptions)
-            };
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "[RetryTheory] methods must have parameters. Did you mean to use [RetryFact]?");
+            }
+            else if (testMethod.Method.IsGenericMethodDefinition)
+            {
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "[RetryTheory] methods are not allowed to be generic.");
+            }
+            else if (theoryAttribute is not RetryTheoryAttribute retryTheoryAttribute)
+            {
+                testCase = new ExecutionErrorTestCase(
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    "RetryTheoryDiscoverer only supports RetryTheoryAttribute.");
+            }
+            else
+            {
+                testCase = new RetryTheoryDiscoveryAtRuntimeCase(
+                    retryTheoryAttribute.MaxRetries,
+                    retryTheoryAttribute.DelayBetweenRetriesMs,
+                    retryTheoryAttribute.SkipOnExceptions,
+                    details.ResolvedTestMethod,
+                    details.TestCaseDisplayName,
+                    details.UniqueID,
+                    details.Explicit,
+                    theoryAttribute.SkipTestWithoutData,
+                    details.SkipReason,
+                    details.SkipType,
+                    details.SkipUnless,
+                    details.SkipWhen,
+                    testMethod.Traits.ToReadWrite(StringComparer.OrdinalIgnoreCase),
+                    timeout: details.Timeout);
+            }
+
+            return new ValueTask<IReadOnlyCollection<IXunitTestCase>>([testCase]);
         }
     }
 }

@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using xRetry.v3.Exceptions;
-using Xunit.Abstractions;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {
@@ -25,31 +27,51 @@ namespace xRetry.v3
         }
 
         public RetryTestCase(
-            IMessageSink diagnosticMessageSink,
-            TestMethodDisplay defaultMethodDisplay,
-            TestMethodDisplayOptions defaultMethodDisplayOptions,
-            ITestMethod testMethod,
             int maxRetries,
             int delayBetweenRetriesMs,
             Type[] skipOnExceptions,
-            object[]? testMethodArguments = null)
-            : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod,
-                testMethodArguments)
+            IXunitTestMethod testMethod,
+            string testCaseDisplayName,
+            string uniqueId,
+            bool @explicit,
+            string? skipReason = null,
+            Type? skipType = null,
+            string? skipUnless = null,
+            string? skipWhen = null,
+            Dictionary<string, HashSet<string>>? traits = null,
+            object?[]? testMethodArguments = null,
+            string? sourceFilePath = null,
+            int? sourceLineNumber = null,
+            int? timeout = null)
+            : base(testMethod, testCaseDisplayName, uniqueId, @explicit, skipReason, skipType, skipUnless, skipWhen,
+                traits, testMethodArguments, sourceFilePath, sourceLineNumber, timeout)
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
             SkipOnExceptionFullNames = GetSkipOnExceptionFullNames(skipOnExceptions);
         }
 
-        public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
-            object[] constructorArguments, ExceptionAggregator aggregator,
+        /// <inheritdoc />
+        public ValueTask<RunSummary> Run(
+            ExplicitOption explicitOption,
+            IMessageBus messageBus,
+            object?[] constructorArguments,
+            ExceptionAggregator aggregator,
             CancellationTokenSource cancellationTokenSource) =>
-            RetryTestCaseRunner.RunAsync(this, diagnosticMessageSink, messageBus, cancellationTokenSource,
-                blockingMessageBus => new XunitTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
-                        TestMethodArguments, blockingMessageBus, aggregator, cancellationTokenSource)
-                    .RunAsync());
+            RetryTestCaseRunner.Run(
+                this,
+                messageBus,
+                cancellationTokenSource,
+                async blockingMessageBus => await XunitTestRunner.Instance.Run(
+                    (await CreateTests()).First(), // Can only be one test in XunitTestCase.
+                    blockingMessageBus,
+                    constructorArguments,
+                    explicitOption,
+                    aggregator.Clone(),
+                    cancellationTokenSource,
+                    TestMethod.BeforeAfterTestAttributes));
 
-        public override void Serialize(IXunitSerializationInfo data)
+        protected override void Serialize(IXunitSerializationInfo data)
         {
             base.Serialize(data);
 
@@ -58,13 +80,13 @@ namespace xRetry.v3
             data.AddValue("SkipOnExceptionFullNames", SkipOnExceptionFullNames);
         }
 
-        public override void Deserialize(IXunitSerializationInfo data)
+        protected override void Deserialize(IXunitSerializationInfo data)
         {
             base.Deserialize(data);
 
             MaxRetries = data.GetValue<int>("MaxRetries");
             DelayBetweenRetriesMs = data.GetValue<int>("DelayBetweenRetriesMs");
-            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames");
+            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames") ?? [];
         }
 
         public static string[] GetSkipOnExceptionFullNames(Type[] customSkipOnExceptions)

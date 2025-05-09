@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit.Abstractions;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {
@@ -13,7 +14,7 @@ namespace xRetry.v3
     /// Equivalent to xunit's XunitTheoryTestCase 
     /// </summary>
     [Serializable]
-    public class RetryTheoryDiscoveryAtRuntimeCase : XunitTestCase, IRetryableTestCase
+    public class RetryTheoryDiscoveryAtRuntimeCase : XunitDelayEnumeratedTheoryTestCase, IRetryableTestCase
     {
         public int MaxRetries { get; private set; }
         public int DelayBetweenRetriesMs { get; private set; }
@@ -29,30 +30,47 @@ namespace xRetry.v3
         }
 
         public RetryTheoryDiscoveryAtRuntimeCase(
-            IMessageSink diagnosticMessageSink,
-            TestMethodDisplay defaultMethodDisplay,
-            TestMethodDisplayOptions defaultMethodDisplayOptions,
-            ITestMethod testMethod,
             int maxRetries,
             int delayBetweenRetriesMs,
-            Type[] skipOnExceptions)
-            : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
+            Type[] skipOnExceptions,
+            IXunitTestMethod testMethod,
+            string testCaseDisplayName,
+            string uniqueId,
+            bool @explicit,
+            bool skipTestWithoutData,
+            string? skipReason = null,
+            Type? skipType = null,
+            string? skipUnless = null,
+            string? skipWhen = null,
+            Dictionary<string, HashSet<string>>? traits = null,
+            string? sourceFilePath = null,
+            int? sourceLineNumber = null,
+            int? timeout = null)
+            : base(testMethod, testCaseDisplayName, uniqueId, @explicit, skipTestWithoutData, skipReason, skipType,
+                skipUnless, skipWhen, traits, sourceFilePath, sourceLineNumber, timeout)
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
             SkipOnExceptionFullNames = RetryTestCase.GetSkipOnExceptionFullNames(skipOnExceptions);
         }
 
+        // TODO: needs rethinking - the way I have this in RetryTestCase wouldn't work here as that assumes a single
+        // test, but XunitDelayEnumeratedTheoryTestCase.CreateTests can produce multiple
         /// <inheritdoc />
-        public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
-            object[] constructorArguments, ExceptionAggregator aggregator,
-            CancellationTokenSource cancellationTokenSource) =>
-            RetryTestCaseRunner.RunAsync(this, diagnosticMessageSink, messageBus, cancellationTokenSource,
-                blockingMessageBus => new XunitTheoryTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
-                        diagnosticMessageSink, blockingMessageBus, aggregator, cancellationTokenSource)
-                    .RunAsync());
+        public ValueTask<RunSummary> Run(ExplicitOption explicitOption, IMessageBus messageBus, object?[] constructorArguments,
+            ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) =>
+            throw new NotImplementedException();
 
-        public override void Serialize(IXunitSerializationInfo data)
+        // TODO: delete old
+        // public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
+        //     object[] constructorArguments, ExceptionAggregator aggregator,
+        //     CancellationTokenSource cancellationTokenSource) =>
+        //     RetryTestCaseRunner.Run(this, diagnosticMessageSink, messageBus, cancellationTokenSource,
+        //         blockingMessageBus => new XunitTheoryTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
+        //                 diagnosticMessageSink, blockingMessageBus, aggregator, cancellationTokenSource)
+        //             .RunAsync());
+
+        protected override void Serialize(IXunitSerializationInfo data)
         {
             base.Serialize(data);
 
@@ -61,13 +79,13 @@ namespace xRetry.v3
             data.AddValue("SkipOnExceptionFullNames", SkipOnExceptionFullNames);
         }
 
-        public override void Deserialize(IXunitSerializationInfo data)
+        protected override void Deserialize(IXunitSerializationInfo data)
         {
             base.Deserialize(data);
 
             MaxRetries = data.GetValue<int>("MaxRetries");
             DelayBetweenRetriesMs = data.GetValue<int>("DelayBetweenRetriesMs");
-            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames");
+            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames") ?? [];
         }
     }
 }

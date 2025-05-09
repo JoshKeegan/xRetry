@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Xunit;
-using Xunit.Sdk;
+using Xunit.v3;
 
 namespace xRetry.v3
 {
@@ -9,7 +9,7 @@ namespace xRetry.v3
     /// Attribute that is applied to a method to indicate that it is a fact that should be run
     /// by the test runner up to <see cref="MaxRetries"/> times, until it succeeds.
     /// </summary>
-    [XunitTestCaseDiscoverer("xRetry.v3.RetryFactDiscoverer", "xRetry.v3")]
+    [XunitTestCaseDiscoverer(typeof(RetryFactDiscoverer))]
     [AttributeUsage(AttributeTargets.Method)]
     public class RetryFactAttribute : FactAttribute
     {
@@ -26,12 +26,12 @@ namespace xRetry.v3
         /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
         public RetryFactAttribute(params Type[] skipOnExceptions)
         {
-            SkipOnExceptions = skipOnExceptions ?? Type.EmptyTypes;
-
-            if (SkipOnExceptions.Any(t => !t.IsSubclassOf(typeof(Exception))))
+            if (skipOnExceptions.Any(t => !t.IsSubclassOf(typeof(Exception))))
             {
                 throw new ArgumentException("Specified type must be an exception", nameof(skipOnExceptions));
             }
+
+            SkipOnExceptions = skipOnExceptions;
         }
 
         /// <summary>

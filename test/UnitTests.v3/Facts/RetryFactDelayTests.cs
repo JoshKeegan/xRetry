@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using FluentAssertions;
 using xRetry.v3;
-using Xunit.Abstractions;
+using Xunit;
 
 namespace UnitTests.v3.Facts
 {

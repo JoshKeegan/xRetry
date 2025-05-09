@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
-using Xunit.Abstractions;
+using Xunit;
 
 namespace UnitTests.v3.Facts.ThreadHopping
 {
