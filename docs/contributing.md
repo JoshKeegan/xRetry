@@ -19,6 +19,17 @@ make ci
 
 If that works, all is well!
 
+#### Docker
+
+If you do not have the necessary tooling installed, or want to exactly match CI, you can use docker:
+```bash
+docker run --rm -it -v $(pwd):/src -w /src/build joshkeegan/dotnet-mixed-build:8.0
+```
+This will give you a terminal within the docker container, with the xRetry source mounted. 
+You can then run `make ci`, or any of the individual build make targets, the same as you would locally.
+
+Note: this is the same image used in CI, so it's also a good way of validating build changes.
+
 ### Code formatting
 
 Code formatting rules followed for xRetry are fairly standard for C# and are enforced during CI via `dotnet format`. You can see any non-standard rules in the [.editorconfig](.editorconfig) file. If you find your build fails due to this lint check, you can fix all formatting issues by running the `dotnet format` command from the root of the project.
