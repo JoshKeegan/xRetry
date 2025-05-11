@@ -47,11 +47,12 @@ namespace xRetry.v3
                 testCase = new RetryTestCase(
                     retryFactAttribute.MaxRetries,
                     retryFactAttribute.DelayBetweenRetriesMs,
-                    retryFactAttribute.SkipOnExceptions,
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
+                    // TODO: silly hack - rework everything to use xunit native skipping
+                    details.SkipExceptions ?? Array.Empty<Type>().Concat(retryFactAttribute.SkipOnExceptions).ToArray(),
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,

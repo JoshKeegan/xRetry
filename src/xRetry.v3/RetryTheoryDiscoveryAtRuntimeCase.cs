@@ -32,12 +32,12 @@ namespace xRetry.v3
         public RetryTheoryDiscoveryAtRuntimeCase(
             int maxRetries,
             int delayBetweenRetriesMs,
-            Type[] skipOnExceptions,
             IXunitTestMethod testMethod,
             string testCaseDisplayName,
             string uniqueId,
             bool @explicit,
             bool skipTestWithoutData,
+            Type[] skipExceptions,
             string? skipReason = null,
             Type? skipType = null,
             string? skipUnless = null,
@@ -46,12 +46,12 @@ namespace xRetry.v3
             string? sourceFilePath = null,
             int? sourceLineNumber = null,
             int? timeout = null)
-            : base(testMethod, testCaseDisplayName, uniqueId, @explicit, skipTestWithoutData, skipReason, skipType,
-                skipUnless, skipWhen, traits, sourceFilePath, sourceLineNumber, timeout)
+            : base(testMethod, testCaseDisplayName, uniqueId, @explicit, skipTestWithoutData, skipExceptions,
+                skipReason, skipType, skipUnless, skipWhen, traits, sourceFilePath, sourceLineNumber, timeout)
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
-            SkipOnExceptionFullNames = RetryTestCase.GetSkipOnExceptionFullNames(skipOnExceptions);
+            SkipOnExceptionFullNames = RetryTestCase.GetSkipOnExceptionFullNames(skipExceptions);
         }
 
         // TODO: needs rethinking - the way I have this in RetryTestCase wouldn't work here as that assumes a single

@@ -50,11 +50,12 @@ namespace xRetry.v3
                 testCase = new RetryTestCase(
                     retryTheoryAttribute.MaxRetries,
                     retryTheoryAttribute.DelayBetweenRetriesMs,
-                    retryTheoryAttribute.SkipOnExceptions,
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
+                    // TODO: silly hack - rework everything to use xunit native skipping
+                    details.SkipExceptions ?? Array.Empty<Type>().Concat(retryTheoryAttribute.SkipOnExceptions).ToArray(),
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,
@@ -104,12 +105,13 @@ namespace xRetry.v3
                 testCase = new RetryTheoryDiscoveryAtRuntimeCase(
                     retryTheoryAttribute.MaxRetries,
                     retryTheoryAttribute.DelayBetweenRetriesMs,
-                    retryTheoryAttribute.SkipOnExceptions,
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
                     theoryAttribute.SkipTestWithoutData,
+                    // TODO: silly hack - rework everything to use xunit native skipping
+                    details.SkipExceptions ?? Array.Empty<Type>().Concat(retryTheoryAttribute.SkipOnExceptions).ToArray(),
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,

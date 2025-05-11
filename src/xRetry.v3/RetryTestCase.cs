@@ -15,6 +15,7 @@ namespace xRetry.v3
     {
         public int MaxRetries { get; private set; }
         public int DelayBetweenRetriesMs { get; private set; }
+        // TODO: skipping on exceptions can likely be removed. Similar functionality exists in xunit v3
         public string[] SkipOnExceptionFullNames { get; private set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -29,11 +30,11 @@ namespace xRetry.v3
         public RetryTestCase(
             int maxRetries,
             int delayBetweenRetriesMs,
-            Type[] skipOnExceptions,
             IXunitTestMethod testMethod,
             string testCaseDisplayName,
             string uniqueId,
             bool @explicit,
+            Type[] skipExceptions,
             string? skipReason = null,
             Type? skipType = null,
             string? skipUnless = null,
@@ -43,12 +44,12 @@ namespace xRetry.v3
             string? sourceFilePath = null,
             int? sourceLineNumber = null,
             int? timeout = null)
-            : base(testMethod, testCaseDisplayName, uniqueId, @explicit, skipReason, skipType, skipUnless, skipWhen,
-                traits, testMethodArguments, sourceFilePath, sourceLineNumber, timeout)
+            : base(testMethod, testCaseDisplayName, uniqueId, @explicit, skipExceptions, skipReason, skipType,
+                skipUnless, skipWhen, traits, testMethodArguments, sourceFilePath, sourceLineNumber, timeout)
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
-            SkipOnExceptionFullNames = GetSkipOnExceptionFullNames(skipOnExceptions);
+            SkipOnExceptionFullNames = GetSkipOnExceptionFullNames(skipExceptions);
         }
 
         /// <inheritdoc />

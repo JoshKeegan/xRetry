@@ -18,7 +18,7 @@ namespace UnitTests.SingleThreaded.Facts
             // If .Result is being used further up the call stack and there is only a single thread available, this will cause a deadlock
             await Task.Delay(10);
         }
-        
+
         [RetryFact(1)]
         public async ValueTask AwaitWithinAsyncValueTask_RunsToCompletion()
         {
