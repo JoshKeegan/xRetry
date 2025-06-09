@@ -18,16 +18,12 @@ namespace xRetry.v3
     {
         public int MaxRetries { get; private set; }
         public int DelayBetweenRetriesMs { get; private set; }
-        public string[] SkipOnExceptionFullNames { get; private set; }
 
         /// <summary/>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete(
             "Called by the de-serializer; should only be called by deriving classes for de-serialization purposes")]
-        public RetryTheoryDiscoveryAtRuntimeCase()
-        {
-            SkipOnExceptionFullNames = [];
-        }
+        public RetryTheoryDiscoveryAtRuntimeCase() {  }
 
         public RetryTheoryDiscoveryAtRuntimeCase(
             int maxRetries,
@@ -51,7 +47,6 @@ namespace xRetry.v3
         {
             MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
-            SkipOnExceptionFullNames = RetryTestCase.GetSkipOnExceptionFullNames(skipExceptions);
         }
 
         // TODO: needs rethinking - the way I have this in RetryTestCase wouldn't work here as that assumes a single
@@ -76,7 +71,6 @@ namespace xRetry.v3
 
             data.AddValue("MaxRetries", MaxRetries);
             data.AddValue("DelayBetweenRetriesMs", DelayBetweenRetriesMs);
-            data.AddValue("SkipOnExceptionFullNames", SkipOnExceptionFullNames);
         }
 
         protected override void Deserialize(IXunitSerializationInfo data)
@@ -85,7 +79,6 @@ namespace xRetry.v3
 
             MaxRetries = data.GetValue<int>("MaxRetries");
             DelayBetweenRetriesMs = data.GetValue<int>("DelayBetweenRetriesMs");
-            SkipOnExceptionFullNames = data.GetValue<string[]>("SkipOnExceptionFullNames") ?? [];
         }
     }
 }

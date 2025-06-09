@@ -51,8 +51,7 @@ namespace xRetry.v3
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
-                    // TODO: silly hack - rework everything to use xunit native skipping
-                    details.SkipExceptions ?? Array.Empty<Type>().Concat(retryFactAttribute.SkipOnExceptions).ToArray(),
+                    details.SkipExceptions,
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,

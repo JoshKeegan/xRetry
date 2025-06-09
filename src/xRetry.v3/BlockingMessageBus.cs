@@ -10,20 +10,16 @@ namespace xRetry.v3
     public class BlockingMessageBus : IMessageBus
     {
         private readonly IMessageBus underlyingMessageBus;
-        private readonly MessageTransformer messageTransformer;
         private ConcurrentQueue<IMessageSinkMessage> messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
 
-        public BlockingMessageBus(IMessageBus underlyingMessageBus, MessageTransformer messageTransformer)
+        public BlockingMessageBus(IMessageBus underlyingMessageBus)
         {
             this.underlyingMessageBus = underlyingMessageBus;
-            this.messageTransformer = messageTransformer;
         }
 
-        public bool QueueMessage(IMessageSinkMessage rawMessage)
+        public bool QueueMessage(IMessageSinkMessage message)
         {
-            // Transform the message to apply any additional functionality, then intercept & store it for replay later
-            IMessageSinkMessage transformedMessage = messageTransformer.Transform(rawMessage);
-            messageQueue.Enqueue(transformedMessage);
+            messageQueue.Enqueue(message);
 
             // Returns if execution should continue. Since we are intercepting the message, we
             //  have no way of checking this so always continue...

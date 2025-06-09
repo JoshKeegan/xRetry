@@ -54,8 +54,7 @@ namespace xRetry.v3
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
-                    // TODO: silly hack - rework everything to use xunit native skipping
-                    details.SkipExceptions ?? Array.Empty<Type>().Concat(retryTheoryAttribute.SkipOnExceptions).ToArray(),
+                    details.SkipExceptions,
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,
@@ -110,8 +109,7 @@ namespace xRetry.v3
                     details.UniqueID,
                     details.Explicit,
                     theoryAttribute.SkipTestWithoutData,
-                    // TODO: silly hack - rework everything to use xunit native skipping
-                    details.SkipExceptions ?? Array.Empty<Type>().Concat(retryTheoryAttribute.SkipOnExceptions).ToArray(),
+                    details.SkipExceptions,
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,

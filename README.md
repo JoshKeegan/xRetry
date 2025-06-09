@@ -96,23 +96,14 @@ The same optional arguments (max attempts and delay between each retry) are supp
 
 ### Skipping tests at Runtime
 
-In addition to retries, `RetryFact` and `RetryTheory` both support dynamically skipping tests at runtime. To make a test skip just use `Skip.Always()`
-within your test code.  
-It also supports custom exception types so you can skip a test if a type of exception gets thrown. You do this by specifying the exception type to the
-attribute above your test, e.g.
+[xUnit.v3 has added native support for skipping tests at runtime](https://xunit.net/docs/getting-started/v3/whats-new#dynamically-skippable-tests).
+If you were using the xRetry skipping functionality with xUnit v2, you should find upgrading simple.
 
-```cs
-[RetryFact(typeof(TestException))]
-public void CustomException_SkipsAtRuntime()
-{
-    throw new TestException();
-}
-```
+Most use cases will be covered by replacing `Skip.Always();` with `Assert.Skip("your reason");`.
 
-This functionality also allows for skipping to work when you are already using another library for dynamically skipping tests by specifying the exception
-type that is used by that library to the `RetryFact`. e.g. if you are using the popular Xunit.SkippableFact NuGet package and want to add retries, converting the
-test is as simple as replacing `[SkippableFact]` with `[RetryFact(typeof(Xunit.SkipException))]` above the test and you don't need to change the test itself.
-
+If you are skipping custom exceptions, you will also need to change the way they are passed to the test attributes:  
+`[RetryFact(typeof(TestException))]` would now be `[RetryFact(SkipExceptions = new[] {typeof(TestException)})]`  
+`[RetryTheory(typeof(TestException))]` would now be `[RetryTheory(SkipExceptions = new[] {typeof(TestException)})]`
 
 [//]: \# (Src: xRetry/usage.md)
 

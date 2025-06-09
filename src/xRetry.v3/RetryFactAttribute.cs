@@ -18,33 +18,15 @@ namespace xRetry.v3
 
         public readonly int MaxRetries = DEFAULT_MAX_RETRIES;
         public readonly int DelayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS;
-        public readonly Type[] SkipOnExceptions;
-
-        /// <summary>
-        /// Ctor (just skip on exceptions)
-        /// </summary>
-        /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
-        public RetryFactAttribute(params Type[] skipOnExceptions)
-        {
-            if (skipOnExceptions.Any(t => !t.IsSubclassOf(typeof(Exception))))
-            {
-                throw new ArgumentException("Specified type must be an exception", nameof(skipOnExceptions));
-            }
-
-            SkipOnExceptions = skipOnExceptions;
-        }
 
         /// <summary>
         /// Ctor (full)
         /// </summary>
         /// <param name="maxRetries">The number of times to attempt to run a test for until it succeeds</param>
         /// <param name="delayBetweenRetriesMs">The amount of time (in ms) to wait between each test run attempt</param>
-        /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
         public RetryFactAttribute(
             int maxRetries = DEFAULT_MAX_RETRIES,
-            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS,
-            params Type[] skipOnExceptions)
-            : this(skipOnExceptions)
+            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS)
         {
             if (maxRetries < 1)
             {

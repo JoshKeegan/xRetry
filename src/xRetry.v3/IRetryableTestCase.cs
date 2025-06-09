@@ -6,6 +6,5 @@ namespace xRetry.v3
     {
         int MaxRetries { get; }
         int DelayBetweenRetriesMs { get; }
-        string[] SkipOnExceptionFullNames { get; }
     }
 }

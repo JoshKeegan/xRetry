@@ -8,59 +8,6 @@ namespace UnitTests.v3
 {
     public class RetryTheoryAttributeTests
     {
-        [Fact]
-        public void Ctor_Empty_NoSkipOnExceptions()
-        {
-            // Arrange & Act
-            RetryTheoryAttribute attr = new RetryTheoryAttribute();
-
-            // Assert
-            attr.SkipOnExceptions.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void SkipOnExceptionsCtor_Exceptions_ShouldSave()
-        {
-            // Arrange
-            Type[] expected = new[]
-            {
-                typeof(ArgumentException),
-                typeof(ArgumentNullException)
-            };
-
-            // Act
-            RetryTheoryAttribute attr = new RetryTheoryAttribute(expected);
-
-            // Assert
-            attr.SkipOnExceptions.Should().BeEquivalentTo(expected);
-        }
-
-        [Fact]
-        public void FullCtr_Exceptions_ShouldSave()
-        {
-            // Arrange
-            Fixture fixture = new Fixture();
-            Type[] expected = new[]
-            {
-                typeof(ArgumentException),
-                typeof(ArgumentNullException)
-            };
-
-            // Act
-            RetryTheoryAttribute attr = new RetryTheoryAttribute(fixture.Create<int>(), fixture.Create<int>(), expected);
-
-            // Assert
-            attr.SkipOnExceptions.Should().BeEquivalentTo(expected);
-        }
-
-        [Fact]
-        public void Ctor_NonExceptionTypes_ShouldThrow()
-        {
-            Action act = () => new RetryTheoryAttribute(typeof(RetryFactAttributeTests));
-
-            act.Should().Throw<ArgumentException>();
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
