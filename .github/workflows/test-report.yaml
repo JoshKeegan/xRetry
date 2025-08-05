@@ -1,0 +1,23 @@
+name: 'Test Report'
+
+on:
+  workflow_run:
+    workflows: ['CI/CD']
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dorny/test-reporter@v2
+        with:
+          artifact: artefacts
+          name: Test Report
+          path: 'testResults/*.trx'
+          reporter: dotnet-trx
