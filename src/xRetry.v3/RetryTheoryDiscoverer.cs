@@ -27,6 +27,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "[RetryTheory] methods must have parameters. Did you mean to use [RetryFact]?");
             }
             else if (testMethod.Method.IsGenericMethodDefinition)
@@ -35,6 +37,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "[RetryTheory] methods are not allowed to be generic.");
             }
             else if (theoryAttribute is not RetryTheoryAttribute retryTheoryAttribute)
@@ -43,6 +47,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "RetryTheoryDiscoverer only supports RetryTheoryAttribute.");
             }
             else
@@ -54,7 +60,7 @@ namespace xRetry.v3
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
-                    details.SkipExceptions,
+                    details.SkipExceptions ?? [],
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,
@@ -81,6 +87,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "[RetryTheory] methods must have parameters. Did you mean to use [RetryFact]?");
             }
             else if (testMethod.Method.IsGenericMethodDefinition)
@@ -89,6 +97,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "[RetryTheory] methods are not allowed to be generic.");
             }
             else if (theoryAttribute is not RetryTheoryAttribute retryTheoryAttribute)
@@ -97,6 +107,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "RetryTheoryDiscoverer only supports RetryTheoryAttribute.");
             }
             else
@@ -109,7 +121,7 @@ namespace xRetry.v3
                     details.UniqueID,
                     details.Explicit,
                     theoryAttribute.SkipTestWithoutData,
-                    details.SkipExceptions,
+                    details.SkipExceptions ?? [],
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,
