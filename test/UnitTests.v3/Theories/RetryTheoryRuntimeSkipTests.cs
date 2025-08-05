@@ -8,7 +8,7 @@ namespace UnitTests.v3.Theories
 {
     public class RetryTheoryRuntimeSkipTests
     {
-        [RetryTheory(SkipExceptions = new[] {typeof(TestException)})]
+        [RetryTheory(SkipExceptions = new[] { typeof(TestException) })]
         [InlineData(0)]
         [InlineData(1)]
         public void CustomException_SkipsAtRuntime(int _)

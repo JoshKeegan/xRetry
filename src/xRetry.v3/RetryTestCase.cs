@@ -19,7 +19,7 @@ namespace xRetry.v3
         [Obsolete(
             "Called by the de-serializer; should only be called by deriving classes for de-serialization purposes",
             true)]
-        public RetryTestCase() {  }
+        public RetryTestCase() { }
 
         public RetryTestCase(
             int maxRetries,

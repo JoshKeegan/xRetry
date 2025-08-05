@@ -8,7 +8,7 @@ namespace UnitTests.v3.Theories
 {
     public class RetryTheoryRuntimeSkipNonSerializableDataTests
     {
-        [RetryTheory(SkipExceptions = new[] {typeof(TestException)})]
+        [RetryTheory(SkipExceptions = new[] { typeof(TestException) })]
         [MemberData(nameof(GetTestData))]
         public void CustomException_SkipsAtRuntime(NonSerializableTestData _)
         {

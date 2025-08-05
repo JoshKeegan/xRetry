@@ -7,7 +7,7 @@ namespace UnitTests.v3.Facts
 {
     public class RetryFactRuntimeSkipTests
     {
-        [RetryFact(SkipExceptions = new[] {typeof(TestException)})]
+        [RetryFact(SkipExceptions = new[] { typeof(TestException) })]
         public void CustomException_SkipsAtRuntime()
         {
             throw new TestException();
@@ -22,7 +22,7 @@ namespace UnitTests.v3.Facts
             skippedNumCalls++;
 
             skippedNumCalls.Should().Be(1);
-            
+
             Assert.Skip("some reason");
         }
     }
