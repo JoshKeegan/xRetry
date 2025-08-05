@@ -24,6 +24,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "[RetryFact] methods are not allowed to have parameters. Did you mean to use [RetryTheory]?");
             }
             else if (testMethod.Method.IsGenericMethodDefinition)
@@ -32,6 +34,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "[RetryFact] methods are not allowed to be generic.");
             }
             else if (factAttribute is not RetryFactAttribute retryFactAttribute)
@@ -40,6 +44,8 @@ namespace xRetry.v3
                     details.ResolvedTestMethod,
                     details.TestCaseDisplayName,
                     details.UniqueID,
+                    details.SourceFilePath,
+                    details.SourceLineNumber,
                     "RetryFactDiscoverer only supports RetryFactAttribute.");
             }
             else
@@ -51,7 +57,7 @@ namespace xRetry.v3
                     details.TestCaseDisplayName,
                     details.UniqueID,
                     details.Explicit,
-                    details.SkipExceptions,
+                    details.SkipExceptions ?? [],
                     details.SkipReason,
                     details.SkipType,
                     details.SkipUnless,
