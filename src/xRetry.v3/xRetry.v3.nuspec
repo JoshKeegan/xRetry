@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>xRetry.v3</id>
+    <version>$version$</version>
+    <authors>Josh Keegan</authors>
+    <owners>Josh Keegan</owners>
+    <projectUrl>https://github.com/JoshKeegan/xRetry</projectUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Allows for a [RetryFact(n)] or [RetryTheory(n)] attributes to be placed above tests in XUnit.v3. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</description>
+    <copyright>Copyright Josh Keegan 2019-2025</copyright>
+    <tags>XUnit Retry Test-Automation</tags>
+    <readme>docs\README.md</readme>
+
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="xunit.v3.core" version="[1.1.0,2.0.0)" />
+      </group>
+
+      <group targetFramework=".NETFramework4.7.2">
+        <dependency id="xunit.v3.core" version="[1.1.0,2.0.0)" />
+      </group>      
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="bin\Release\net472\xRetry.v3.dll" target="lib\net472" />
+    <file src="bin\Release\netstandard2.0\xRetry.v3.dll" target="lib\netstandard2.0" />
+    
+    <file src="README.md" target="docs\" />
+  </files>
+</package>
