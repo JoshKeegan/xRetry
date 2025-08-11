@@ -28,7 +28,7 @@ this library should **not** be used to cover it up!
 
 [//]: \# (Src: xRetry.v3/usage.md)
 
-## Usage: xUnit
+## Usage: xUnit v3
 
 Add the [`xRetry.v3` NuGet package](https://www.nuget.org/packages/xRetry.v3 "xRetry.v3 NuGet package") to your project.
 
