@@ -50,14 +50,14 @@ jobs:
         run: make nuget-create
       
       - name: Upload artefacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: artefacts
           path: artefacts
         if: ${{ always() }}
       
       - name: Upload deployment scripts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: deploy
           path: deploy
