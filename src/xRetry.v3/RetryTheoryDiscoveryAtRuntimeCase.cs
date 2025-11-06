@@ -49,21 +49,37 @@ namespace xRetry.v3
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
         }
 
-        // TODO: needs rethinking - the way I have this in RetryTestCase wouldn't work here as that assumes a single
-        // test, but XunitDelayEnumeratedTheoryTestCase.CreateTests can produce multiple
         /// <inheritdoc />
-        public ValueTask<RunSummary> Run(ExplicitOption explicitOption, IMessageBus messageBus, object?[] constructorArguments,
-            ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) =>
-            throw new NotImplementedException();
+        public async ValueTask<RunSummary> Run(
+            ExplicitOption explicitOption,
+            IMessageBus messageBus,
+            object?[] constructorArguments,
+            ExceptionAggregator aggregator,
+            CancellationTokenSource cancellationTokenSource)
+        {
+            var overall = new RunSummary();
 
-        // TODO: delete old
-        // public override Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink, IMessageBus messageBus,
-        //     object[] constructorArguments, ExceptionAggregator aggregator,
-        //     CancellationTokenSource cancellationTokenSource) =>
-        //     RetryTestCaseRunner.Run(this, diagnosticMessageSink, messageBus, cancellationTokenSource,
-        //         blockingMessageBus => new XunitTheoryTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
-        //                 diagnosticMessageSink, blockingMessageBus, aggregator, cancellationTokenSource)
-        //             .RunAsync());
+            var tests = await CreateTests();
+            foreach (var test in tests)
+            {
+                var single = await RetryTestCaseRunner.Run(
+                    this,
+                    messageBus,
+                    cancellationTokenSource,
+                    async blockingMessageBus => await XunitTestRunner.Instance.Run(
+                        test,
+                        blockingMessageBus,
+                        constructorArguments,
+                        explicitOption,
+                        aggregator.Clone(),
+                        cancellationTokenSource,
+                        TestMethod.BeforeAfterTestAttributes));
+
+                overall.Aggregate(single);
+            }
+
+            return overall;
+        }
 
         protected override void Serialize(IXunitSerializationInfo data)
         {
