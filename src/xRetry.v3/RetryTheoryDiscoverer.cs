@@ -18,7 +18,9 @@ namespace xRetry.v3
             ITheoryDataRow dataRow,
             object?[] testMethodArguments)
         {
-            var details = TestIntrospectionHelper.GetTestCaseDetails(discoveryOptions, testMethod, theoryAttribute);
+            var details = TestIntrospectionHelper.GetTestCaseDetailsForTheoryDataRow(
+                discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments);
+
             IXunitTestCase testCase;
 
             if (!testMethod.Method.GetParameters().Any())
@@ -65,7 +67,7 @@ namespace xRetry.v3
                     details.SkipType,
                     details.SkipUnless,
                     details.SkipWhen,
-                    testMethod.Traits.ToReadWrite(StringComparer.OrdinalIgnoreCase),
+                    TestIntrospectionHelper.GetTraits(testMethod, dataRow),
                     testMethodArguments,
                     timeout: details.Timeout);
             }
