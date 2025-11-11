@@ -7,8 +7,14 @@ XRETRY_V3_VERSION		=1.0.0-rc2#
 XUNIT_V3_PACKAGE		?=
 
 XUNIT_V3_ARGS :=
-ifneq ($(strip $(XUNIT_V3_PACKAGE)),)
+ifneq ($(XUNIT_V3_PACKAGE),)
 XUNIT_V3_ARGS += -p:XunitV3Package=$(XUNIT_V3_PACKAGE)
+endif
+
+# Calculate xRetry.v3 TRX file suffix from the xunit.v3 package name var
+XUNIT_V3_TRX := default
+ifneq ($(XUNIT_V3_PACKAGE),)
+XUNIT_V3_TRX := $(subst .,/,$(XUNIT_V3_PACKAGE))
 endif
 
 .PHONY: clean
@@ -90,12 +96,12 @@ unit-tests-run-reqnroll:
 .PHONY: unit-tests-run-main-v3
 unit-tests-run-v3-main:
 	cd ../test/UnitTests.v3 && \
-		dotnet test -c Release $(XUNIT_V3_ARGS) --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.mtp.trx
+		dotnet test -c Release $(XUNIT_V3_ARGS) --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.$(XUNIT_V3_TRX).trx
 
 .PHONY: unit-tests-run-single-threaded-v3
 unit-tests-run-v3-single-threaded:
 	cd ../test/UnitTests.SingleThreaded.v3 && \
-		timeout 10 dotnet test -c Release $(XUNIT_V3_ARGS) --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.v3.mtp.trx
+		timeout 10 dotnet test -c Release $(XUNIT_V3_ARGS) --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.v3.$(XUNIT_V3_TRX).trx
 
 # Convenience targets to run the v3 test packs against both supported MTP versions
 .PHONY: unit-tests-run-v3-mtp-v1
