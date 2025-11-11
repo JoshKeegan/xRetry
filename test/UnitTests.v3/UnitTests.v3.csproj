@@ -6,6 +6,10 @@
     <IsTestProject>true</IsTestProject>
     <OutputType>Exe</OutputType>
     <LangVersion>13.0</LangVersion>
+    
+    <!-- xUnit.v3 package is configurable via MSBuild properties to allow tests to be run targeting different 
+        MTP versions, e.g. by using xunit.v3.mtp-v2 -->
+    <XunitV3Package Condition="'$(XunitV3Package)' == ''">xunit.v3</XunitV3Package>
       
     <!-- Required to enable BinaryFormatter so we can test [Serializable] exceptions. 
          I don't know if anyone uses them, but it would be a breaking change to stop exceptions being serialisable, 
@@ -25,7 +29,7 @@
     -->
     <PackageReference Include="FluentAssertions" Version="7.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
-    <PackageReference Include="xunit.v3" Version="3.2.0" />
+    <PackageReference Include="$(XunitV3Package)" Version="3.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

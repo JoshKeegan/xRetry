@@ -3,6 +3,14 @@ XRETRY_SPECFLOW_VERSION	=1.9.0#
 XRETRY_REQNOLL_VERSION	=1.0.0#
 XRETRY_V3_VERSION		=1.0.0-rc2#
 
+# Optional: xUnit v3 package can be configured to allow tests to be run targeting different MTP versions
+XUNIT_V3_PACKAGE		?=
+
+XUNIT_V3_ARGS :=
+ifneq ($(strip $(XUNIT_V3_PACKAGE)),)
+XUNIT_V3_ARGS += -p:XunitV3Package=$(XUNIT_V3_PACKAGE)
+endif
+
 .PHONY: clean
 clean:
 	rm -r ../artefacts || true
@@ -43,7 +51,7 @@ build: clean
 		dotnet build -c Release --no-restore
 	
 	cd ../test/UnitTests.v3 && \
-    		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore
     
 	cd ../test/UnitTests.SingleThreaded.v3 && \
 		dotnet build -c Release --no-restore
@@ -54,8 +62,8 @@ unit-tests-run: \
 	unit-tests-run-single-threaded \
 	unit-tests-run-specflow \
 	unit-tests-run-reqnroll \
-	unit-tests-run-main-v3 \
-	unit-tests-run-single-threaded-v3
+	unit-tests-run-v3-main-all-mtps \
+	unit-tests-run-v3-single-threaded-all-mtps
 
 .PHONY: unit-tests-run-main
 unit-tests-run-main:
@@ -80,16 +88,41 @@ unit-tests-run-reqnroll:
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.trx
 
 .PHONY: unit-tests-run-main-v3
-unit-tests-run-main-v3:
+unit-tests-run-v3-main:
 	cd ../test/UnitTests.v3 && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.trx
+		dotnet test -c Release $(XUNIT_V3_ARGS) --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.mtp.trx
 
 .PHONY: unit-tests-run-single-threaded-v3
-unit-tests-run-single-threaded-v3:
-#  Run the single threaded tests with a timeout, as they test deadlock scenarios which would never return if failing
-#	You can tell if this times out as it returns exit code 124, which make prints as "Error 124"
+unit-tests-run-v3-single-threaded:
 	cd ../test/UnitTests.SingleThreaded.v3 && \
-		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.v3.trx
+		timeout 10 dotnet test -c Release $(XUNIT_V3_ARGS) --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.v3.mtp.trx
+
+# Convenience targets to run the v3 test packs against both supported MTP versions
+.PHONY: unit-tests-run-v3-mtp-v1
+unit-tests-run-v3-main-mtp-v1:
+	make unit-tests-run-v3-main XUNIT_V3_PACKAGE=xunit.v3.mtp-v1
+
+.PHONY: unit-tests-run-v3-mtp-v2
+unit-tests-run-v3-main-mtp-v2:
+	make unit-tests-run-v3-main XUNIT_V3_PACKAGE=xunit.v3.mtp-v2
+
+.PHONY: unit-tests-run-v3-all-mtps
+unit-tests-run-v3-main-all-mtps: \
+	unit-tests-run-v3-main-mtp-v1 \
+	unit-tests-run-v3-main-mtp-v2
+
+.PHONY: unit-tests-run-v3-mtp-v1
+unit-tests-run-v3-single-threaded-mtp-v1:
+	make unit-tests-run-v3-single-threaded XUNIT_V3_PACKAGE=xunit.v3.mtp-v1
+
+.PHONY: unit-tests-run-v3-mtp-v2
+unit-tests-run-v3-single-threaded-mtp-v2:
+	make unit-tests-run-v3-single-threaded XUNIT_V3_PACKAGE=xunit.v3.mtp-v2
+
+.PHONY: unit-tests-run-v3-all-mtps
+unit-tests-run-v3-single-threaded-all-mtps: \
+	unit-tests-run-v3-single-threaded-mtp-v1 \
+	unit-tests-run-v3-single-threaded-mtp-v2
 
 .PHONY: docs
 docs:

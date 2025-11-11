@@ -37,13 +37,21 @@ jobs:
         working-directory: build
         run: make unit-tests-run-reqnroll
 
-      - name: Run Unit Tests (Main xRetry.v3)
+      - name: "Run Unit Tests (Main xRetry.v3: MTP v1)"
         working-directory: build
-        run: make unit-tests-run-main-v3
+        run: make unit-tests-run-v3-main-mtp-v1
 
-      - name: Run Unit Tests (Single Threaded xRetry.v3)
+      - name: "Run Unit Tests (Single Threaded xRetry.v3: MTP v1)"
         working-directory: build
-        run: make unit-tests-run-single-threaded-v3
+        run: make unit-tests-run-v3-single-threaded-mtp-v1
+
+      - name: "Run Unit Tests (Main xRetry.v3: MTP v2)"
+        working-directory: build
+        run: make unit-tests-run-v3-main-mtp-v2
+
+      - name: "Run Unit Tests (Single Threaded xRetry.v3: MTP v2)"
+        working-directory: build
+        run: make unit-tests-run-v3-single-threaded-mtp-v2
 
       - name: Create Nuget Packages
         working-directory: build

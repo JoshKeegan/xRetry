@@ -4,6 +4,10 @@
     <TargetFrameworks>net9.0;net48</TargetFrameworks>
     
     <OutputType>Exe</OutputType>
+
+      <!-- xUnit.v3 package is configurable via MSBuild properties to allow tests to be run targeting different 
+          MTP versions, e.g. by using xunit.v3.mtp-v2 -->
+      <XunitV3Package Condition="'$(XunitV3Package)' == ''">xunit.v3</XunitV3Package>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
-    <PackageReference Include="xunit.v3" Version="3.2.0" />
+    <PackageReference Include="$(XunitV3Package)" Version="3.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
