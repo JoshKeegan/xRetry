@@ -14,7 +14,7 @@
     <readme>docs\README.md</readme>
 
     <dependencies>
-      <dependency id="Reqnroll.xUnit" version="[2.0.0,3.0.0)" />
+      <dependency id="Reqnroll.xUnit" version="[2.0.0,4.0.0)" />
       <dependency id="xRetry" version="[$xRetryVersion$]" />
     </dependencies>
   </metadata>

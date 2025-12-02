@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reqnroll.CustomPlugin" Version="2.4.1" />
+    <PackageReference Include="Reqnroll.CustomPlugin" Version="3.2.1" />
   </ItemGroup>
 
   <ItemGroup>
