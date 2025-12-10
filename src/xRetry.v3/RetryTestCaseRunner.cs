@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit.Sdk;
 using Xunit.v3;
 
 namespace xRetry.v3
