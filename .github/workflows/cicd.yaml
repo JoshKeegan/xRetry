@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      
+
       - name: Lint
         working-directory: build
         run: make lint
@@ -20,22 +20,26 @@ jobs:
       - name: Build
         working-directory: build
         run: make build
-      
+
       - name: Run Unit Tests (Main xRetry)
         working-directory: build
         run: make unit-tests-run-main
-      
+
       - name: Run Unit Tests (Single Threaded xRetry)
         working-directory: build
         run: make unit-tests-run-single-threaded
-      
+
       - name: Run Unit Tests (SpecFlow)
         working-directory: build
         run: make unit-tests-run-specflow
-      
+
       - name: Run Unit Tests (Reqnroll)
         working-directory: build
         run: make unit-tests-run-reqnroll
+
+      - name: Run Unit Tests (Reqnroll.v3)
+        working-directory: build
+        run: make unit-tests-run-reqnroll-v3
 
       - name: Run Unit Tests (Main xRetry.v3)
         working-directory: build
@@ -48,20 +52,20 @@ jobs:
       - name: Create Nuget Packages
         working-directory: build
         run: make nuget-create
-      
+
       - name: Upload artefacts
         uses: actions/upload-artifact@v5
         with:
           name: artefacts
           path: artefacts
         if: ${{ always() }}
-      
+
       - name: Upload deployment scripts
         uses: actions/upload-artifact@v5
         with:
           name: deploy
           path: deploy
-  
+
   ci_docs:
     name: CI Docs
     runs-on: ubuntu-latest
@@ -77,12 +81,12 @@ jobs:
         run: |
           git update-index --refresh
           git diff-index --quiet HEAD --
-  
+
   cd:
     name: CD
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/sdk:9.0
-    needs: 
+    needs:
       - ci_build
       - ci_docs
     if: github.ref_type == 'tag'
@@ -92,7 +96,7 @@ jobs:
         with:
           name: deploy
           path: deploy
-      
+
       - name: Download artefacts
         uses: actions/download-artifact@v6
         with:
@@ -113,6 +117,11 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/xRetry.Reqnroll_v')
         working-directory: deploy
         run: /bin/bash deploy.sh xRetry.Reqnroll ${{ secrets.NUGET_API_KEY }}
+
+      - name: "Release: xRetry.Reqnroll.v3"
+        if: startsWith(github.ref, 'refs/tags/xRetry.Reqnroll.v3_v')
+        working-directory: deploy
+        run: /bin/bash deploy.sh xRetry.Reqnroll.v3 ${{ secrets.NUGET_API_KEY }}
 
       - name: "Release: xRetry.v3"
         if: startsWith(github.ref, 'refs/tags/xRetry.v3_v')

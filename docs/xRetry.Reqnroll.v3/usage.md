@@ -1,34 +1,3 @@
-[//]: # (This file is auto-generated, do not modify it directly. Instead, update the files under docs/)
-
-
-[//]: \# (Src: xRetry.Reqnroll.v3/header.md)
-
-# xRetry.Reqnroll.v3
-Retry flickering test cases for Reqnroll when using xUnit v3.
-
-
-[//]: \# (Src: ciBadge.md)
-
-[![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
-
-
-[//]: \# (Src: whenToUse.md)
-
-## When to use this
-This is intended for use on flickering tests, where the reason for failure is an external
-dependency and the failure is transient, e.g:
- - HTTP request over the network
- - Database call that could deadlock, timeout etc...
-
-Whenever a test includes real-world infrastructure, particularly when communicated with via the
-internet, there is a risk of the test randomly failing so we want to try and run it again.
-This is the intended use case of the library.
-
-If you have a test that covers some flaky code, where sporadic failures are caused by a bug,
-this library should **not** be used to cover it up!
-
-[//]: \# (Src: xRetry.Reqnroll.v3/usage.md)
-
 ## Usage: Reqnroll (xUnit v3)
 
 Add the [`xRetry.Reqnroll.v3` NuGet package](https://www.nuget.org/packages/xRetry.Reqnroll.v3 "xRetry.Reqnroll.v3 NuGet package") to your project.
@@ -82,18 +51,3 @@ using xRetry.Reqnroll.v3;
 
 throw new SkipException("Reason for skipping");
 ```
-
-
-[//]: \# (Src: logs.md)
-
-## Viewing retry logs
-By default, you won't see whether your tests are being retried as we make this information available
-via the xunit diagnostic logs but test runners will hide these detailed logs by default.
-To enable them you must configure your xUnit test project to have `diagnosticMessages` set to `true` in the `xunit.runner.json`.
-See the [xUnit docs](https://xunit.net/docs/configuration-files) for a full setup guide of their config file, or see
-this projects own unit tests which has been set up with this enabled.
-
-[//]: \# (Src: issues.md)
-
-## Issues
-If you find a bug whilst using this library, please report it [on GitHub](https://github.com/JoshKeegan/xRetry/issues).

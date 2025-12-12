@@ -1,6 +1,6 @@
 @ignore
 Feature: Ignored Feature
-	In order to temorarily disable features containing retryable scenarios
+	In order to temporarily disable features containing retryable scenarios
 	As a QA engineer
 	I want to be able to ignore entire features that contain retryable tests
 

@@ -21,20 +21,21 @@ Retry flickering test cases for xUnit, Reqnroll and SpecFlow in .NET.
 | [xUnit v2](#usage-xunit)      | xRetry          | [![xRetry NuGet Version](https://img.shields.io/nuget/v/xRetry)](https://www.nuget.org/packages/xRetry "Download xRetry from NuGet") [![xRetry NuGet Downloads](https://img.shields.io/nuget/dt/xRetry)](https://www.nuget.org/packages/xRetry "Download xRetry from NuGet")                                                                         |
 | [SpecFlow](#usage-specflow-3) | xRetry.SpecFlow | [![xRetry.SpecFlow NuGet Version](https://img.shields.io/nuget/v/xRetry.SpecFlow)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.SpecFlow from NuGet") [![xRetry.SpecFlow NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.SpecFlow)](https://www.nuget.org/packages/xRetry.SpecFlow "Download xRetry.SpecFlow from NuGet") |
 | [Reqnroll](#usage-reqnroll-2) | xRetry.Reqnroll | [![xRetry.Reqnroll NuGet Version](https://img.shields.io/nuget/v/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet") [![xRetry.Reqnroll NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet") |
+| [Reqnroll (xUnit v3)](#usage-reqnroll-xunit-v3) | xRetry.Reqnroll.v3 | [![xRetry.Reqnroll.v3 NuGet Version](https://img.shields.io/nuget/v/xRetry.Reqnroll.v3)](https://www.nuget.org/packages/xRetry.Reqnroll.v3 "Download xRetry.Reqnroll.v3 from NuGet") [![xRetry.Reqnroll.v3 NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.Reqnroll.v3)](https://www.nuget.org/packages/xRetry.Reqnroll.v3 "Download xRetry.Reqnroll.v3 from NuGet") |
 
 [//]: \# (Src: whenToUse.md)
 
 ## When to use this
-This is intended for use on flickering tests, where the reason for failure is an external 
+This is intended for use on flickering tests, where the reason for failure is an external
 dependency and the failure is transient, e.g:
  - HTTP request over the network
  - Database call that could deadlock, timeout etc...
 
 Whenever a test includes real-world infrastructure, particularly when communicated with via the
-internet, there is a risk of the test randomly failing so we want to try and run it again. 
-This is the intended use case of the library.  
+internet, there is a risk of the test randomly failing so we want to try and run it again.
+This is the intended use case of the library.
 
-If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
+If you have a test that covers some flaky code, where sporadic failures are caused by a bug,
 this library should **not** be used to cover it up!
 
 [//]: \# (Src: xRetry.v3/usage.md)
@@ -63,14 +64,14 @@ public void Default_Reaches3()
 ```
 
 This will attempt to run the test until it passes, up to 3 times by default.
-You can optionally specify a number of times to attempt to run the test as an argument, e.g. `[RetryFact(5)]`.  
+You can optionally specify a number of times to attempt to run the test as an argument, e.g. `[RetryFact(5)]`.
 
 You can also optionally specify a delay between each retry (in milliseconds) as a second
 parameter, e.g. `[RetryFact(5, 100)]` will run your test up to 5 times, waiting 100ms between each attempt.
 
 ### Theories
 
-If you have used the library for retrying `Fact` tests, using it to retry a `Theory` should be very intuitive.  
+If you have used the library for retrying `Fact` tests, using it to retry a `Theory` should be very intuitive.
 Above any `Theory` test case that should be retried, replace the `Theory` attribute with `RetryTheory`, e.g:
 
 ```cs
@@ -101,8 +102,8 @@ If you were using the xRetry skipping functionality with xUnit v2, you should fi
 
 Most use cases will be covered by replacing `Skip.Always();` with `Assert.Skip("your reason");`.
 
-If you are skipping custom exceptions, you will also need to change the way they are passed to the test attributes:  
-`[RetryFact(typeof(TestException))]` would now be `[RetryFact(SkipExceptions = new[] {typeof(TestException)})]`  
+If you are skipping custom exceptions, you will also need to change the way they are passed to the test attributes:
+`[RetryFact(typeof(TestException))]` would now be `[RetryFact(SkipExceptions = new[] {typeof(TestException)})]`
 `[RetryTheory(typeof(TestException))]` would now be `[RetryTheory(SkipExceptions = new[] {typeof(TestException)})]`
 
 [//]: \# (Src: xRetry/usage.md)
@@ -131,14 +132,14 @@ public void Default_Reaches3()
 ```
 
 This will attempt to run the test until it passes, up to 3 times by default.
-You can optionally specify a number of times to attempt to run the test as an argument, e.g. `[RetryFact(5)]`.  
+You can optionally specify a number of times to attempt to run the test as an argument, e.g. `[RetryFact(5)]`.
 
 You can also optionally specify a delay between each retry (in milliseconds) as a second
 parameter, e.g. `[RetryFact(5, 100)]` will run your test up to 5 times, waiting 100ms between each attempt.
 
 ### Theories
 
-If you have used the library for retrying `Fact` tests, using it to retry a `Theory` should be very intuitive.  
+If you have used the library for retrying `Fact` tests, using it to retry a `Theory` should be very intuitive.
 Above any `Theory` test case that should be retried, replace the `Theory` attribute with `RetryTheory`, e.g:
 
 ```cs
@@ -165,7 +166,7 @@ The same optional arguments (max attempts and delay between each retry) are supp
 ### Skipping tests at Runtime
 
 In addition to retries, `RetryFact` and `RetryTheory` both support dynamically skipping tests at runtime. To make a test skip just use `Skip.Always()`
-within your test code.  
+within your test code.
 It also supports custom exception types so you can skip a test if a type of exception gets thrown. You do this by specifying the exception type to the
 attribute above your test, e.g.
 
@@ -186,7 +187,7 @@ test is as simple as replacing `[SkippableFact]` with `[RetryFact(typeof(Xunit.S
 
 ## Usage: SpecFlow 3
 
-Add the [`xRetry.SpecFlow` NuGet package](https://www.nuget.org/packages/xRetry.SpecFlow "xRetry NuGet.SpecFlow package") to your project.  
+Add the [`xRetry.SpecFlow` NuGet package](https://www.nuget.org/packages/xRetry.SpecFlow "xRetry NuGet.SpecFlow package") to your project.
 
 ### Scenarios (and outlines)
 
@@ -199,11 +200,11 @@ Scenario: Retry three times by default
 	Then the default result should be 3
 ```
 
-This will attempt to run the test until it passes, up to 3 times by default. 
-You can optionally specify a number of times to attempt to run the test in brackets, e.g. `@retry(5)`.  
+This will attempt to run the test until it passes, up to 3 times by default.
+You can optionally specify a number of times to attempt to run the test in brackets, e.g. `@retry(5)`.
 
 You can also optionally specify a delay between each retry (in milliseconds) as a second
-parameter, e.g. `@retry(5,100)` will run your test up to 5 times, waiting 100ms between each attempt.  
+parameter, e.g. `@retry(5,100)` will run your test up to 5 times, waiting 100ms between each attempt.
 Note that you must not include a space between the parameters, as Cucumber/SpecFlow uses
 a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space after the comma.
 
@@ -220,7 +221,7 @@ Scenario: Retry scenario three times by default
 	Then the result should be 3
 ```
 
-All options that can be used against an individual scenario can also be applied like this at the feature level.  
+All options that can be used against an individual scenario can also be applied like this at the feature level.
 If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
 precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried
 by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
@@ -230,7 +231,7 @@ by default but for some cases also wanted to wait some time before each retry at
 
 ## Usage: Reqnroll 2
 
-Add the [`xRetry.Reqnroll` NuGet package](https://www.nuget.org/packages/xRetry.Reqnroll "xRetry NuGet.Reqnroll package") to your project.  
+Add the [`xRetry.Reqnroll` NuGet package](https://www.nuget.org/packages/xRetry.Reqnroll "xRetry NuGet.Reqnroll package") to your project.
 
 ### Scenarios (and outlines)
 
@@ -243,11 +244,11 @@ Scenario: Retry three times by default
 	Then the default result should be 3
 ```
 
-This will attempt to run the test until it passes, up to 3 times by default. 
-You can optionally specify a number of times to attempt to run the test in brackets, e.g. `@retry(5)`.  
+This will attempt to run the test until it passes, up to 3 times by default.
+You can optionally specify a number of times to attempt to run the test in brackets, e.g. `@retry(5)`.
 
 You can also optionally specify a delay between each retry (in milliseconds) as a second
-parameter, e.g. `@retry(5,100)` will run your test up to 5 times, waiting 100ms between each attempt.  
+parameter, e.g. `@retry(5,100)` will run your test up to 5 times, waiting 100ms between each attempt.
 Note that you must not include a space between the parameters, as Cucumber/Reqnroll uses
 a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space after the comma.
 
@@ -264,18 +265,75 @@ Scenario: Retry scenario three times by default
 	Then the result should be 3
 ```
 
-All options that can be used against an individual scenario can also be applied like this at the feature level.  
+All options that can be used against an individual scenario can also be applied like this at the feature level.
 If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
 precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried
 by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
 
 
+[//]: \# (Src: xRetry.Reqnroll.v3/usage.md)
+
+## Usage: Reqnroll (xUnit v3)
+
+Add the [`xRetry.Reqnroll.v3` NuGet package](https://www.nuget.org/packages/xRetry.Reqnroll.v3 "xRetry.Reqnroll.v3 NuGet package") to your project.
+
+### Scenarios (and outlines)
+
+Above any scenario or scenario outline that should be retried, add a `@retry` tag, e.g:
+
+```gherkin
+@retry
+Scenario: Retry three times by default
+	When I increment the default retry count
+	Then the default result should be 3
+```
+
+This will attempt to run the test until it passes, up to 3 times by default.
+You can optionally specify a number of times to attempt to run the test in brackets, e.g. `@retry(5)`.
+
+You can also optionally specify a delay between each retry (in milliseconds) as a second
+parameter, e.g. `@retry(5,100)` will run your test up to 5 times, waiting 100ms between each attempt.
+Note that you must not include a space between the parameters, as Cucumber/Reqnroll uses
+a space to separate tags, i.e. `@retry(5, 100)` would not work due to the space after the comma.
+
+### Features
+
+You can also make every test in a feature retryable by adding the `@retry` tag to the feature, e.g:
+
+```gherkin
+@retry
+Feature: Retryable Feature
+
+Scenario: Retry scenario three times by default
+	When I increment the retry count
+	Then the result should be 3
+```
+
+All options that can be used against an individual scenario can also be applied like this at the feature level.
+If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
+precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried
+by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
+
+### Skipping tests at Runtime
+
+xUnit v3 has native support for skipping tests at runtime. You can skip a test by throwing any exception that has
+`$XunitDynamicSkip$` at the start of the message.
+
+xRetry.Reqnroll.v3 provides a `SkipException` class for convenience:
+
+```cs
+using xRetry.Reqnroll.v3;
+
+throw new SkipException("Reason for skipping");
+```
+
+
 [//]: \# (Src: logs.md)
 
 ## Viewing retry logs
-By default, you won't see whether your tests are being retried as we make this information available 
-via the xunit diagnostic logs but test runners will hide these detailed logs by default.  
-To enable them you must configure your xUnit test project to have `diagnosticMessages` set to `true` in the `xunit.runner.json`. 
+By default, you won't see whether your tests are being retried as we make this information available
+via the xunit diagnostic logs but test runners will hide these detailed logs by default.
+To enable them you must configure your xUnit test project to have `diagnosticMessages` set to `true` in the `xunit.runner.json`.
 See the [xUnit docs](https://xunit.net/docs/configuration-files) for a full setup guide of their config file, or see
 this projects own unit tests which has been set up with this enabled.
 
@@ -283,14 +341,14 @@ this projects own unit tests which has been set up with this enabled.
 
 ## Contributing
 
-Feel free to open a pull request! If you want to start any sizeable chunk of work, consider 
-opening an issue first to discuss, and make sure nobody else is working on the same problem.  
+Feel free to open a pull request! If you want to start any sizeable chunk of work, consider
+opening an issue first to discuss, and make sure nobody else is working on the same problem.
 
 ### Developing locally
 
 #### In an IDE
 
-To build and run locally, always build `xRetry.Reqnroll` and `xRetry.SpecFlow` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the test projects.  
+To build and run locally, always build `xRetry.Reqnroll` and `xRetry.SpecFlow` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the test projects.
 
 #### From the terminal
 
@@ -308,7 +366,7 @@ If you do not have the necessary tooling installed, or want to exactly match CI,
 ```bash
 docker run --rm -it -v $(pwd):/src -w /src/build joshkeegan/dotnet-mixed-build:8.0
 ```
-This will give you a terminal within the docker container, with the xRetry source mounted. 
+This will give you a terminal within the docker container, with the xRetry source mounted.
 You can then run `make ci`, or any of the individual build make targets, the same as you would locally.
 
 Note: this is the same image used in CI, so it's also a good way of validating build changes.
