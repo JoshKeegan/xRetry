@@ -1,6 +1,7 @@
 XRETRY_VERSION			=1.9.0#
 XRETRY_SPECFLOW_VERSION	=1.9.0#
 XRETRY_REQNOLL_VERSION	=1.1.0#
+XRETRY_REQNROLL_V3_VERSION	=1.0.0#
 XRETRY_V3_VERSION		=1.0.0-rc2#
 
 .PHONY: clean
@@ -26,25 +27,31 @@ build: clean
 
 	cd ../src/xRetry.SpecFlow && \
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_SPECFLOW_VERSION)
-	
+
 	cd ../src/xRetry.Reqnroll && \
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_REQNOLL_VERSION)
+
+	cd ../src/xRetry.Reqnroll.v3 && \
+		dotnet build -c Release --no-restore -p:Version=$(XRETRY_REQNROLL_V3_VERSION)
 
 	cd ../test/UnitTests && \
 		dotnet build -c Release --no-restore
 
 	cd ../test/UnitTests.SingleThreaded && \
 		dotnet build -c Release --no-restore
-	
+
 	cd ../test/UnitTests.SpecFlow && \
 		dotnet build -c Release --no-restore
-	
+
 	cd ../test/UnitTests.Reqnroll && \
 		dotnet build -c Release --no-restore
-	
+
+	cd ../test/UnitTests.Reqnroll.v3 && \
+		dotnet build -c Release --no-restore
+
 	cd ../test/UnitTests.v3 && \
     		dotnet build -c Release --no-restore
-    
+
 	cd ../test/UnitTests.SingleThreaded.v3 && \
 		dotnet build -c Release --no-restore
 
@@ -54,6 +61,7 @@ unit-tests-run: \
 	unit-tests-run-single-threaded \
 	unit-tests-run-specflow \
 	unit-tests-run-reqnroll \
+	unit-tests-run-reqnroll-v3 \
 	unit-tests-run-main-v3 \
 	unit-tests-run-single-threaded-v3
 
@@ -78,6 +86,11 @@ unit-tests-run-specflow:
 unit-tests-run-reqnroll:
 	cd ../test/UnitTests.Reqnroll && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.trx
+
+.PHONY: unit-tests-run-reqnroll-v3
+unit-tests-run-reqnroll-v3:
+	cd ../test/UnitTests.Reqnroll.v3 && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.v3.trx
 
 .PHONY: unit-tests-run-main-v3
 unit-tests-run-main-v3:
@@ -112,7 +125,7 @@ nuget-create:
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
-	
+
 	dotnet pack ../src/xRetry.Reqnroll \
 		-p:Version=$(XRETRY_REQNOLL_VERSION) \
 		-p:xRetryVersion=$(XRETRY_VERSION) \
@@ -120,7 +133,15 @@ nuget-create:
 		--no-build \
 		-c Release \
 		-o ../artefacts/nuget
-	
+
+	dotnet pack ../src/xRetry.Reqnroll.v3 \
+		-p:Version=$(XRETRY_REQNROLL_V3_VERSION) \
+		-p:xRetryV3Version=$(XRETRY_V3_VERSION) \
+		-p:NuspecFile=xRetry.Reqnroll.v3.nuspec \
+		--no-build \
+		-c Release \
+		-o ../artefacts/nuget
+
 	dotnet pack ../src/xRetry.v3 \
 		-p:Version=$(XRETRY_V3_VERSION) \
 		-p:NuspecFile=xRetry.v3.nuspec \
