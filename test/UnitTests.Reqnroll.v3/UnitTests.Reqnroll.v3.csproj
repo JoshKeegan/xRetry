@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- xUnit v3 requires .NET 8+ or .NET Framework 4.7.2+ -->
+        <TargetFrameworks>net9.0;net472</TargetFrameworks>
+        <!-- xUnit v3 test projects must be executables -->
+        <OutputType>Exe</OutputType>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ReqnrollGeneratorPlugins Include="../../src/xRetry.Reqnroll.v3/bin/Release/netstandard2.0/xRetry.Reqnroll.v3.Plugin.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoFixture" Version="4.18.1" />
+        <!-- 
+            Do not upgrade FluentAssertions beyond 7.x, as the license changes in v8.
+            See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
+        -->
+        <PackageReference Include="FluentAssertions" Version="7.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+        <PackageReference Include="Reqnroll.xunit.v3" Version="3.2.1" />
+        <PackageReference Include="xunit.v3" Version="3.2.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+
+        <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
+        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\xRetry.Reqnroll.v3\xRetry.Reqnroll.v3.csproj" />
+        <ProjectReference Include="..\..\src\xRetry.v3\xRetry.v3.csproj" />
+    </ItemGroup>
+
+</Project>

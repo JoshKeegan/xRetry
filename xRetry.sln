@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.SingleThreaded.v3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xRetry.Reqnroll.v3", "src\xRetry.Reqnroll.v3\xRetry.Reqnroll.v3.csproj", "{E9F76A21-3DB6-4F10-A607-0BC27540D11E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Reqnroll.v3", "test\UnitTests.Reqnroll.v3\UnitTests.Reqnroll.v3.csproj", "{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,18 @@ Global
 		{E9F76A21-3DB6-4F10-A607-0BC27540D11E}.Release|x64.Build.0 = Release|Any CPU
 		{E9F76A21-3DB6-4F10-A607-0BC27540D11E}.Release|x86.ActiveCfg = Release|Any CPU
 		{E9F76A21-3DB6-4F10-A607-0BC27540D11E}.Release|x86.Build.0 = Release|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Debug|x64.Build.0 = Debug|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Debug|x86.Build.0 = Debug|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Release|x64.ActiveCfg = Release|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Release|x64.Build.0 = Release|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Release|x86.ActiveCfg = Release|Any CPU
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,6 +201,7 @@ Global
 		{4682960A-E83A-4AC4-983D-791BA783C5CF} = {3A384C09-1858-4BA9-9314-BC18A6234AE9}
 		{513BD013-CC8B-4A4C-BD3A-A1004E4C6B83} = {3A384C09-1858-4BA9-9314-BC18A6234AE9}
 		{E9F76A21-3DB6-4F10-A607-0BC27540D11E} = {9E9E02E6-169B-455D-9FA5-2553750E336D}
+		{49994AD5-54B5-448C-B3B9-71CF4AD13DD2} = {3A384C09-1858-4BA9-9314-BC18A6234AE9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87687087-DCC7-4F67-B0B2-D8A4F8D93693}
