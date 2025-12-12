@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.v3;
@@ -23,7 +24,7 @@ namespace xRetry.v3
             CancellationTokenSource cancellationTokenSource,
             Func<IMessageBus, ValueTask<RunSummary>> fnRunSingle)
         {
-            var now = DateTimeOffset.UtcNow;
+            var stopwatch = Stopwatch.StartNew();
             messageBus.QueueMessage(ToTestCaseStarting(testCase));
 
             for (int i = 1; ; i++)
@@ -48,7 +49,7 @@ namespace xRetry.v3
                     }
 
                     blockingMessageBus.Flush();
-                    messageBus.QueueMessage(ToTestCaseFinished(testCase, summary, now));
+                    messageBus.QueueMessage(ToTestCaseFinished(testCase, summary, stopwatch));
                     return summary;
                 }
                 // Otherwise log that we've had a failed run and will retry
@@ -107,14 +108,14 @@ namespace xRetry.v3
             };
         }
 
-        public static TestCaseFinished ToTestCaseFinished(IRetryableTestCase testCase, RunSummary summary, DateTimeOffset start)
+        public static TestCaseFinished ToTestCaseFinished(IRetryableTestCase testCase, RunSummary summary, Stopwatch stopwatch)
         {
             var assemblyUniqueID = testCase.TestCollection.TestAssembly.UniqueID;
             var testCollectionUniqueID = testCase.TestCollection.UniqueID;
             var testCaseUniqueID = testCase.UniqueID;
             var testClassUniqueID = testCase.TestClass?.UniqueID;
             var testMethodUniqueID = testCase.TestMethod?.UniqueID;
-            var executionTime = (decimal) (DateTimeOffset.UtcNow - start).TotalSeconds;
+            var executionTime = (decimal) stopwatch.Elapsed.TotalSeconds;
 
             return new TestCaseFinished
             {
