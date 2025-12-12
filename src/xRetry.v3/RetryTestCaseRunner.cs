@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.v3;
@@ -23,6 +24,9 @@ namespace xRetry.v3
             CancellationTokenSource cancellationTokenSource,
             Func<IMessageBus, ValueTask<RunSummary>> fnRunSingle)
         {
+            var stopwatch = Stopwatch.StartNew();
+            messageBus.QueueMessage(ToTestCaseStarting(testCase));
+
             for (int i = 1; ; i++)
             {
                 // Prevent messages from the test run from being passed through, as we don't want 
@@ -45,6 +49,7 @@ namespace xRetry.v3
                     }
 
                     blockingMessageBus.Flush();
+                    messageBus.QueueMessage(ToTestCaseFinished(testCase, summary, stopwatch));
                     return summary;
                 }
                 // Otherwise log that we've had a failed run and will retry
@@ -68,6 +73,63 @@ namespace xRetry.v3
                     Task.Delay(testCase.DelayBetweenRetriesMs, cancellationTokenSource.Token).Wait();
                 }
             }
+        }
+
+        public static TestCaseStarting ToTestCaseStarting(IRetryableTestCase testCase)
+        {
+            var assemblyUniqueID = testCase.TestCollection.TestAssembly.UniqueID;
+            var testCollectionUniqueID = testCase.TestCollection.UniqueID;
+            var testCaseUniqueID = testCase.UniqueID;
+            var testClassUniqueID = testCase.TestClass?.UniqueID;
+            var testMethodUniqueID = testCase.TestMethod?.UniqueID;
+
+            return new TestCaseStarting()
+            {
+                AssemblyUniqueID = assemblyUniqueID,
+                Explicit = testCase.Explicit,
+                SkipReason = testCase.SkipReason,
+                SourceFilePath = testCase.SourceFilePath,
+                SourceLineNumber = testCase.SourceLineNumber,
+                TestCaseDisplayName = testCase.TestCaseDisplayName,
+                TestCaseUniqueID = testCaseUniqueID,
+                TestClassMetadataToken = testCase.TestClassMetadataToken,
+                TestClassName = testCase.TestClassName,
+                TestClassNamespace = testCase.TestClassNamespace,
+                TestClassSimpleName = testCase.TestClassSimpleName,
+                TestClassUniqueID = testClassUniqueID,
+                TestCollectionUniqueID = testCollectionUniqueID,
+                TestMethodArity = testCase.TestMethodArity,
+                TestMethodMetadataToken = testCase.TestMethodMetadataToken,
+                TestMethodName = testCase.TestMethod?.MethodName,
+                TestMethodParameterTypesVSTest = testCase.TestMethodParameterTypesVSTest,
+                TestMethodReturnTypeVSTest = testCase.TestMethodReturnTypeVSTest,
+                TestMethodUniqueID = testMethodUniqueID,
+                Traits = testCase.Traits,
+            };
+        }
+
+        public static TestCaseFinished ToTestCaseFinished(IRetryableTestCase testCase, RunSummary summary, Stopwatch stopwatch)
+        {
+            var assemblyUniqueID = testCase.TestCollection.TestAssembly.UniqueID;
+            var testCollectionUniqueID = testCase.TestCollection.UniqueID;
+            var testCaseUniqueID = testCase.UniqueID;
+            var testClassUniqueID = testCase.TestClass?.UniqueID;
+            var testMethodUniqueID = testCase.TestMethod?.UniqueID;
+            var executionTime = (decimal) stopwatch.Elapsed.TotalSeconds;
+
+            return new TestCaseFinished
+            {
+                AssemblyUniqueID = assemblyUniqueID,
+                ExecutionTime = executionTime,
+                TestCaseUniqueID = testCaseUniqueID,
+                TestClassUniqueID = testClassUniqueID,
+                TestCollectionUniqueID = testCollectionUniqueID,
+                TestMethodUniqueID = testMethodUniqueID,
+                TestsFailed = summary.Failed,
+                TestsNotRun = summary.NotRun,
+                TestsSkipped = summary.Skipped,
+                TestsTotal = summary.Total,
+            };
         }
     }
 }
