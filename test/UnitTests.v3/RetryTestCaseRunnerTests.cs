@@ -75,7 +75,7 @@ public class RetryTestCaseRunnerTests
             Time = 0.5m
         };
 
-        var before = (decimal)stopwatch.Elapsed.TotalSeconds;
+        var before = (decimal) stopwatch.Elapsed.TotalSeconds;
         var result = RetryTestCaseRunner.ToTestCaseFinished(testCase, summary, stopwatch);
 
         result.Should().NotBeNull();
