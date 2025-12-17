@@ -3,7 +3,7 @@ XRETRY_SPECFLOW_VERSION	=1.9.0#
 XRETRY_REQNOLL_VERSION	=1.1.0#
 # No version for initial alpha release
 # XRETRY_REQNROLL_V3_VERSION	=1.0.0#
-XRETRY_V3_VERSION		=1.0.0-rc2#
+XRETRY_V3_VERSION		=1.0.0-rc3#
 
 .PHONY: clean
 clean:

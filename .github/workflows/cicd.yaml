@@ -54,14 +54,14 @@ jobs:
         run: make nuget-create
 
       - name: Upload artefacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: artefacts
           path: artefacts
         if: ${{ always() }}
 
       - name: Upload deployment scripts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: deploy
           path: deploy
@@ -92,13 +92,13 @@ jobs:
     if: github.ref_type == 'tag'
     steps:
       - name: Download deployment scripts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: deploy
           path: deploy
 
       - name: Download artefacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: artefacts
           path: artefacts
