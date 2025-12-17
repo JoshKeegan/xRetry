@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>xRetry.Reqnroll.v3</id>
+    <version>$version$</version>
+    <authors>Josh Keegan</authors>
+    <owners>Josh Keegan</owners>
+    <projectUrl>https://github.com/JoshKeegan/xRetry</projectUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Allows for a @retry(n) tag to be placed above scenarios in Reqnroll.xunit.v3. This can be used to re-run a failed test up to n times, allowing for transient failures (e.g. network related) to be tolerated.</description>
+    <copyright>Copyright Josh Keegan 2019-2025</copyright>
+    <tags>Reqnroll XUnit Retry Test-Automation</tags>
+    <readme>docs\README.md</readme>
+
+    <dependencies>
+      <dependency id="Reqnroll.xunit.v3" version="[2.0.0,4.0.0)" />
+      <dependency id="xRetry.v3" version="[$xRetryVersion$]" />
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="xRetry.Reqnroll.v3.targets" target="build" />
+    <file src="xRetry.Reqnroll.v3.props" target="build" />
+
+    <file src="bin\Release\netstandard2.0\xRetry.Reqnroll.v3.Plugin.dll" target="build\netstandard2.0" />
+
+    <file src="README.md" target="docs\" />
+  </files>
+</package>
