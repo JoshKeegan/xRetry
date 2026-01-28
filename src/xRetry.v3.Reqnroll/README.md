@@ -1,10 +1,11 @@
 [//]: # (This file is auto-generated, do not modify it directly. Instead, update the files under docs/)
 
 
-[//]: \# (Src: xRetry.Reqnroll/header.md)
+[//]: \# (Src: xRetry.v3.Reqnroll/header.md)
 
-# xRetry.Reqnroll
-Retry flickering test cases for Reqnroll when using xUnit.
+# xRetry.v3.Reqnroll
+
+Retry flickering test cases for Reqnroll when using xUnit v3.
 
 [//]: \# (Src: ciBadge.md)
 
