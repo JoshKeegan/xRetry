@@ -1,7 +1,7 @@
 using Reqnroll;
 using Reqnroll.UnitTestProvider;
 
-namespace UnitTests.Reqnroll.v3.Steps
+namespace UnitTests.v3.Reqnroll.Steps
 {
     [Binding]
     public class RuntimeIgnoreSteps

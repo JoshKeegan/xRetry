@@ -3,7 +3,7 @@ using FluentAssertions;
 using xRetry.v3.Reqnroll.Parsers;
 using Xunit;
 
-namespace UnitTests.Reqnroll.v3.Parsers
+namespace UnitTests.v3.Reqnroll.Parsers
 {
     public class RetryTagParserTests
     {

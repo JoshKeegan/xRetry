@@ -1,9 +1,9 @@
 using System;
 using Reqnroll;
 
-namespace UnitTests.Reqnroll.v3.TestClasses
+namespace UnitTests.v3.Reqnroll.TestClasses
 {
-    public sealed class ScenarioId : IEquatable<ScenarioId>
+    public class ScenarioId : IEquatable<ScenarioId>
     {
         private readonly FeatureInfo featureInfo;
         private readonly string internalId;

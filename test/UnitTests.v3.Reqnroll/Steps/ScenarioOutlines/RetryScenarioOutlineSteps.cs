@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using Reqnroll;
-using UnitTests.Reqnroll.v3.TestClasses;
+using UnitTests.v3.Reqnroll.TestClasses;
 using Xunit;
 
-namespace UnitTests.Reqnroll.v3.Steps.ScenarioOutlines
+namespace UnitTests.v3.Reqnroll.Steps.ScenarioOutlines
 {
     [Binding]
     public class RetryScenarioOutlineSteps
