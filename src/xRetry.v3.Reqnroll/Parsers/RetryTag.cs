@@ -18,7 +18,7 @@ public sealed class RetryTag(int? maxRetries, int? delayBetweenRetriesMs) : IEqu
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        return obj.GetType() == GetType() && Equals((RetryTag)obj);
+        return obj.GetType() == GetType() && Equals((RetryTag) obj);
     }
 
     public override int GetHashCode()

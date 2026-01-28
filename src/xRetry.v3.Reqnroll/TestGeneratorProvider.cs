@@ -143,7 +143,7 @@ public class TestGeneratorProvider(
         unitTestGeneratorProviderImplementation.SetTestMethodCategories(generationContext, testMethod,
             scenarioCategories);
 
-        ApplyRetry((string[])scenarioCategories, testMethod);
+        ApplyRetry((string[]) scenarioCategories, testMethod);
     }
 
     /// <summary>
