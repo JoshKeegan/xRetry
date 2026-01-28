@@ -2,7 +2,7 @@ XRETRY_VERSION			=1.9.0#
 XRETRY_SPECFLOW_VERSION	=1.9.0#
 XRETRY_REQNOLL_VERSION	=1.1.0#
 XRETRY_V3_VERSION		=1.0.0-rc3#
-XRETRY_V3_REQNOLL_VERSION	=1.0.0-alpha#
+XRETRY_V3_REQNOLL_VERSION	=0.1.0-alpha1#
 
 
 .PHONY: clean
@@ -144,6 +144,7 @@ nuget-create:
 	
 	dotnet pack ../src/xRetry.v3.Reqnroll \
 		-p:Version=$(XRETRY_V3_REQNOLL_VERSION) \
+		-p:xRetryV3Version=$(XRETRY_V3_VERSION) \
 		-p:NuspecFile=xRetry.v3.Reqnroll.nuspec \
 		--no-build \
 		-c Release \

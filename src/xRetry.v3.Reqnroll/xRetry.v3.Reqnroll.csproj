@@ -4,7 +4,7 @@
         <AssemblyName>xRetry.v3.Reqnroll.Plugin</AssemblyName>
 
         <IsPackable>true</IsPackable>
-        <NuspecProperties>version=$(Version)</NuspecProperties>
+        <NuspecProperties>version=$(Version);xRetryV3Version=$(xRetryV3Version)</NuspecProperties>
         <LangVersion>13.0</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>

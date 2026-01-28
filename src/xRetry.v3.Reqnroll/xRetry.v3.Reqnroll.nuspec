@@ -16,14 +16,16 @@
         <readme>docs\README.md</readme>
 
         <dependencies>
-            <dependency id="Reqnroll.xunit.v3" version="[3.0.0,4.0.0)"/>
-            <dependency id="xRetry" version="[$xRetryVersion$]"/>
             <group targetFramework=".NETStandard2.0">
+                <dependency id="Reqnroll.xunit.v3" version="[3.0.0,4.0.0)"/>
                 <dependency id="xunit.v3.extensibility.core" version="[3.0.0,4.0.0)"/>
+                <dependency id="xRetry.v3" version="[$xRetryV3Version$]"/>
             </group>
 
             <group targetFramework=".NETFramework4.7.2">
+                <dependency id="Reqnroll.xunit.v3" version="[3.0.0,4.0.0)"/>
                 <dependency id="xunit.v3.extensibility.core" version="[3.0.0,4.0.0)"/>
+                <dependency id="xRetry.v3" version="[$xRetryV3Version$]"/>
             </group>
         </dependencies>
     </metadata>
