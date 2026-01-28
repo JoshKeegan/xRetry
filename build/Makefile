@@ -63,7 +63,7 @@ unit-tests-run: \
 	unit-tests-run-specflow \
 	unit-tests-run-reqnroll \
 	unit-tests-run-main-v3 \
-	unit-tests-run-single-threaded-v3
+	unit-tests-run-single-threaded-v3 \
 	unit-tests-run-reqnroll-v3
 
 .PHONY: unit-tests-run-main
