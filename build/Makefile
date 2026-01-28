@@ -54,7 +54,7 @@ build: clean
 		dotnet build -c Release --no-restore
 		
 	cd ../test/UnitTests.v3.Reqnroll && \
-        		dotnet build -c Release --no-restore
+	dotnet build -c Release --no-restore
 
 .PHONY: unit-tests-run
 unit-tests-run: \
