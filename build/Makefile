@@ -2,7 +2,7 @@ XRETRY_VERSION			=1.9.0#
 XRETRY_SPECFLOW_VERSION	=1.9.0#
 XRETRY_REQNOLL_VERSION	=1.1.0#
 XRETRY_V3_VERSION		=1.0.0-rc3#
-XRETRY_V3_REQNOLL_VERSION	=0.1.0-alpha1#
+XRETRY_V3_REQNROLL_VERSION	=0.1.0-alpha1#
 
 
 .PHONY: clean
@@ -33,7 +33,7 @@ build: clean
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_REQNOLL_VERSION)
 		
 	cd ../src/xRetry.v3.Reqnroll && \
-    		dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_REQNOLL_VERSION)
+    		dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_REQNROLL_VERSION)
 
 	cd ../test/UnitTests && \
 		dotnet build -c Release --no-restore
@@ -143,7 +143,7 @@ nuget-create:
 		-o ../artefacts/nuget
 	
 	dotnet pack ../src/xRetry.v3.Reqnroll \
-		-p:Version=$(XRETRY_V3_REQNOLL_VERSION) \
+		-p:Version=$(XRETRY_V3_REQNROLL_VERSION) \
 		-p:xRetryV3Version=$(XRETRY_V3_VERSION) \
 		-p:NuspecFile=xRetry.v3.Reqnroll.nuspec \
 		--no-build \
