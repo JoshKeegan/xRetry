@@ -24,7 +24,7 @@ build: clean
 
 # SpecFlow & Reqnroll plugins must be built before the tests
 	cd ../src/xRetry.v3 && \
-    		dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_VERSION)
+    	dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_VERSION)
 
 	cd ../src/xRetry.SpecFlow && \
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_SPECFLOW_VERSION)
@@ -33,7 +33,7 @@ build: clean
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_REQNOLL_VERSION)
 		
 	cd ../src/xRetry.v3.Reqnroll && \
-    		dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_REQNROLL_VERSION)
+    	dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_REQNROLL_VERSION)
 
 	cd ../test/UnitTests && \
 		dotnet build -c Release --no-restore
@@ -54,7 +54,7 @@ build: clean
 		dotnet build -c Release --no-restore
 		
 	cd ../test/UnitTests.v3.Reqnroll && \
-	dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore
 
 .PHONY: unit-tests-run
 unit-tests-run: \
