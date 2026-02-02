@@ -27,7 +27,6 @@
         <file src="xRetry.v3.Reqnroll.props" target="build"/>
 
         <file src="bin\Release\netstandard2.0\xRetry.v3.Reqnroll.Plugin.dll" target="build\netstandard2.0"/>
-        <file src="bin\Release\net472\xRetry.v3.Reqnroll.Plugin.dll" target="build\net472"/>
         <file src="README.md" target="docs\"/>
     </files>
 </package>
