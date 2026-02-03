@@ -26,7 +26,7 @@ public class TestGeneratorProvider(
 
     private readonly IUnitTestGeneratorProvider unitTestGeneratorProviderImplementation =
         objectContainer.Resolve<IUnitTestGeneratorProvider>("xunit3");
-    
+
     public void SetTestMethodIgnore(TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
     {
         unitTestGeneratorProviderImplementation.SetTestMethodIgnore(generationContext, testMethod);
@@ -38,11 +38,8 @@ public class TestGeneratorProvider(
         string scenarioTitle)
     {
         unitTestGeneratorProviderImplementation.SetRowTest(generationContext, testMethod, scenarioTitle);
-
-        var featureTags = generationContext.Feature.Tags.Select(t => StripLeadingAtSign(t.Name)).ToArray();
-
-
-        ApplyRetry(featureTags, testMethod);
+        var featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
+        applyRetry(featureTags, testMethod);
     }
 
     public void SetRow(TestClassGenerationContext generationContext, CodeMemberMethod testMethod,
@@ -129,8 +126,8 @@ public class TestGeneratorProvider(
         string friendlyTestName)
     {
         unitTestGeneratorProviderImplementation.SetTestMethod(generationContext, testMethod, friendlyTestName);
-        var featureTags = generationContext.Feature.Tags.Select(t => StripLeadingAtSign(t.Name)).ToArray();
-        ApplyRetry(featureTags, testMethod);
+        var featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
+        applyRetry(featureTags, testMethod);
     }
 
     // Called for both scenarios & scenario outlines, but only if it has tags
@@ -139,11 +136,9 @@ public class TestGeneratorProvider(
     {
         // Optimisation: Prevent multiple enumerations
         scenarioCategories = scenarioCategories as string[] ?? scenarioCategories.ToArray();
-
         unitTestGeneratorProviderImplementation.SetTestMethodCategories(generationContext, testMethod,
             scenarioCategories);
-
-        ApplyRetry((string[]) scenarioCategories, testMethod);
+        applyRetry((string[]) scenarioCategories, testMethod);
     }
 
     /// <summary>
@@ -154,12 +149,12 @@ public class TestGeneratorProvider(
     ///     feature, otherwise for the scenario
     /// </param>
     /// <param name="testMethod">Test method we are applying retries for</param>
-    private void ApplyRetry(IList<string> tags, CodeMemberMethod testMethod)
+    private void applyRetry(IList<string> tags, CodeMemberMethod testMethod)
     {
         // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
-        if (IsTestMethodAlreadyIgnored(testMethod)) return;
+        if (isTestMethodAlreadyIgnored(testMethod)) return;
 
-        var strRetryTag = GetRetryTag(tags);
+        var strRetryTag = getRetryTag(tags);
         if (strRetryTag == null) return;
 
         var retryTag = retryTagParser.Parse(strRetryTag);
@@ -193,12 +188,12 @@ public class TestGeneratorProvider(
             retryAttribute.Arguments.Add(originalAttribute.Arguments[i]);
     }
 
-    private static string StripLeadingAtSign(string s)
+    private static string stripLeadingAtSign(string s)
     {
         return s.StartsWith("@") ? s.Substring(1) : s;
     }
 
-    private static bool IsTestMethodAlreadyIgnored(CodeMemberMethod testMethod)
+    private static bool isTestMethodAlreadyIgnored(CodeMemberMethod testMethod)
     {
         var testAttributes = testMethod.CustomAttributes
             .OfType<CodeAttributeDeclaration>()
@@ -209,7 +204,7 @@ public class TestGeneratorProvider(
             .Any(containsSkip => containsSkip);
     }
 
-    private static string? GetRetryTag(IEnumerable<string> tags)
+    private static string? getRetryTag(IEnumerable<string> tags)
     {
         return tags.FirstOrDefault(t =>
             t.StartsWith(Constants.RETRY_TAG, StringComparison.OrdinalIgnoreCase) &&
