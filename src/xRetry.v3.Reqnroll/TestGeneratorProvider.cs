@@ -26,14 +26,14 @@ public class TestGeneratorProvider(
 
     private readonly IUnitTestGeneratorProvider unitTestGeneratorProviderImplementation =
         objectContainer.Resolve<IUnitTestGeneratorProvider>("xunit3");
-
-    // Called for scenario outlines, even when it has no tags.
-    // We don't yet have access to tags against the scenario at this point, but can handle feature tags now.
+    
     public void SetTestMethodIgnore(TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
     {
         unitTestGeneratorProviderImplementation.SetTestMethodIgnore(generationContext, testMethod);
     }
 
+    // Called for scenario outlines, even when it has no tags.
+    // We don't yet have access to tags against the scenario at this point, but can handle feature tags now.
     public void SetRowTest(TestClassGenerationContext generationContext, CodeMemberMethod testMethod,
         string scenarioTitle)
     {
