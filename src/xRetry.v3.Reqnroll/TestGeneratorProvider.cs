@@ -16,12 +16,12 @@ public class TestGeneratorProvider(
     IRetryTagParser retryTagParser)
     : IUnitTestGeneratorProvider
 {
-    private const string RetryFactAttribute = "xRetry.v3.RetryFact";
-    private const string RetryTheoryAttribute = "xRetry.v3.RetryTheory";
-    private const string FactAttribute = "Xunit.FactAttribute";
-    private const string TheoryAttribute = "Xunit.TheoryAttribute";
+    private const string RETRY_FACT_ATTRIBUTE = "xRetry.v3.RetryFact";
+    private const string RETRY_THEORY_ATTRIBUTE = "xRetry.v3.RetryTheory";
+    private const string FACT_ATTRIBUTE = "Xunit.FactAttribute";
+    private const string THEORY_ATTRIBUTE = "Xunit.TheoryAttribute";
 
-    private const string SkipPropertyName = "Skip";
+    private const string SKIP_PROPERTY_NAME = "Skip";
 
 
     private readonly IUnitTestGeneratorProvider unitTestGeneratorProviderImplementation =
@@ -167,16 +167,16 @@ public class TestGeneratorProvider(
         // Remove the original fact or theory attribute
         var originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
             .FirstOrDefault(a =>
-                a.Name is FactAttribute or TheoryAttribute or RetryFactAttribute or RetryTheoryAttribute);
+                a.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE or RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE);
         if (originalAttribute == null) return;
 
         testMethod.CustomAttributes.Remove(originalAttribute);
 
         // Add the Retry attribute
         var retryAttribute = codeDomHelper.AddAttribute(testMethod,
-            originalAttribute.Name is FactAttribute or RetryFactAttribute
-                ? RetryFactAttribute
-                : RetryTheoryAttribute);
+            originalAttribute.Name is FACT_ATTRIBUTE or RETRY_FACT_ATTRIBUTE
+                ? RETRY_FACT_ATTRIBUTE
+                : RETRY_THEORY_ATTRIBUTE);
 
         retryAttribute.Arguments.Add(new CodeAttributeArgument(
             new CodePrimitiveExpression(retryTag.MaxRetries ?? v3.RetryFactAttribute.DEFAULT_MAX_RETRIES)));
@@ -185,7 +185,7 @@ public class TestGeneratorProvider(
                                         v3.RetryFactAttribute.DEFAULT_DELAY_BETWEEN_RETRIES_MS)));
 
         // Copy arguments from the original attribute. If it's already a retry attribute, don't copy the retry arguments though
-        for (var i = originalAttribute.Name is RetryFactAttribute or RetryTheoryAttribute
+        for (var i = originalAttribute.Name is RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE
                  ? retryAttribute.Arguments.Count
                  : 0;
              i < originalAttribute.Arguments.Count;
@@ -202,10 +202,10 @@ public class TestGeneratorProvider(
     {
         var testAttributes = testMethod.CustomAttributes
             .OfType<CodeAttributeDeclaration>()
-            .Where(attr => attr.Name is FactAttribute or TheoryAttribute);
+            .Where(attr => attr.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE);
 
         return testAttributes.Select(attribute => attribute.Arguments.OfType<CodeAttributeArgument>()
-                .Any(arg => string.Equals(arg.Name, SkipPropertyName, StringComparison.InvariantCultureIgnoreCase)))
+                .Any(arg => string.Equals(arg.Name, SKIP_PROPERTY_NAME, StringComparison.InvariantCultureIgnoreCase)))
             .Any(containsSkip => containsSkip);
     }
 
