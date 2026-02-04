@@ -5,6 +5,13 @@ retried in different testing frameworks.
 Instructions:
  - Read the "Contributing" section of the main README.md for general guidance for developers.
  - Build scripts use `make`, are under `build/`, and should be run from this directory.
+   - If using Linux, these should work with a bash terminal.
+   - If using Mac, these should work with a zsh terminal.
+   - If using Windows, these will not work with Powershell or cmd. You can either:
+     - Use bash, e.g. via Git Bash or WSL.
+     - Use docker to run them in Linux, volume mounting the repo into the container.
+   - Regardless of OS, you can use docker to get the same environment as CI with 
+     `docker run --rm -it -v $(pwd):/src -w /src/build joshkeegan/dotnet-mixed-build:8.0`
  - When editing documentation, many of the files are generated. Generated files will have
     "This file is auto-generated..." at the top. Look under `docs/` for originals and use `make docs` to generate.
  - Due to the different test frameworks supported, many projects in this repo are quite similar. When making changes to
