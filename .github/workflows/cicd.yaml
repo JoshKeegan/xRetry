@@ -44,6 +44,10 @@ jobs:
       - name: Run Unit Tests (Single Threaded xRetry.v3)
         working-directory: build
         run: make unit-tests-run-single-threaded-v3
+        
+      - name: Run Unit Tests (Reqnroll v3)
+        working-directory: build
+        run: make unit-tests-run-reqnroll-v3
 
       - name: Create Nuget Packages
         working-directory: build
@@ -114,6 +118,11 @@ jobs:
         working-directory: deploy
         run: /bin/bash deploy.sh xRetry.Reqnroll ${{ secrets.NUGET_API_KEY }}
 
+      - name: "Release: xRetry.v3.Reqnroll"
+        if: startsWith(github.ref, 'refs/tags/xRetry.v3.Reqnroll_v')
+        working-directory: deploy
+        run: /bin/bash deploy.sh xRetry.v3.Reqnroll ${{ secrets.NUGET_API_KEY }}
+        
       - name: "Release: xRetry.v3"
         if: startsWith(github.ref, 'refs/tags/xRetry.v3_v')
         working-directory: deploy
