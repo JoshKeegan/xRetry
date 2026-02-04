@@ -8,7 +8,7 @@ Above any `Fact` test case that should be retried, replace the `Fact` attribute,
 `RetryFact`, e.g:
 
 ```cs
-using xRetry;
+using xRetry.v3;
 
 private static int defaultNumCalls = 0;
 

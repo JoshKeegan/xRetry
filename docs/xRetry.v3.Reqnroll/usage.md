@@ -1,7 +1,6 @@
 ## Usage: Reqnroll 3
 
-Add the [
-`xRetry.v3.Reqnroll` NuGet package](https://www.nuget.org/packages/xRetry.v3.Reqnroll "xRetry NuGet.Reqnroll package")
+Add the [`xRetry.v3.Reqnroll` NuGet package](https://www.nuget.org/packages/xRetry.v3.Reqnroll "xRetry NuGet.Reqnroll package")
 to your project.
 
 ### Scenarios (and outlines)
