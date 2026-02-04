@@ -23,6 +23,7 @@ repo:
 	$(call append,xRetry/usage.md,../README.md,0)
 	$(call append,xRetry.SpecFlow/usage.md,../README.md,0)
 	$(call append,xRetry.Reqnroll/usage.md,../README.md,0)
+	$(call append,xRetry.v3.Reqnroll/usage.md,../README.md,0)
 	$(call append,logs.md,../README.md,0)
 	$(call append,contributing.md,../README.md,0)
 	$(call append,repo/footer.md,../README.md,0)
@@ -56,6 +57,16 @@ xRetry.Reqnroll:
 	$(call append,xRetry.Reqnroll/usage.md,../src/xRetry.Reqnroll/README.md,0)
 	$(call append,logs.md,../src/xRetry.Reqnroll/README.md,0)
 	$(call append,issues.md,../src/xRetry.Reqnroll/README.md,0)
+	
+.PHONY: xRetry.v3.Reqnroll
+xRetry.v3.Reqnroll:
+	echo $(GENERATED_DISCLAIMER) > ../src/xRetry.v3.Reqnroll/README.md
+	$(call append,xRetry.v3.Reqnroll/header.md,../src/xRetry.v3.Reqnroll/README.md,0)
+	$(call append,ciBadge.md,../src/xRetry.v3.Reqnroll/README.md,0)
+	$(call append,whenToUse.md,../src/xRetry.v3.Reqnroll/README.md,0)
+	$(call append,xRetry.v3.Reqnroll/usage.md,../src/xRetry.v3.Reqnroll/README.md,0)
+	$(call append,logs.md,../src/xRetry.v3.Reqnroll/README.md,0)
+	$(call append,issues.md,../src/xRetry.v3.Reqnroll/README.md,0)
 
 .PHONY: xRetry.v3
 xRetry.v3:
@@ -68,4 +79,4 @@ xRetry.v3:
 	$(call append,issues.md,../src/xRetry.v3/README.md,0)
 
 .PHONY: all
-all: repo xRetry xRetry.SpecFlow xRetry.Reqnroll xRetry.v3
+all: repo xRetry xRetry.SpecFlow xRetry.Reqnroll xRetry.v3 xRetry.v3.Reqnroll
