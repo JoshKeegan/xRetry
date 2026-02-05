@@ -11,7 +11,9 @@ Instructions:
      - Use bash, e.g. via Git Bash or WSL.
      - Use docker to run them in Linux, volume mounting the repo into the container.
    - Regardless of OS, you can use docker to get the same environment as CI with 
-     `docker run --rm -it -v $(pwd):/src -w /src/build joshkeegan/dotnet-mixed-build:8.0`
+     `MSYS_NO_PATHCONV=1 docker run --rm -it -v $(pwd):/src -w /src/build joshkeegan/dotnet-mixed-build:8.0`
+     - `MSYS_NO_PATHCONV=1` is only relevant when using Git Bash on Windows, and won't change anything in other 
+        environments.
  - When editing documentation, many of the files are generated. Generated files will have
     "This file is auto-generated..." at the top. Look under `docs/` for originals and use `make docs` to generate.
  - Due to the different test frameworks supported, many projects in this repo are quite similar. When making changes to
