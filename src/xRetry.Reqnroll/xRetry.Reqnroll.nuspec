@@ -15,7 +15,7 @@
 
     <dependencies>
       <dependency id="Reqnroll.xUnit" version="[2.0.0,4.0.0)" />
-      <dependency id="xRetry" version="[$xRetryVersion$]" />
+      <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
     </dependencies>
   </metadata>
 

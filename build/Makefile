@@ -1,10 +1,10 @@
 XRETRY_VERSION			=1.9.0#
+XRETRY_VERSION_MAX		:= $(shell expr $(shell echo $(XRETRY_VERSION) | cut -d. -f1) + 1).0.0
 XRETRY_SPECFLOW_VERSION	=1.9.0#
 XRETRY_REQNOLL_VERSION	=1.1.0#
 XRETRY_V3_VERSION		=1.0.0-rc3#
+XRETRY_V3_VERSION_MAX	:= $(shell expr $(shell echo $(XRETRY_V3_VERSION) | cut -d. -f1) + 1).0.0
 XRETRY_V3_REQNROLL_VERSION	=0.1.0-alpha1#
-
-
 .PHONY: clean
 clean:
 	rm -r ../artefacts || true
@@ -121,7 +121,8 @@ nuget-create:
 
 	dotnet pack ../src/xRetry.SpecFlow \
 		-p:Version=$(XRETRY_SPECFLOW_VERSION) \
-		-p:xRetryVersion=$(XRETRY_VERSION) \
+		-p:xRetryVersionMin=$(XRETRY_VERSION) \
+		-p:xRetryVersionMax=$(XRETRY_VERSION_MAX) \
 		-p:NuspecFile=xRetry.SpecFlow.nuspec \
 		--no-build \
 		-c Release \
@@ -129,7 +130,8 @@ nuget-create:
 	
 	dotnet pack ../src/xRetry.Reqnroll \
 		-p:Version=$(XRETRY_REQNOLL_VERSION) \
-		-p:xRetryVersion=$(XRETRY_VERSION) \
+		-p:xRetryVersionMin=$(XRETRY_VERSION) \
+		-p:xRetryVersionMax=$(XRETRY_VERSION_MAX) \
 		-p:NuspecFile=xRetry.Reqnroll.nuspec \
 		--no-build \
 		-c Release \
@@ -144,7 +146,8 @@ nuget-create:
 	
 	dotnet pack ../src/xRetry.v3.Reqnroll \
 		-p:Version=$(XRETRY_V3_REQNROLL_VERSION) \
-		-p:xRetryV3Version=$(XRETRY_V3_VERSION) \
+		-p:xRetryV3VersionMin=$(XRETRY_V3_VERSION) \
+		-p:xRetryV3VersionMax=$(XRETRY_V3_VERSION_MAX) \
 		-p:NuspecFile=xRetry.v3.Reqnroll.nuspec \
 		--no-build \
 		-c Release \
