@@ -15,7 +15,7 @@
 
     <dependencies>
       <dependency id="SpecFlow.xUnit" version="[3.9.50,3.10.0)" />
-      <dependency id="xRetry" version="[$xRetryVersion$]" />
+      <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
     </dependencies>
   </metadata>
 
