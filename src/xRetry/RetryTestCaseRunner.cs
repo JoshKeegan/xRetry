@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -26,6 +27,8 @@ namespace xRetry
             CancellationTokenSource cancellationTokenSource,
             Func<IMessageBus, Task<RunSummary>> fnRunSingle)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             for (int i = 1; ; i++)
             {
                 // Prevent messages from the test run from being passed through, as we don't want 
@@ -55,7 +58,31 @@ namespace xRetry
                                 testCase.DisplayName, testCase.MaxRetries));
                         }
 
-                        blockingMessageBus.Flush();
+                        summary.Time = (decimal) stopwatch.Elapsed.TotalSeconds;
+                        blockingMessageBus.Flush(message =>
+                        {
+                            // Replace TestResultMessages, replacing the execution time with the total time, including
+                            // all attempts & delays between them. Otherwise, a user will only see the execution time
+                            // of the last attempt.
+                            switch (message)
+                            {
+                                case TestPassed tp:
+                                    return new TestPassed(tp.Test, summary.Time, tp.Output);
+                                case TestFailed tf:
+                                    return new TestFailed(
+                                        tf.Test,
+                                        summary.Time,
+                                        tf.Output,
+                                        tf.ExceptionTypes,
+                                        tf.Messages,
+                                        tf.StackTraces,
+                                        tf.ExceptionParentIndices);
+                                // TestSkipped omitted even though it implements TestResultMessage since execution time
+                                // is hardcoded to 0.
+                                default:
+                                    return message;
+                            }
+                        });
                         return summary;
                     }
                     // Otherwise log that we've had a failed run and will retry
