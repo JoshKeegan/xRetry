@@ -1,9 +1,9 @@
-XRETRY_VERSION			=1.9.0#
-XRETRY_VERSION_MAX		:= $(shell expr $(shell echo $(XRETRY_VERSION) | cut -d. -f1) + 1).0.0
-XRETRY_SPECFLOW_VERSION	=1.9.0#
-XRETRY_REQNOLL_VERSION	=1.1.0#
-XRETRY_V3_VERSION		=1.0.0-rc3#
-XRETRY_V3_VERSION_MAX	:= $(shell expr $(shell echo $(XRETRY_V3_VERSION) | cut -d. -f1) + 1).0.0
+XRETRY_VERSION				=1.9.0#
+XRETRY_VERSION_MAX			:= $(shell expr $(shell echo $(XRETRY_VERSION) | cut -d. -f1) + 1).0.0
+XRETRY_SPECFLOW_VERSION		=1.9.0#
+XRETRY_REQNOLL_VERSION		=1.1.0#
+XRETRY_V3_VERSION			=1.0.0-rc3#
+XRETRY_V3_VERSION_MAX		:= $(shell expr $(shell echo $(XRETRY_V3_VERSION) | cut -d. -f1) + 1).0.0
 XRETRY_V3_REQNROLL_VERSION	=0.1.0-alpha1#
 .PHONY: clean
 clean:
