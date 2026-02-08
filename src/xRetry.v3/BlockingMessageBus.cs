@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using Xunit.Sdk;
 using Xunit.v3;
@@ -34,10 +35,11 @@ namespace xRetry.v3
         /// <summary>
         /// Write the cached messages to the underlying message bus
         /// </summary>
-        public void Flush()
+        public void Flush(Action<IMessageSinkMessage> messageModifier)
         {
             while (messageQueue.TryDequeue(out IMessageSinkMessage message))
             {
+                messageModifier(message);
                 underlyingMessageBus.QueueMessage(message);
             }
         }

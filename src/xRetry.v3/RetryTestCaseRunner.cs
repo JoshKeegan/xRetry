@@ -117,8 +117,14 @@ namespace xRetry.v3
                             retryableTestCase.MaxRetries));
                     }
 
-                    blockingMessageBus.Flush();
                     summary.Time = (decimal) stopwatch.Elapsed.TotalSeconds;
+                    blockingMessageBus.Flush(message =>
+                    {
+                        if (message is TestResultMessage trm)
+                        {
+                            trm.ExecutionTime = summary.Time;
+                        }
+                    });
                     return summary;
                 }
                 // Otherwise log that we've had a failed run and will retry
