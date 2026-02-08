@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Sdk;
@@ -46,24 +45,24 @@ namespace xRetry.v3
         }
 
         /// <inheritdoc />
-        public ValueTask<RunSummary> Run(
+        public async ValueTask<RunSummary> Run(
             ExplicitOption explicitOption,
             IMessageBus messageBus,
             object?[] constructorArguments,
             ExceptionAggregator aggregator,
-            CancellationTokenSource cancellationTokenSource) =>
-            RetryTestCaseRunner.Run(
+            CancellationTokenSource cancellationTokenSource)
+        {
+            return await RetryTestCaseRunner.Instance.Run(
                 this,
+                await CreateTests(),
                 messageBus,
+                aggregator,
                 cancellationTokenSource,
-                async blockingMessageBus => await XunitTestRunner.Instance.Run(
-                    (await CreateTests()).First(), // Can only be one test in XunitTestCase.
-                    blockingMessageBus,
-                    constructorArguments,
-                    explicitOption,
-                    aggregator.Clone(),
-                    cancellationTokenSource,
-                    TestMethod.BeforeAfterTestAttributes));
+                TestCaseDisplayName,
+                SkipReason,
+                explicitOption,
+                constructorArguments);
+        }
 
         protected override void Serialize(IXunitSerializationInfo data)
         {

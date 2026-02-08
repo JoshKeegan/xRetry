@@ -57,28 +57,16 @@ namespace xRetry.v3
             ExceptionAggregator aggregator,
             CancellationTokenSource cancellationTokenSource)
         {
-            var overall = new RunSummary();
-
-            var tests = await CreateTests();
-            foreach (var test in tests)
-            {
-                var single = await RetryTestCaseRunner.Run(
-                    this,
-                    messageBus,
-                    cancellationTokenSource,
-                    async blockingMessageBus => await XunitTestRunner.Instance.Run(
-                        test,
-                        blockingMessageBus,
-                        constructorArguments,
-                        explicitOption,
-                        aggregator.Clone(),
-                        cancellationTokenSource,
-                        TestMethod.BeforeAfterTestAttributes));
-
-                overall.Aggregate(single);
-            }
-
-            return overall;
+            return await RetryTestCaseRunner.Instance.Run(
+                this,
+                await CreateTests(),
+                messageBus,
+                aggregator,
+                cancellationTokenSource,
+                TestCaseDisplayName,
+                SkipReason,
+                explicitOption,
+                constructorArguments);
         }
 
         protected override void Serialize(IXunitSerializationInfo data)

@@ -1,68 +1,142 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit.Internal;
+using Xunit.Sdk;
 using Xunit.v3;
 
 namespace xRetry.v3
 {
-    // Note: public so that other xunit extensions can call this, allowing xRetry to be 
-    //  integrated into them. e.g. Xunit.DependencyInjection.xRetry
-    public static class RetryTestCaseRunner
+    /// <summary>
+    /// The test case runner for xRetry v3 tests, with retry and delay handling.
+    /// xRetry equivalent of the built-in Xunit.v3.XunitTestCaseRunner.
+    /// </summary>
+    public class RetryTestCaseRunner
+        : XunitTestCaseRunnerBase<XunitTestCaseRunnerContext, IXunitTestCase, IXunitTest>
     {
+        private RetryTestCaseRunner() { }
+
+        public static RetryTestCaseRunner Instance { get; } = new();
+
         /// <summary>
-        /// Runs a retryable test case, handling any wait and retry logic between test runs, reporting statuses out to xunit etc...
+        /// Runs a test case with retry and delay handling.
         /// </summary>
-        /// <param name="testCase">The test case to be retried</param>
-        /// <param name="messageBus">The message bus xunit is listening for statuses to report on</param>
-        /// <param name="cancellationTokenSource">The cancellation token source from xunit</param>
-        /// <param name="fnRunSingle">(async) Lambda to run this test case once (without retries) - takes the blocking message bus and returns the test run result</param>
-        /// <returns>Resulting run summary</returns>
-        public static async ValueTask<RunSummary> Run(
-            IRetryableTestCase testCase,
+        /// <param name="testCase">The test case that this invocation belongs to.</param>
+        /// <param name="tests">The tests for the test case.</param>
+        /// <param name="messageBus">The message bus to report run status to.</param>
+        /// <param name="aggregator">The exception aggregator used to run code and collect exceptions.</param>
+        /// <param name="cancellationTokenSource">The task cancellation token source, used to cancel the test run.</param>
+        /// <param name="displayName">The display name of the test case.</param>
+        /// <param name="skipReason">The skip reason, if the test is to be skipped.</param>
+        /// <param name="explicitOption">A flag to indicate how explicit tests should be treated.</param>
+        /// <param name="constructorArguments">The arguments to be passed to the test class constructor.</param>
+        /// <returns>
+        /// Run summary information about the test that was run.
+        /// The .Time property includes any retry attempts.
+        /// </returns>
+        /// <remarks>
+        /// This entry point is used for both single-test (like RetryFactAttribute and individual data rows for
+        /// RetryTheoryAttribute tests) and multi-test test cases (like RetryTheoryAttribute when pre-enumeration
+        /// is disable or the theory data was not serializable).
+        /// </remarks>
+        public async ValueTask<RunSummary> Run(
+            IXunitTestCase testCase,
+            IReadOnlyCollection<IXunitTest> tests,
             IMessageBus messageBus,
+            ExceptionAggregator aggregator,
             CancellationTokenSource cancellationTokenSource,
-            Func<IMessageBus, ValueTask<RunSummary>> fnRunSingle)
+            string displayName,
+            string? skipReason,
+            ExplicitOption explicitOption,
+            object?[] constructorArguments)
         {
+            Guard.ArgumentNotNull(testCase);
+            Guard.ArgumentNotNull(displayName);
+            Guard.ArgumentNotNull(constructorArguments);
+
+            await using var ctxt = new XunitTestCaseRunnerContext(
+                testCase,
+                tests,
+                messageBus,
+                aggregator,
+                cancellationTokenSource,
+                displayName,
+                skipReason,
+                explicitOption,
+                constructorArguments);
+            await ctxt.InitializeAsync();
+
+            return await Run(ctxt);
+        }
+
+        protected override async ValueTask<RunSummary> RunTest(
+            XunitTestCaseRunnerContext ctxt,
+            IXunitTest test)
+        {
+            Guard.ArgumentNotNull(ctxt);
+            Guard.ArgumentNotNull(test);
+
+            if (ctxt.TestCase is not IRetryableTestCase retryableTestCase)
+            {
+                throw new ArgumentException("ctxt.TestCase must implement IRetryableTestCase");
+            }
+
             var stopwatch = Stopwatch.StartNew();
-            messageBus.QueueMessage(ToTestCaseStarting(testCase));
 
             for (int i = 1; ; i++)
             {
                 // Prevent messages from the test run from being passed through, as we don't want 
                 //  a message to mark the test as failed when we're going to retry it
-                using BlockingMessageBus blockingMessageBus = new BlockingMessageBus(messageBus);
-                messageBus.QueueMessage(new DiagnosticMessage("Running test \"{0}\" attempt ({1}/{2})",
-                    testCase.TestCaseDisplayName, i, testCase.MaxRetries));
+                using BlockingMessageBus blockingMessageBus = new BlockingMessageBus(ctxt.MessageBus);
 
-                RunSummary summary = await fnRunSingle(blockingMessageBus);
+                ctxt.MessageBus.QueueMessage(new DiagnosticMessage(
+                    "Running test \"{0}\" attempt ({1}/{2})",
+                    retryableTestCase.TestCaseDisplayName,
+                    i,
+                    retryableTestCase.MaxRetries));
 
-                // If we succeeded, skipped, or we've reached the max retries return the result
-                if (summary.Failed == 0 || i == testCase.MaxRetries)
+                RunSummary summary = await XunitTestRunner.Instance.Run(
+                    test,
+                    blockingMessageBus,
+                    ctxt.ConstructorArguments,
+                    ctxt.ExplicitOption,
+                    ctxt.Aggregator.Clone(),
+                    ctxt.CancellationTokenSource,
+                    ctxt.BeforeAfterTestAttributes);
+
+                if (summary.Failed == 0 || i == retryableTestCase.MaxRetries)
                 {
                     // If we have failed (after all retries, log that)
                     if (summary.Failed != 0)
                     {
-                        messageBus.QueueMessage(new DiagnosticMessage(
+                        ctxt.MessageBus.QueueMessage(new DiagnosticMessage(
                             "Test \"{0}\" has failed and been retried the maximum number of times ({1})",
-                            testCase.TestCaseDisplayName, testCase.MaxRetries));
+                            retryableTestCase.TestCaseDisplayName,
+                            retryableTestCase.MaxRetries));
                     }
 
                     blockingMessageBus.Flush();
-                    messageBus.QueueMessage(ToTestCaseFinished(testCase, summary, stopwatch));
+                    summary.Time = (decimal) stopwatch.Elapsed.TotalSeconds;
                     return summary;
                 }
                 // Otherwise log that we've had a failed run and will retry
-                messageBus.QueueMessage(new DiagnosticMessage(
-                    "Test \"{0}\" failed but is set to retry ({1}/{2}) . . .", testCase.TestCaseDisplayName, i,
-                    testCase.MaxRetries));
+                ctxt.MessageBus.QueueMessage(new DiagnosticMessage(
+                    "Test \"{0}\" failed but is set to retry ({1}/{2}) . . .",
+                    retryableTestCase.TestCaseDisplayName,
+                    i,
+                    retryableTestCase.MaxRetries));
 
                 // If there is a delay between test attempts, apply it now
-                if (testCase.DelayBetweenRetriesMs > 0)
+                if (retryableTestCase.DelayBetweenRetriesMs > 0)
                 {
-                    messageBus.QueueMessage(new DiagnosticMessage(
-                        "Test \"{0}\" attempt ({1}/{2}) delayed by {3}ms. Waiting . . .", testCase.TestCaseDisplayName,
-                        i, testCase.MaxRetries, testCase.DelayBetweenRetriesMs));
+                    ctxt.MessageBus.QueueMessage(new DiagnosticMessage(
+                        "Test \"{0}\" attempt ({1}/{2}) delayed by {3}ms. Waiting . . .",
+                        retryableTestCase.TestCaseDisplayName,
+                        i,
+                        retryableTestCase.MaxRetries,
+                        retryableTestCase.DelayBetweenRetriesMs));
 
                     // Don't await to prevent thread hopping.
                     //  If all of a users test cases in a collection/class are synchronous and expecting to not thread-hop
@@ -70,66 +144,9 @@ namespace xRetry.v3
                     //  a more modern async-friendly mechanism) then if a thread-hop were to happen here we'd get flickering tests.
                     //  SpecFlow relies on this as they use the managed thread ID to separate instances of some of their internal classes, which caused
                     //  a this problem for xRetry.SpecFlow: https://github.com/JoshKeegan/xRetry/issues/18
-                    Task.Delay(testCase.DelayBetweenRetriesMs, cancellationTokenSource.Token).Wait();
+                    Task.Delay(retryableTestCase.DelayBetweenRetriesMs, ctxt.CancellationTokenSource.Token).Wait();
                 }
             }
-        }
-
-        public static TestCaseStarting ToTestCaseStarting(IRetryableTestCase testCase)
-        {
-            var assemblyUniqueID = testCase.TestCollection.TestAssembly.UniqueID;
-            var testCollectionUniqueID = testCase.TestCollection.UniqueID;
-            var testCaseUniqueID = testCase.UniqueID;
-            var testClassUniqueID = testCase.TestClass?.UniqueID;
-            var testMethodUniqueID = testCase.TestMethod?.UniqueID;
-
-            return new TestCaseStarting()
-            {
-                AssemblyUniqueID = assemblyUniqueID,
-                Explicit = testCase.Explicit,
-                SkipReason = testCase.SkipReason,
-                SourceFilePath = testCase.SourceFilePath,
-                SourceLineNumber = testCase.SourceLineNumber,
-                TestCaseDisplayName = testCase.TestCaseDisplayName,
-                TestCaseUniqueID = testCaseUniqueID,
-                TestClassMetadataToken = testCase.TestClassMetadataToken,
-                TestClassName = testCase.TestClassName,
-                TestClassNamespace = testCase.TestClassNamespace,
-                TestClassSimpleName = testCase.TestClassSimpleName,
-                TestClassUniqueID = testClassUniqueID,
-                TestCollectionUniqueID = testCollectionUniqueID,
-                TestMethodArity = testCase.TestMethodArity,
-                TestMethodMetadataToken = testCase.TestMethodMetadataToken,
-                TestMethodName = testCase.TestMethod?.MethodName,
-                TestMethodParameterTypesVSTest = testCase.TestMethodParameterTypesVSTest,
-                TestMethodReturnTypeVSTest = testCase.TestMethodReturnTypeVSTest,
-                TestMethodUniqueID = testMethodUniqueID,
-                Traits = testCase.Traits,
-            };
-        }
-
-        public static TestCaseFinished ToTestCaseFinished(IRetryableTestCase testCase, RunSummary summary, Stopwatch stopwatch)
-        {
-            var assemblyUniqueID = testCase.TestCollection.TestAssembly.UniqueID;
-            var testCollectionUniqueID = testCase.TestCollection.UniqueID;
-            var testCaseUniqueID = testCase.UniqueID;
-            var testClassUniqueID = testCase.TestClass?.UniqueID;
-            var testMethodUniqueID = testCase.TestMethod?.UniqueID;
-            var executionTime = (decimal) stopwatch.Elapsed.TotalSeconds;
-
-            return new TestCaseFinished
-            {
-                AssemblyUniqueID = assemblyUniqueID,
-                ExecutionTime = executionTime,
-                TestCaseUniqueID = testCaseUniqueID,
-                TestClassUniqueID = testClassUniqueID,
-                TestCollectionUniqueID = testCollectionUniqueID,
-                TestMethodUniqueID = testMethodUniqueID,
-                TestsFailed = summary.Failed,
-                TestsNotRun = summary.NotRun,
-                TestsSkipped = summary.Skipped,
-                TestsTotal = summary.Total,
-            };
         }
     }
 }
