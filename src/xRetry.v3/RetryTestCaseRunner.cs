@@ -105,7 +105,8 @@ namespace xRetry.v3
                     ctxt.Aggregator.Clone(),
                     ctxt.CancellationTokenSource,
                     ctxt.BeforeAfterTestAttributes);
-
+                
+                // If we succeeded, skipped, or we've reached the max retries return the result
                 if (summary.Failed == 0 || i == retryableTestCase.MaxRetries)
                 {
                     // If we have failed (after all retries, log that)
@@ -120,6 +121,9 @@ namespace xRetry.v3
                     summary.Time = (decimal) stopwatch.Elapsed.TotalSeconds;
                     blockingMessageBus.Flush(message =>
                     {
+                        // Update the execution time on the test result message to be the total time, including
+                        // all attempts & delays between them. Otherwise, a user will only see the execution time of the
+                        // last attempt.
                         if (message is TestResultMessage trm)
                         {
                             trm.ExecutionTime = summary.Time;
