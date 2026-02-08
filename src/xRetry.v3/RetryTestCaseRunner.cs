@@ -105,7 +105,7 @@ namespace xRetry.v3
                     ctxt.Aggregator.Clone(),
                     ctxt.CancellationTokenSource,
                     ctxt.BeforeAfterTestAttributes);
-                
+
                 // If we succeeded, skipped, or we've reached the max retries return the result
                 if (summary.Failed == 0 || i == retryableTestCase.MaxRetries)
                 {
