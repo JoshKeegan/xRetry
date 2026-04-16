@@ -5,9 +5,11 @@
 
     <IsPackable>true</IsPackable>
     <NuspecProperties>version=$(Version)</NuspecProperties>
+    <LangVersion>13.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="xunit.core" Version="2.9.3" />
   </ItemGroup>
 
