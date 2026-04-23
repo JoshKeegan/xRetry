@@ -6,6 +6,7 @@
 # xRetry.Reqnroll
 Retry flickering test cases for Reqnroll when using xUnit.
 
+
 [//]: \# (Src: ciBadge.md)
 
 [![pipeline status](https://github.com/JoshKeegan/xRetry/actions/workflows/cicd.yaml/badge.svg)](https://github.com/JoshKeegan/xRetry/actions)
@@ -25,6 +26,7 @@ This is the intended use case of the library.
 
 If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
 this library should **not** be used to cover it up!
+
 
 [//]: \# (Src: xRetry.Reqnroll/usage.md)
 

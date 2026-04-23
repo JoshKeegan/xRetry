@@ -23,6 +23,7 @@ Retry flickering test cases for xUnit, Reqnroll and SpecFlow in .NET.
 | [Reqnroll](#usage-reqnroll-2)    | xRetry.Reqnroll    | [![xRetry.Reqnroll NuGet Version](https://img.shields.io/nuget/v/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet") [![xRetry.Reqnroll NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.Reqnroll)](https://www.nuget.org/packages/xRetry.Reqnroll "Download xRetry.Reqnroll from NuGet")                         |
 | [Reqnroll v3](#usage-reqnroll-3) | xRetry.v3.Reqnroll | [![xRetry.v3.Reqnroll NuGet Version](https://img.shields.io/nuget/v/xRetry.v3.Reqnroll)](https://www.nuget.org/packages/xRetry.v3.Reqnroll "Download xRetry.v3.Reqnroll from NuGet") [![xRetry.v3.Reqnroll NuGet Downloads](https://img.shields.io/nuget/dt/xRetry.v3.Reqnroll)](https://www.nuget.org/packages/xRetry.v3.Reqnroll "Download xRetry.v3.Reqnroll from NuGet") |
 
+
 [//]: \# (Src: whenToUse.md)
 
 ## When to use this
@@ -37,6 +38,7 @@ This is the intended use case of the library.
 
 If you have a test that covers some flaky code, where sporadic failures are caused by a bug, 
 this library should **not** be used to cover it up!
+
 
 [//]: \# (Src: xRetry.v3/usage.md)
 
