@@ -329,6 +329,9 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
+# AI tools
+.claude/
+
 *.feature.cs
 
 artefacts/
