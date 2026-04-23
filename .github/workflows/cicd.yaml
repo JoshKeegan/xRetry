@@ -28,18 +28,42 @@ jobs:
       - name: Run Unit Tests (Single Threaded xRetry)
         working-directory: build
         run: make unit-tests-run-single-threaded
+
+      - name: Run Unit Tests (Global Config xRetry)
+        working-directory: build
+        run: make unit-tests-run-main-global-config
       
       - name: Run Unit Tests (SpecFlow)
         working-directory: build
         run: make unit-tests-run-specflow
+
+      - name: Run Unit Tests (Global Config SpecFlow)
+        working-directory: build
+        run: make unit-tests-run-specflow-global-config
+
+      - name: Run Unit Tests (Retry Untagged Global Config SpecFlow)
+        working-directory: build
+        run: make unit-tests-run-specflow-global-config-retry-untagged
       
       - name: Run Unit Tests (Reqnroll)
         working-directory: build
         run: make unit-tests-run-reqnroll
 
+      - name: Run Unit Tests (Global Config Reqnroll)
+        working-directory: build
+        run: make unit-tests-run-reqnroll-global-config
+
+      - name: Run Unit Tests (Retry Untagged Global Config Reqnroll)
+        working-directory: build
+        run: make unit-tests-run-reqnroll-global-config-retry-untagged
+
       - name: Run Unit Tests (Main xRetry.v3)
         working-directory: build
         run: make unit-tests-run-main-v3
+
+      - name: Run Unit Tests (Global Config xRetry.v3)
+        working-directory: build
+        run: make unit-tests-run-main-v3-global-config
 
       - name: Run Unit Tests (Single Threaded xRetry.v3)
         working-directory: build
@@ -48,6 +72,14 @@ jobs:
       - name: Run Unit Tests (Reqnroll v3)
         working-directory: build
         run: make unit-tests-run-reqnroll-v3
+
+      - name: Run Unit Tests (Global Config Reqnroll v3)
+        working-directory: build
+        run: make unit-tests-run-reqnroll-v3-global-config
+
+      - name: Run Unit Tests (Retry Untagged Global Config Reqnroll v3)
+        working-directory: build
+        run: make unit-tests-run-reqnroll-v3-global-config-retry-untagged
 
       - name: Create Nuget Packages
         working-directory: build

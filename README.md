@@ -70,6 +70,7 @@ You can optionally specify a number of times to attempt to run the test as an ar
 
 You can also optionally specify a delay between each retry (in milliseconds) as a second
 parameter, e.g. `[RetryFact(5, 100)]` will run your test up to 5 times, waiting 100ms between each attempt.
+`MaxRetries` and `DelayBetweenRetriesMs` can also be set individually as attribute properties, e.g. `[RetryFact(DelayBetweenRetriesMs = 100)]`.
 
 ### Theories
 
@@ -96,6 +97,38 @@ public void Default_Reaches3(int id)
 ```
 
 The same optional arguments (max attempts and delay between each retry) are supported as for facts, and can be used in the same way.
+
+### Project-wide defaults
+
+You can define project-wide defaults in a file named `xretry.json` in the root of your test project directory:
+
+```json
+{
+  "maxRetries": 5,
+  "delayBetweenRetriesMs": 100
+}
+```
+
+Supported keys:
+ - `maxRetries`: default maximum number of attempts
+ - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
+
+If the file or a key is missing, xRetry falls back to the built-in defaults of `3` retries and `0ms` delay.
+
+To make the file available when the tests run, copy it to the output directory, e.g:
+
+```xml
+<ItemGroup>
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+With this file in place, `[RetryFact]` and `[RetryTheory]` use the configured defaults whenever an argument is not supplied.
+Explicit attribute values take precedence over the config, and any value not specified explicitly falls back to the config
+and then the built-in defaults. For example, `[RetryFact(5)]` uses `5` attempts and still uses the configured delay.
+
+If the same test project also uses `xRetry.v3.Reqnroll`, it reads the same `xretry.json` too. That BDD integration keeps
+retries opt-in by default and only applies the config to untagged scenarios when `retryUntaggedScenarios` is set to `true`.
 
 ### Skipping tests at Runtime
 
@@ -139,6 +172,7 @@ You can optionally specify a number of times to attempt to run the test as an ar
 
 You can also optionally specify a delay between each retry (in milliseconds) as a second
 parameter, e.g. `[RetryFact(5, 100)]` will run your test up to 5 times, waiting 100ms between each attempt.
+`MaxRetries` and `DelayBetweenRetriesMs` can also be set individually as attribute properties, e.g. `[RetryFact(DelayBetweenRetriesMs = 100)]`.
 
 ### Theories
 
@@ -165,6 +199,39 @@ public void Default_Reaches3(int id)
 ```
 
 The same optional arguments (max attempts and delay between each retry) are supported as for facts, and can be used in the same way.
+
+### Project-wide defaults
+
+You can define project-wide defaults in a file named `xretry.json` in the root of your test project directory:
+
+```json
+{
+  "maxRetries": 5,
+  "delayBetweenRetriesMs": 100
+}
+```
+
+Supported keys:
+ - `maxRetries`: default maximum number of attempts
+ - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
+
+If the file or a key is missing, xRetry falls back to the built-in defaults of `3` retries and `0ms` delay.
+
+To make the file available when the tests run, copy it to the output directory, e.g:
+
+```xml
+<ItemGroup>
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+With this file in place, `[RetryFact]` and `[RetryTheory]` use the configured defaults whenever an argument is not supplied.
+Explicit attribute values take precedence over the config, and any value not specified explicitly falls back to the config
+and then the built-in defaults. For example, `[RetryFact(5)]` uses `5` attempts and still uses the configured delay.
+
+If the same test project also uses `xRetry.SpecFlow` or `xRetry.Reqnroll`, they read the same `xretry.json` too. Those
+BDD integrations keep retries opt-in by default and only apply the config to untagged scenarios when
+`retryUntaggedScenarios` is set to `true`.
 
 ### Skipping tests at Runtime
 
@@ -229,6 +296,58 @@ If a `@retry` tag exists on both the feature and a scenario within that feature,
 precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried
 by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
 
+### Project-wide defaults
+
+You can define project-wide defaults in a file named `xretry.json` in the root of your test project directory:
+
+```json
+{
+  "maxRetries": 4,
+  "delayBetweenRetriesMs": 50,
+  "retryUntaggedScenarios": true
+}
+```
+
+Supported keys:
+ - `maxRetries`: default maximum number of attempts
+ - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
+ - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
+
+To make the same file available when the generated xUnit tests run, copy it to the output directory, e.g:
+
+```xml
+<ItemGroup>
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+By default, retries remain opt-in and only scenarios or features tagged with `@retry` are retried.
+
+If `retryUntaggedScenarios` is `true`, untagged scenarios use the configured defaults:
+
+```gherkin
+Feature: Retryable Feature
+
+Scenario: Uses global defaults
+	When I increment the retry count
+	Then the result should be 4
+```
+
+Precedence is:
+ - scenario `@retry` tag
+ - feature `@retry` tag
+ - `xretry.json` when `retryUntaggedScenarios` is `true`
+ - no retries for untagged scenarios otherwise
+
+Any value not specified in a tag falls back to the next level. For example, plain `@retry` uses the configured
+retry count and delay when present, `@retry(5)` overrides the retry count but can still use the configured delay,
+and `@retry(1)` can be used to opt out even when a feature tag or `retryUntaggedScenarios` would otherwise retry
+the scenario.
+
+If the same test project also contains direct xUnit retries via `xRetry`, those tests read the same `xretry.json` too.
+Direct xUnit retries still require `[RetryFact]` or `[RetryTheory]`; `retryUntaggedScenarios` only affects the
+SpecFlow-generated tests.
+
 
 [//]: \# (Src: xRetry.Reqnroll/usage.md)
 
@@ -272,6 +391,58 @@ All options that can be used against an individual scenario can also be applied 
 If a `@retry` tag exists on both the feature and a scenario within that feature, the tag on the scenario will take
 precedent over the one on the feature. This is useful if you wanted all scenarios in a feature to be retried
 by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the scenario.
+
+### Project-wide defaults
+
+You can define project-wide defaults in a file named `xretry.json` in the root of your test project directory:
+
+```json
+{
+  "maxRetries": 4,
+  "delayBetweenRetriesMs": 50,
+  "retryUntaggedScenarios": true
+}
+```
+
+Supported keys:
+ - `maxRetries`: default maximum number of attempts
+ - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
+ - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
+
+To make the same file available when the generated xUnit tests run, copy it to the output directory, e.g:
+
+```xml
+<ItemGroup>
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+By default, retries remain opt-in and only scenarios or features tagged with `@retry` are retried.
+
+If `retryUntaggedScenarios` is `true`, untagged scenarios use the configured defaults:
+
+```gherkin
+Feature: Retryable Feature
+
+Scenario: Uses global defaults
+	When I increment the retry count
+	Then the result should be 4
+```
+
+Precedence is:
+ - scenario `@retry` tag
+ - feature `@retry` tag
+ - `xretry.json` when `retryUntaggedScenarios` is `true`
+ - no retries for untagged scenarios otherwise
+
+Any value not specified in a tag falls back to the next level. For example, plain `@retry` uses the configured
+retry count and delay when present, `@retry(5)` overrides the retry count but can still use the configured delay,
+and `@retry(1)` can be used to opt out even when a feature tag or `retryUntaggedScenarios` would otherwise retry
+the scenario.
+
+If the same test project also contains direct xUnit retries via `xRetry`, those tests read the same `xretry.json` too.
+Direct xUnit retries still require `[RetryFact]` or `[RetryTheory]`; `retryUntaggedScenarios` only affects the
+Reqnroll-generated tests.
 
 
 [//]: \# (Src: xRetry.v3.Reqnroll/usage.md)
@@ -319,6 +490,58 @@ precedent over the one on the feature. This is useful if you wanted all scenario
 by default but for some cases also wanted to wait some time before each retry attempt. You can also use this to prevent
 a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the
 scenario.
+
+### Project-wide defaults
+
+You can define project-wide defaults in a file named `xretry.json` in the root of your test project directory:
+
+```json
+{
+  "maxRetries": 4,
+  "delayBetweenRetriesMs": 50,
+  "retryUntaggedScenarios": true
+}
+```
+
+Supported keys:
+ - `maxRetries`: default maximum number of attempts
+ - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
+ - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
+
+To make the same file available when the generated xUnit tests run, copy it to the output directory, e.g:
+
+```xml
+<ItemGroup>
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+By default, retries remain opt-in and only scenarios or features tagged with `@retry` are retried.
+
+If `retryUntaggedScenarios` is `true`, untagged scenarios use the configured defaults:
+
+```gherkin
+Feature: Retryable Feature
+
+Scenario: Uses global defaults
+	When I increment the retry count
+	Then the result should be 4
+```
+
+Precedence is:
+ - scenario `@retry` tag
+ - feature `@retry` tag
+ - `xretry.json` when `retryUntaggedScenarios` is `true`
+ - no retries for untagged scenarios otherwise
+
+Any value not specified in a tag falls back to the next level. For example, plain `@retry` uses the configured
+retry count and delay when present, `@retry(5)` overrides the retry count but can still use the configured delay,
+and `@retry(1)` can be used to opt out even when a feature tag or `retryUntaggedScenarios` would otherwise retry
+the scenario.
+
+If the same test project also contains direct xUnit retries via `xRetry.v3`, those tests read the same `xretry.json` too.
+Direct xUnit retries still require `[RetryFact]` or `[RetryTheory]`; `retryUntaggedScenarios` only affects the
+Reqnroll-generated tests.
 
 
 [//]: \# (Src: logs.md)

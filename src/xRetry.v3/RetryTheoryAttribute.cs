@@ -15,9 +15,16 @@ namespace xRetry.v3
         public bool SkipTestWithoutData { get; set; }
 
         /// <inheritdoc/>
+        public RetryTheoryAttribute() { }
+
+        /// <inheritdoc/>
+        public RetryTheoryAttribute(int maxRetries)
+            : base(maxRetries) { }
+
+        /// <inheritdoc/>
         public RetryTheoryAttribute(
-            int maxRetries = DEFAULT_MAX_RETRIES,
-            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS)
+            int maxRetries,
+            int delayBetweenRetriesMs)
             : base(maxRetries, delayBetweenRetriesMs) { }
     }
 }

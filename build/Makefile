@@ -40,15 +40,33 @@ build: clean
 
 	cd ../test/UnitTests.SingleThreaded && \
 		dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.GlobalConfig && \
+		dotnet build -c Release --no-restore
 	
 	cd ../test/UnitTests.SpecFlow && \
+		dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.SpecFlow.GlobalConfig && \
+		dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.SpecFlow.GlobalConfig.RetryUntagged && \
 		dotnet build -c Release --no-restore
 	
 	cd ../test/UnitTests.Reqnroll && \
 		dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.Reqnroll.GlobalConfig && \
+		dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.Reqnroll.GlobalConfig.RetryUntagged && \
+		dotnet build -c Release --no-restore
 	
 	cd ../test/UnitTests.v3 && \
     	dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.v3.GlobalConfig && \
+		dotnet build -c Release --no-restore
     
 	cd ../test/UnitTests.SingleThreaded.v3 && \
 		dotnet build -c Release --no-restore
@@ -56,15 +74,29 @@ build: clean
 	cd ../test/UnitTests.v3.Reqnroll && \
 		dotnet build -c Release --no-restore
 
+	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig && \
+		dotnet build -c Release --no-restore
+
+	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged && \
+		dotnet build -c Release --no-restore
+
 .PHONY: unit-tests-run
 unit-tests-run: \
 	unit-tests-run-main \
 	unit-tests-run-single-threaded \
+	unit-tests-run-main-global-config \
 	unit-tests-run-specflow \
+	unit-tests-run-specflow-global-config \
+	unit-tests-run-specflow-global-config-retry-untagged \
 	unit-tests-run-reqnroll \
+	unit-tests-run-reqnroll-global-config \
+	unit-tests-run-reqnroll-global-config-retry-untagged \
 	unit-tests-run-main-v3 \
+	unit-tests-run-main-v3-global-config \
 	unit-tests-run-single-threaded-v3 \
-	unit-tests-run-reqnroll-v3
+	unit-tests-run-reqnroll-v3 \
+	unit-tests-run-reqnroll-v3-global-config \
+	unit-tests-run-reqnroll-v3-global-config-retry-untagged
 
 .PHONY: unit-tests-run-main
 unit-tests-run-main:
@@ -78,20 +110,50 @@ unit-tests-run-single-threaded:
 	cd ../test/UnitTests.SingleThreaded && \
 		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.trx
 
+.PHONY: unit-tests-run-main-global-config
+unit-tests-run-main-global-config:
+	cd ../test/UnitTests.GlobalConfig && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.GlobalConfig.trx
+
 .PHONY: unit-tests-run-specflow
 unit-tests-run-specflow:
 	cd ../test/UnitTests.SpecFlow && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.trx
+
+.PHONY: unit-tests-run-specflow-global-config
+unit-tests-run-specflow-global-config:
+	cd ../test/UnitTests.SpecFlow.GlobalConfig && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.GlobalConfig.trx
+
+.PHONY: unit-tests-run-specflow-global-config-retry-untagged
+unit-tests-run-specflow-global-config-retry-untagged:
+	cd ../test/UnitTests.SpecFlow.GlobalConfig.RetryUntagged && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.GlobalConfig.RetryUntagged.trx
 
 .PHONY: unit-tests-run-reqnroll
 unit-tests-run-reqnroll:
 	cd ../test/UnitTests.Reqnroll && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.trx
 
+.PHONY: unit-tests-run-reqnroll-global-config
+unit-tests-run-reqnroll-global-config:
+	cd ../test/UnitTests.Reqnroll.GlobalConfig && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.GlobalConfig.trx
+
+.PHONY: unit-tests-run-reqnroll-global-config-retry-untagged
+unit-tests-run-reqnroll-global-config-retry-untagged:
+	cd ../test/UnitTests.Reqnroll.GlobalConfig.RetryUntagged && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.GlobalConfig.RetryUntagged.trx
+
 .PHONY: unit-tests-run-main-v3
 unit-tests-run-main-v3:
 	cd ../test/UnitTests.v3 && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.trx
+
+.PHONY: unit-tests-run-main-v3-global-config
+unit-tests-run-main-v3-global-config:
+	cd ../test/UnitTests.v3.GlobalConfig && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.GlobalConfig.trx
 
 .PHONY: unit-tests-run-single-threaded-v3
 unit-tests-run-single-threaded-v3:
@@ -104,6 +166,16 @@ unit-tests-run-single-threaded-v3:
 unit-tests-run-reqnroll-v3:
 	cd ../test/UnitTests.v3.Reqnroll && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.trx
+
+.PHONY: unit-tests-run-reqnroll-v3-global-config
+unit-tests-run-reqnroll-v3-global-config:
+	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.GlobalConfig.trx
+
+.PHONY: unit-tests-run-reqnroll-v3-global-config-retry-untagged
+unit-tests-run-reqnroll-v3-global-config-retry-untagged:
+	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged && \
+		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged.trx
 
 .PHONY: docs
 docs:

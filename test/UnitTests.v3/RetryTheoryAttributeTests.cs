@@ -1,5 +1,4 @@
 using System;
-using AutoFixture;
 using FluentAssertions;
 using xRetry.v3;
 using Xunit;
@@ -24,7 +23,7 @@ namespace UnitTests.v3
         [InlineData(-1337)]
         public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs)
         {
-            Action act = () => new RetryTheoryAttribute(delayBetweenRetriesMs: delayBetweenRetriesMs);
+            Action act = () => new RetryTheoryAttribute { DelayBetweenRetriesMs = delayBetweenRetriesMs };
 
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
