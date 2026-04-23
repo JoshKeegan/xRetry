@@ -12,6 +12,19 @@ Scenario Outline: Retry three times by default
 	| 1 |
 	| 2 |
 
+@retry
+Scenario Outline: Retry ignores examples rows
+	When I increment the retry count for test <n>
+	Then the retry count for test <n> should be <expected>
+	Examples:
+	| n  | expected |
+	| 10 | 3        |
+
+	@ignore
+	Examples: Ignored row
+	| n  | expected |
+	| 11 | 999      |
+
 @retry(5)
 Scenario Outline: Retry five times when specified
 	When I increment the retry count for test <n>

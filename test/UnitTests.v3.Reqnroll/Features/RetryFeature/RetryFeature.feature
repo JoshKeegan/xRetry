@@ -21,6 +21,19 @@ I want to be able to run each scenario in a feature multiple times until they pa
           | 1 |
           | 2 |
 
+    Scenario Outline: Retry scenario outline ignores examples rows
+        When I increment the retry count for test <n>
+        Then the retry count for test <n> should be <expected>
+
+        Examples:
+          | n  | expected |
+          | 10 | 3        |
+
+        @ignore
+        Examples: Ignored row
+          | n  | expected |
+          | 11 | 999      |
+
     @ignore
     Scenario Outline: Scenario outline is ignored
         Then fail because this test <n> should have been skipped

@@ -3,20 +3,34 @@ In order to allow for transient failures
 As a QA engineer
 I want to be able to run scenario outline tests multiple times until they pass
 
-    @retry
-    Scenario Outline: Retry three times by default
-        When I increment the retry count for test <n>
-        Then the retry count for test <n> should be 3
+@retry
+Scenario Outline: Retry three times by default
+	When I increment the retry count for test <n>
+	Then the retry count for test <n> should be 3
 
         Examples:
           | n |
           | 1 |
           | 2 |
 
-    @retry(5)
-    Scenario Outline: Retry five times when specified
-        When I increment the retry count for test <n>
-        Then the retry count for test <n> should be 5
+@retry
+Scenario Outline: Retry ignores examples rows
+	When I increment the retry count for test <n>
+	Then the retry count for test <n> should be <expected>
+
+        Examples:
+          | n  | expected |
+          | 10 | 3        |
+
+        @ignore
+        Examples: Ignored row
+          | n  | expected |
+          | 11 | 999      |
+
+@retry(5)
+Scenario Outline: Retry five times when specified
+	When I increment the retry count for test <n>
+	Then the retry count for test <n> should be 5
 
         Examples:
           | n |
