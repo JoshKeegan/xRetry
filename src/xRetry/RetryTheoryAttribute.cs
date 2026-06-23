@@ -16,9 +16,13 @@ namespace xRetry
             : base(skipOnExceptions) { }
 
         /// <inheritdoc/>
+        public RetryTheoryAttribute(int maxRetries, params Type[] skipOnExceptions)
+            : base(maxRetries, skipOnExceptions) { }
+
+        /// <inheritdoc/>
         public RetryTheoryAttribute(
-            int maxRetries = DEFAULT_MAX_RETRIES,
-            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS,
+            int maxRetries,
+            int delayBetweenRetriesMs,
             params Type[] skipOnExceptions)
             : base(maxRetries, delayBetweenRetriesMs, skipOnExceptions) { }
     }

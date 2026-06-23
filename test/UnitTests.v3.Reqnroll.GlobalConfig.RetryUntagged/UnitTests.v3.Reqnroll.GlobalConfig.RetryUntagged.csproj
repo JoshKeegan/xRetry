@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net9.0;net48</TargetFrameworks>
+        <OutputType>Exe</OutputType>
+        <LangVersion>13.0</LangVersion>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ReqnrollGeneratorPlugins Include="../../src/xRetry.v3.Reqnroll/bin/Release/netstandard2.0/xRetry.v3.Reqnroll.Plugin.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\UnitTests.v3.Reqnroll\Steps\Scenarios\RetryDelaySteps.cs" Link="Steps\Scenarios\RetryDelaySteps.cs" />
+        <Compile Include="..\UnitTests.v3.Reqnroll\Steps\Scenarios\RetrySteps.cs" Link="Steps\Scenarios\RetrySteps.cs" />
+        <Compile Include="..\UnitTests.v3.Reqnroll\Steps\SkippedSteps.cs" Link="Steps\SkippedSteps.cs" />
+        <Compile Include="..\UnitTests.v3.Reqnroll\TestClasses\ScenarioId.cs" Link="TestClasses\ScenarioId.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+        <PackageReference Include="Reqnroll.xunit.v3" Version="3.3.2" />
+        <PackageReference Include="xunit.v3" Version="3.2.2" />
+        <PackageReference Include="xunit.v3.core" Version="3.2.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+
+        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\xRetry.v3.Reqnroll\xRetry.v3.Reqnroll.csproj" />
+        <ProjectReference Include="..\..\src\xRetry.v3\xRetry.v3.csproj" />
+    </ItemGroup>
+
+</Project>

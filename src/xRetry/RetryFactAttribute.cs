@@ -16,8 +16,37 @@ namespace xRetry
         public const int DEFAULT_MAX_RETRIES = 3;
         public const int DEFAULT_DELAY_BETWEEN_RETRIES_MS = 0;
 
-        public readonly int MaxRetries = DEFAULT_MAX_RETRIES;
-        public readonly int DelayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS;
+        private readonly int defaultMaxRetries;
+        private readonly int defaultDelayBetweenRetriesMs;
+        private int? maxRetries;
+        private int? delayBetweenRetriesMs;
+
+        public int MaxRetries
+        {
+            get => maxRetries ?? defaultMaxRetries;
+            set
+            {
+                if (value < 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(MaxRetries) + " must be >= 1");
+                }
+                maxRetries = value;
+            }
+        }
+
+        public int DelayBetweenRetriesMs
+        {
+            get => delayBetweenRetriesMs ?? defaultDelayBetweenRetriesMs;
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(DelayBetweenRetriesMs) + " must be >= 0");
+                }
+                delayBetweenRetriesMs = value;
+            }
+        }
+
         public readonly Type[] SkipOnExceptions;
 
         /// <summary>
@@ -32,6 +61,21 @@ namespace xRetry
             {
                 throw new ArgumentException("Specified type must be an exception", nameof(skipOnExceptions));
             }
+
+            RetryDefaults retryDefaults = RetryDefaults.Load(AppDomain.CurrentDomain.BaseDirectory);
+            defaultMaxRetries = retryDefaults.MaxRetries ?? DEFAULT_MAX_RETRIES;
+            defaultDelayBetweenRetriesMs = retryDefaults.DelayBetweenRetriesMs ?? DEFAULT_DELAY_BETWEEN_RETRIES_MS;
+        }
+
+        /// <summary>
+        /// Ctor (explicit max retries)
+        /// </summary>
+        /// <param name="maxRetries">The number of times to attempt to run a test for until it succeeds</param>
+        /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
+        public RetryFactAttribute(int maxRetries, params Type[] skipOnExceptions)
+            : this(skipOnExceptions)
+        {
+            MaxRetries = maxRetries;
         }
 
         /// <summary>
@@ -41,22 +85,13 @@ namespace xRetry
         /// <param name="delayBetweenRetriesMs">The amount of time (in ms) to wait between each test run attempt</param>
         /// <param name="skipOnExceptions">Mark the test as skipped when this type of exception is encountered</param>
         public RetryFactAttribute(
-            int maxRetries = DEFAULT_MAX_RETRIES,
-            int delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES_MS,
+            int maxRetries,
+            int delayBetweenRetriesMs,
             params Type[] skipOnExceptions)
-            : this(skipOnExceptions)
+            : this(maxRetries, skipOnExceptions)
         {
-            if (maxRetries < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(maxRetries) + " must be >= 1");
-            }
-            if (delayBetweenRetriesMs < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(delayBetweenRetriesMs) + " must be >= 0");
-            }
-
-            MaxRetries = maxRetries;
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
         }
+
     }
 }

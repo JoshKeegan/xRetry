@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net9.0;net48</TargetFrameworks>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <SpecFlowGeneratorPlugins Condition="'$(MSBuildRuntimeType)' == 'Core'" Include="../../src/xRetry.SpecFlow/bin/Release/netstandard2.0/xRetry.SpecFlowPlugin.dll" />
+        <SpecFlowGeneratorPlugins Condition="'$(MSBuildRuntimeType)' != 'Core'" Include="../../src/xRetry.SpecFlow/bin/Release/net461/xRetry.SpecFlowPlugin.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\UnitTests.SpecFlow\Steps\Scenarios\RetryDelaySteps.cs" Link="Steps\Scenarios\RetryDelaySteps.cs" />
+        <Compile Include="..\UnitTests.SpecFlow\Steps\Scenarios\RetrySteps.cs" Link="Steps\Scenarios\RetrySteps.cs" />
+        <Compile Include="..\UnitTests.SpecFlow\TestClasses\ScenarioId.cs" Link="TestClasses\ScenarioId.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+        <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+
+        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\xRetry.SpecFlow\xRetry.SpecFlow.csproj" />
+        <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
+    </ItemGroup>
+
+</Project>

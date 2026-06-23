@@ -10,7 +10,7 @@ namespace UnitTests.v3.Reqnroll.Parsers
         [Fact]
         public void Parse_Null_ThrowsArgumentNullException()
         {
-            Action act = () => GetParser().Parse(null);
+            Action act = () => getParser().Parse(null);
 
             act.Should().Throw<ArgumentNullException>();
         }
@@ -19,7 +19,7 @@ namespace UnitTests.v3.Reqnroll.Parsers
         public void Parse_NoParams_CorrectResult()
         {
             // Arrange
-            var parser = GetParser();
+            var parser = getParser();
             var expected = new RetryTag(null, null);
 
             // Act
@@ -37,7 +37,7 @@ namespace UnitTests.v3.Reqnroll.Parsers
         public void Parse_MaxRetries_ReturnsCorrectResult(string tag, int maxRetries)
         {
             // Arrange
-            var parser = GetParser();
+            var parser = getParser();
             var expected = new RetryTag(maxRetries, null);
 
             // Act
@@ -57,7 +57,7 @@ namespace UnitTests.v3.Reqnroll.Parsers
             int delayBetweenRetriesMs)
         {
             // Arrange
-            var parser = GetParser();
+            var parser = getParser();
             var expected = new RetryTag(maxRetries, delayBetweenRetriesMs);
 
             // Act
@@ -67,7 +67,7 @@ namespace UnitTests.v3.Reqnroll.Parsers
             actual.Should().Be(expected);
         }
 
-        private static RetryTagParser GetParser()
+        private static RetryTagParser getParser()
         {
             return new RetryTagParser();
         }
