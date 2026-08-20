@@ -104,12 +104,14 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
   "maxRetries": 5,
   "delayBetweenRetriesMs": 100
 }
 ```
 
 Supported keys:
+ - `$schema`: optional schema reference for editor completion and validation
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
 
@@ -206,12 +208,14 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
   "maxRetries": 5,
   "delayBetweenRetriesMs": 100
 }
 ```
 
 Supported keys:
+ - `$schema`: optional schema reference for editor completion and validation
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
 
@@ -302,6 +306,7 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
   "maxRetries": 4,
   "delayBetweenRetriesMs": 50,
   "retryUntaggedScenarios": true
@@ -309,6 +314,7 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 ```
 
 Supported keys:
+ - `$schema`: optional schema reference for editor completion and validation
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
@@ -402,6 +408,7 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
   "maxRetries": 4,
   "delayBetweenRetriesMs": 50,
   "retryUntaggedScenarios": true
@@ -409,6 +416,7 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 ```
 
 Supported keys:
+ - `$schema`: optional schema reference for editor completion and validation
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
@@ -505,6 +513,7 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
   "maxRetries": 4,
   "delayBetweenRetriesMs": 50,
   "retryUntaggedScenarios": true
@@ -512,6 +521,7 @@ You can define project-wide defaults in a file named `xretry.json` in the root o
 ```
 
 Supported keys:
+ - `$schema`: optional schema reference for editor completion and validation
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults

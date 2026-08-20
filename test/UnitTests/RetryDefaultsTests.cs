@@ -82,6 +82,20 @@ namespace UnitTests
         }
 
         [Fact]
+        public void Load_SchemaConfigured_ReturnsConfiguredValues()
+        {
+            using TempDirectory tempDirectory = TempDirectory.Create();
+            tempDirectory.WriteConfig(
+                "{\"$schema\": \"https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json\", \"maxRetries\": 5}");
+
+            RetryDefaults retryDefaults = RetryDefaults.Load(tempDirectory.Path);
+
+            retryDefaults.Schema.Should().Be(
+                "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json");
+            retryDefaults.MaxRetries.Should().Be(5);
+        }
+
+        [Fact]
         public void Load_InvalidMaxRetries_ThrowsInvalidOperationException()
         {
             using TempDirectory tempDirectory = TempDirectory.Create();

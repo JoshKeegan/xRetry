@@ -31,6 +31,14 @@ namespace xRetry.v3
         [JsonInclude]
         public bool RetryUntaggedScenarios { get; private set; }
 
+        /// <summary>
+        /// The JSON schema used by editors to validate <c>xretry.json</c>.
+        /// This value has no effect at runtime.
+        /// </summary>
+        [JsonInclude]
+        [JsonPropertyName("$schema")]
+        public string? Schema { get; private set; }
+
         public static RetryDefaults Load(string? directory) =>
             cache.GetOrAdd(directory ?? string.Empty, load);
 
