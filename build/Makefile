@@ -23,8 +23,20 @@ build: clean
 	dotnet restore ../
 
 # SpecFlow & Reqnroll plugins must be built before the tests
+	cd ../src/xRetry && \
+		dotnet build -c Release --no-restore -p:Version=$(XRETRY_VERSION)
+
 	cd ../src/xRetry.v3 && \
     	dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_VERSION)
+
+	cd ../src/xRetry.SpecFlow.Runtime && \
+		dotnet build -c Release --no-restore
+
+	cd ../src/xRetry.Reqnroll.Runtime && \
+		dotnet build -c Release --no-restore
+
+	cd ../src/xRetry.v3.Reqnroll.Runtime && \
+		dotnet build -c Release --no-restore
 
 	cd ../src/xRetry.SpecFlow && \
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_SPECFLOW_VERSION)
@@ -225,5 +237,26 @@ nuget-create:
 		-c Release \
 		-o ../artefacts/nuget
 
+.PHONY: package-tests-run
+package-tests-run: \
+	package-tests-run-specflow \
+	package-tests-run-reqnroll \
+	package-tests-run-reqnroll-v3
+
+.PHONY: package-tests-run-specflow
+package-tests-run-specflow:
+	cd ../test/PackageTests.SpecFlow && \
+		dotnet test -c Release -p:xRetrySpecFlowVersion=$(XRETRY_SPECFLOW_VERSION)
+
+.PHONY: package-tests-run-reqnroll
+package-tests-run-reqnroll:
+	cd ../test/PackageTests.Reqnroll && \
+		dotnet test -c Release -p:xRetryReqnrollVersion=$(XRETRY_REQNOLL_VERSION)
+
+.PHONY: package-tests-run-reqnroll-v3
+package-tests-run-reqnroll-v3:
+	cd ../test/PackageTests.v3.Reqnroll && \
+		dotnet test -c Release -p:xRetryV3ReqnrollVersion=$(XRETRY_V3_REQNROLL_VERSION)
+
 .PHONY: ci
-ci: lint build unit-tests-run docs nuget-create
+ci: lint build unit-tests-run docs nuget-create package-tests-run

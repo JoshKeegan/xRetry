@@ -15,14 +15,14 @@ namespace xRetry.Reqnroll
         private const string IGNORE_TAG = "ignore";
         private const string RETRY_FACT_ATTRIBUTE = "xRetry.RetryFact";
         private const string RETRY_THEORY_ATTRIBUTE = "xRetry.RetryTheory";
+        private const string RETRY_UNTAGGED_FACT_ATTRIBUTE = "xRetry.Reqnroll.RetryUntaggedFact";
+        private const string RETRY_UNTAGGED_THEORY_ATTRIBUTE = "xRetry.Reqnroll.RetryUntaggedTheory";
 
-        private readonly RetryDefaults retryDefaults;
         private readonly IRetryTagParser retryTagParser;
 
-        public TestGeneratorProvider(CodeDomHelper codeDomHelper, ProjectSettings projectSettings, IRetryTagParser retryTagParser)
+        public TestGeneratorProvider(CodeDomHelper codeDomHelper, IRetryTagParser retryTagParser)
             : base(codeDomHelper)
         {
-            retryDefaults = RetryDefaults.Load(projectSettings.ProjectFolder);
             this.retryTagParser = retryTagParser;
         }
 
@@ -34,7 +34,7 @@ namespace xRetry.Reqnroll
 
             string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
 
-            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, applyGlobalRetryDefaults: true);
+            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, addRetryUntaggedAttribute: true);
         }
 
         // Called for scenarios, even when it has no tags.
@@ -45,7 +45,7 @@ namespace xRetry.Reqnroll
 
             string[] featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
 
-            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, applyGlobalRetryDefaults: true);
+            applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, addRetryUntaggedAttribute: true);
         }
 
         // Called for both scenarios & scenario outlines, but only if it has tags
@@ -59,11 +59,11 @@ namespace xRetry.Reqnroll
 
             // Feature tags will have already been processed in one of the methods above, which are executed before this
             IEnumerable<string> featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name));
-            applyRetry((string[]) scenarioCategories, featureTags, testMethod, applyGlobalRetryDefaults: false);
+            applyRetry((string[]) scenarioCategories, featureTags, testMethod, addRetryUntaggedAttribute: false);
         }
 
-        // @ignore is handled after the first retry pass, so retryUntaggedScenarios may have
-        // already changed Fact/Theory to RetryFact/RetryTheory. Restore the xUnit attribute
+        // @ignore is handled after the first retry pass, so Fact/Theory may already have been
+        // changed to a retry-untagged or explicit retry attribute. Restore the xUnit attribute
         // before delegating so the underlying provider can set Skip; the later retry pass
         // sees Skip and leaves the ignored test un-retried.
         public override void SetTestMethodIgnore(TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
@@ -78,12 +78,12 @@ namespace xRetry.Reqnroll
         /// <param name="tags">Tags that haven't yet been processed. If the test has just been created these will be for the feature, otherwise for the scenario</param>
         /// <param name="processedTags">Tags that have already been processed. If the test has just been created this will be empty, otherwise they will be the feature tags</param>
         /// <param name="testMethod">Test method we are applying retries for</param>
-        /// <param name="applyGlobalRetryDefaults">Whether the global retry defaults should be applied to untagged scenarios</param>
+        /// <param name="addRetryUntaggedAttribute">Whether to add the runtime retry-untagged attribute to the scenario</param>
         private void applyRetry(
             IList<string> tags,
             IEnumerable<string> processedTags,
             CodeMemberMethod testMethod,
-            bool applyGlobalRetryDefaults)
+            bool addRetryUntaggedAttribute)
         {
             // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
             //  This allows for the new (for Reqnroll 3.1.x) implementation that relies on Xunit.SkippableFact to still work, as it
@@ -93,9 +93,9 @@ namespace xRetry.Reqnroll
                 return;
             }
 
-            if (applyGlobalRetryDefaults && retryDefaults.RetryUntaggedScenarios)
+            if (addRetryUntaggedAttribute)
             {
-                replaceWithRetryAttribute(testMethod, null, null);
+                replaceWithRetryUntaggedAttribute(testMethod);
             }
 
             string strRetryTag = getRetryTag(tags);
@@ -106,6 +106,30 @@ namespace xRetry.Reqnroll
 
             RetryTag retryTag = retryTagParser.Parse(strRetryTag);
             replaceWithRetryAttribute(testMethod, retryTag.MaxRetries, retryTag.DelayBetweenRetriesMs);
+        }
+
+        private void replaceWithRetryUntaggedAttribute(CodeMemberMethod testMethod)
+        {
+            CodeAttributeDeclaration originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
+                .FirstOrDefault(a => a.Name == FACT_ATTRIBUTE || a.Name == THEORY_ATTRIBUTE);
+            if (originalAttribute == null)
+            {
+                return;
+            }
+
+            testMethod.CustomAttributes.Remove(originalAttribute);
+
+            CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
+                originalAttribute.Name == FACT_ATTRIBUTE
+                    ? RETRY_UNTAGGED_FACT_ATTRIBUTE
+                    : RETRY_UNTAGGED_THEORY_ATTRIBUTE);
+
+            addSkipOnExceptionArgument(retryAttribute);
+
+            foreach (CodeAttributeArgument argument in originalAttribute.Arguments)
+            {
+                retryAttribute.Arguments.Add(argument);
+            }
         }
 
         private void replaceWithRetryAttribute(
@@ -119,7 +143,9 @@ namespace xRetry.Reqnroll
                     a.Name == FACT_ATTRIBUTE ||
                     a.Name == THEORY_ATTRIBUTE ||
                     a.Name == RETRY_FACT_ATTRIBUTE ||
-                    a.Name == RETRY_THEORY_ATTRIBUTE);
+                    a.Name == RETRY_THEORY_ATTRIBUTE ||
+                    a.Name == RETRY_UNTAGGED_FACT_ATTRIBUTE ||
+                    a.Name == RETRY_UNTAGGED_THEORY_ATTRIBUTE);
             if (originalAttribute == null)
             {
                 return;
@@ -132,25 +158,20 @@ namespace xRetry.Reqnroll
 
             // Add the Retry attribute
             CodeAttributeDeclaration retryAttribute = CodeDomHelper.AddAttribute(testMethod,
-                originalAttribute.Name == FACT_ATTRIBUTE || originalAttribute.Name == RETRY_FACT_ATTRIBUTE
+                originalAttribute.Name == FACT_ATTRIBUTE ||
+                originalAttribute.Name == RETRY_FACT_ATTRIBUTE ||
+                originalAttribute.Name == RETRY_UNTAGGED_FACT_ATTRIBUTE
                     ? RETRY_FACT_ATTRIBUTE
                     : RETRY_THEORY_ATTRIBUTE);
 
             addRetryArguments(retryAttribute, maxRetries, delayBetweenRetriesMs);
-
-            // Always skip on Xunit.SkipException (from Xunit.SkippableFact) which is used by Reqnroll.xUnit to implement
-            //  dynamic test skipping. This way we can intercept the exception that is already thrown without also having
-            //  our own runtime plugin.
-            retryAttribute.Arguments.Add(new CodeAttributeArgument(
-                new CodeArrayCreateExpression(new CodeTypeReference(typeof(Type)),
-                    new CodeExpression[]
-                    {
-                        new CodeTypeOfExpression(typeof(Xunit.SkipException))
-                    })));
+            addSkipOnExceptionArgument(retryAttribute);
 
             // Copy arguments from the original attribute. If it's already a retry attribute, don't copy the retry arguments though
             for (int i = originalAttribute.Name == RETRY_FACT_ATTRIBUTE ||
-                         originalAttribute.Name == RETRY_THEORY_ATTRIBUTE
+                         originalAttribute.Name == RETRY_THEORY_ATTRIBUTE ||
+                         originalAttribute.Name == RETRY_UNTAGGED_FACT_ATTRIBUTE ||
+                         originalAttribute.Name == RETRY_UNTAGGED_THEORY_ATTRIBUTE
                      ? existingRetryArguments.RetrySpecificArgumentCount
                      : 0;
                  i < originalAttribute.Arguments.Count;
@@ -158,6 +179,18 @@ namespace xRetry.Reqnroll
             {
                 retryAttribute.Arguments.Add(originalAttribute.Arguments[i]);
             }
+        }
+
+        private static void addSkipOnExceptionArgument(CodeAttributeDeclaration retryAttribute)
+        {
+            // Reqnroll.xUnit implements dynamic skipping by throwing Xunit.SkipException. Treat it as a skip rather
+            // than a failed retry attempt without making the generator plugin load xUnit or xRetry at build time.
+            retryAttribute.Arguments.Add(new CodeAttributeArgument(
+                new CodeArrayCreateExpression(new CodeTypeReference(typeof(Type)),
+                    new CodeExpression[]
+                    {
+                        new CodeTypeOfExpression(new CodeTypeReference("Xunit.SkipException"))
+                    })));
         }
 
         private static void addRetryArguments(
@@ -182,7 +215,10 @@ namespace xRetry.Reqnroll
 
         private static RetryAttributeArguments getExistingRetryArguments(CodeAttributeDeclaration attribute)
         {
-            if (attribute.Name != RETRY_FACT_ATTRIBUTE && attribute.Name != RETRY_THEORY_ATTRIBUTE)
+            if (attribute.Name != RETRY_FACT_ATTRIBUTE &&
+                attribute.Name != RETRY_THEORY_ATTRIBUTE &&
+                attribute.Name != RETRY_UNTAGGED_FACT_ATTRIBUTE &&
+                attribute.Name != RETRY_UNTAGGED_THEORY_ATTRIBUTE)
             {
                 return RetryAttributeArguments.Empty;
             }
@@ -236,14 +272,20 @@ namespace xRetry.Reqnroll
                     a.Name == FACT_ATTRIBUTE ||
                     a.Name == THEORY_ATTRIBUTE ||
                     a.Name == RETRY_FACT_ATTRIBUTE ||
-                    a.Name == RETRY_THEORY_ATTRIBUTE)
+                    a.Name == RETRY_THEORY_ATTRIBUTE ||
+                    a.Name == RETRY_UNTAGGED_FACT_ATTRIBUTE ||
+                    a.Name == RETRY_UNTAGGED_THEORY_ATTRIBUTE)
                 .Any(a => a.Arguments.OfType<CodeAttributeArgument>()
                     .Any(arg => string.Equals(arg.Name, "Skip", StringComparison.OrdinalIgnoreCase)));
 
         private void revertRetryAttribute(CodeMemberMethod testMethod)
         {
             CodeAttributeDeclaration retryAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
-                .FirstOrDefault(a => a.Name == RETRY_FACT_ATTRIBUTE || a.Name == RETRY_THEORY_ATTRIBUTE);
+                .FirstOrDefault(a =>
+                    a.Name == RETRY_FACT_ATTRIBUTE ||
+                    a.Name == RETRY_THEORY_ATTRIBUTE ||
+                    a.Name == RETRY_UNTAGGED_FACT_ATTRIBUTE ||
+                    a.Name == RETRY_UNTAGGED_THEORY_ATTRIBUTE);
             if (retryAttribute == null)
             {
                 return;
@@ -253,7 +295,10 @@ namespace xRetry.Reqnroll
             testMethod.CustomAttributes.Remove(retryAttribute);
 
             CodeAttributeDeclaration originalAttribute = CodeDomHelper.AddAttribute(testMethod,
-                retryAttribute.Name == RETRY_FACT_ATTRIBUTE ? FACT_ATTRIBUTE : THEORY_ATTRIBUTE);
+                retryAttribute.Name == RETRY_FACT_ATTRIBUTE ||
+                retryAttribute.Name == RETRY_UNTAGGED_FACT_ATTRIBUTE
+                    ? FACT_ATTRIBUTE
+                    : THEORY_ATTRIBUTE);
 
             // Copy over any non-retry-specific arguments (e.g. DisplayName)
             for (int i = existingRetryArguments.RetrySpecificArgumentCount; i < retryAttribute.Arguments.Count; i++)

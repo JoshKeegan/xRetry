@@ -59,13 +59,17 @@ Supported keys:
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
 
-To make the same file available when the generated xUnit tests run, copy it to the output directory, e.g:
+Add the following to your test project so MSBuild makes the file available at runtime:
 
 ```xml
 <ItemGroup>
     <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
 </ItemGroup>
 ```
+
+With this project entry in place, no manual copying or feature-file regeneration is required. Edit `xretry.json` in
+your project and run the tests normally; MSBuild copies it when it is newer. If you run `dotnet test --no-build`, build
+the project first so the updated file is copied to the test output directory.
 
 By default, retries remain opt-in and only scenarios or features tagged with `@retry` are retried.
 

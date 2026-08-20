@@ -14,24 +14,23 @@ namespace xRetry.v3.Reqnroll;
 public class TestGeneratorProvider(
     CodeDomHelper codeDomHelper,
     IObjectContainer objectContainer,
-    ProjectSettings projectSettings,
     IRetryTagParser retryTagParser)
     : IUnitTestGeneratorProvider
 {
     private const string RETRY_FACT_ATTRIBUTE = "xRetry.v3.RetryFact";
     private const string RETRY_THEORY_ATTRIBUTE = "xRetry.v3.RetryTheory";
+    private const string RETRY_UNTAGGED_FACT_ATTRIBUTE = "xRetry.v3.Reqnroll.RetryUntaggedFact";
+    private const string RETRY_UNTAGGED_THEORY_ATTRIBUTE = "xRetry.v3.Reqnroll.RetryUntaggedTheory";
     private const string FACT_ATTRIBUTE = "Xunit.FactAttribute";
     private const string THEORY_ATTRIBUTE = "Xunit.TheoryAttribute";
 
     private const string SKIP_PROPERTY_NAME = "Skip";
 
-
-    private readonly RetryDefaults retryDefaults = RetryDefaults.Load(projectSettings.ProjectFolder);
     private readonly IUnitTestGeneratorProvider unitTestGeneratorProviderImplementation =
         objectContainer.Resolve<IUnitTestGeneratorProvider>("xunit3");
 
-    // @ignore is handled after the first retry pass, so retryUntaggedScenarios may have
-    // already changed Fact/Theory to RetryFact/RetryTheory. Restore the xUnit attribute
+    // @ignore is handled after the first retry pass, so Fact/Theory may already have been
+    // changed to a retry-untagged or explicit retry attribute. Restore the xUnit attribute
     // before delegating so the underlying provider can set Skip; the later retry pass
     // sees Skip and leaves the ignored test un-retried.
     public void SetTestMethodIgnore(TestClassGenerationContext generationContext, CodeMemberMethod testMethod)
@@ -47,7 +46,7 @@ public class TestGeneratorProvider(
     {
         unitTestGeneratorProviderImplementation.SetRowTest(generationContext, testMethod, scenarioTitle);
         var featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
-        applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, applyGlobalRetryDefaults: true);
+        applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, addRetryUntaggedAttribute: true);
     }
 
     public void SetRow(TestClassGenerationContext generationContext, CodeMemberMethod testMethod,
@@ -135,7 +134,7 @@ public class TestGeneratorProvider(
     {
         unitTestGeneratorProviderImplementation.SetTestMethod(generationContext, testMethod, friendlyTestName);
         var featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name)).ToArray();
-        applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, applyGlobalRetryDefaults: true);
+        applyRetry(featureTags, Enumerable.Empty<string>(), testMethod, addRetryUntaggedAttribute: true);
     }
 
     // Called for both scenarios & scenario outlines, but only if it has tags
@@ -147,7 +146,7 @@ public class TestGeneratorProvider(
         unitTestGeneratorProviderImplementation.SetTestMethodCategories(generationContext, testMethod,
             scenarioCategories);
         IEnumerable<string> featureTags = generationContext.Feature.Tags.Select(t => stripLeadingAtSign(t.Name));
-        applyRetry((string[]) scenarioCategories, featureTags, testMethod, applyGlobalRetryDefaults: false);
+        applyRetry((string[]) scenarioCategories, featureTags, testMethod, addRetryUntaggedAttribute: false);
     }
 
     /// <summary>
@@ -162,21 +161,21 @@ public class TestGeneratorProvider(
     ///     <c>@ignore</c> continues to prevent retries when scenario tags are processed later.
     /// </param>
     /// <param name="testMethod">Test method we are applying retries for</param>
-    /// <param name="applyGlobalRetryDefaults">
-    ///     Whether the global retry defaults should be applied to untagged scenarios
+    /// <param name="addRetryUntaggedAttribute">
+    ///     Whether to add the runtime retry-untagged attribute to the scenario
     /// </param>
     private void applyRetry(
         IList<string> tags,
         IEnumerable<string> processedTags,
         CodeMemberMethod testMethod,
-        bool applyGlobalRetryDefaults)
+        bool addRetryUntaggedAttribute)
     {
         // Do not add retries to skipped tests (even if they have the retry attribute) as retrying won't affect the outcome.
         if (isTestMethodAlreadyIgnored(testMethod) || tags.Any(isIgnoreTag) || processedTags.Any(isIgnoreTag)) return;
 
-        if (applyGlobalRetryDefaults && retryDefaults.RetryUntaggedScenarios)
+        if (addRetryUntaggedAttribute)
         {
-            replaceWithRetryAttribute(testMethod, null, null);
+            replaceWithRetryUntaggedAttribute(testMethod);
         }
 
         var strRetryTag = getRetryTag(tags);
@@ -184,6 +183,25 @@ public class TestGeneratorProvider(
 
         var retryTag = retryTagParser.Parse(strRetryTag);
         replaceWithRetryAttribute(testMethod, retryTag.MaxRetries, retryTag.DelayBetweenRetriesMs);
+    }
+
+    private void replaceWithRetryUntaggedAttribute(CodeMemberMethod testMethod)
+    {
+        var originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
+            .FirstOrDefault(a => a.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE);
+        if (originalAttribute == null) return;
+
+        testMethod.CustomAttributes.Remove(originalAttribute);
+
+        var retryAttribute = codeDomHelper.AddAttribute(testMethod,
+            originalAttribute.Name == FACT_ATTRIBUTE
+                ? RETRY_UNTAGGED_FACT_ATTRIBUTE
+                : RETRY_UNTAGGED_THEORY_ATTRIBUTE);
+
+        foreach (CodeAttributeArgument argument in originalAttribute.Arguments)
+        {
+            retryAttribute.Arguments.Add(argument);
+        }
     }
 
     private void replaceWithRetryAttribute(
@@ -196,7 +214,9 @@ public class TestGeneratorProvider(
         // Remove the original fact or theory attribute
         var originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
             .FirstOrDefault(a =>
-                a.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE or RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE);
+                a.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE or
+                    RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE or
+                    RETRY_UNTAGGED_FACT_ATTRIBUTE or RETRY_UNTAGGED_THEORY_ATTRIBUTE);
         if (originalAttribute == null) return;
 
         var existingRetryArguments = getExistingRetryArguments(originalAttribute);
@@ -206,14 +226,15 @@ public class TestGeneratorProvider(
 
         // Add the Retry attribute
         var retryAttribute = codeDomHelper.AddAttribute(testMethod,
-            originalAttribute.Name is FACT_ATTRIBUTE or RETRY_FACT_ATTRIBUTE
+            originalAttribute.Name is FACT_ATTRIBUTE or RETRY_FACT_ATTRIBUTE or RETRY_UNTAGGED_FACT_ATTRIBUTE
                 ? RETRY_FACT_ATTRIBUTE
                 : RETRY_THEORY_ATTRIBUTE);
 
         addRetryArguments(retryAttribute, maxRetries, delayBetweenRetriesMs);
 
         // Copy arguments from the original attribute. If it's already a retry attribute, don't copy the retry arguments though
-        for (var i = originalAttribute.Name is RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE
+        for (var i = originalAttribute.Name is RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE or
+                         RETRY_UNTAGGED_FACT_ATTRIBUTE or RETRY_UNTAGGED_THEORY_ATTRIBUTE
                  ? existingRetryArguments.RetrySpecificArgumentCount
                  : 0;
              i < originalAttribute.Arguments.Count;
@@ -243,7 +264,8 @@ public class TestGeneratorProvider(
 
     private static RetryAttributeArguments getExistingRetryArguments(CodeAttributeDeclaration attribute)
     {
-        if (attribute.Name is not (RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE))
+        if (attribute.Name is not (RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE or
+            RETRY_UNTAGGED_FACT_ATTRIBUTE or RETRY_UNTAGGED_THEORY_ATTRIBUTE))
         {
             return RetryAttributeArguments.Empty;
         }
@@ -290,7 +312,9 @@ public class TestGeneratorProvider(
     {
         var testAttributes = testMethod.CustomAttributes
             .OfType<CodeAttributeDeclaration>()
-            .Where(attr => attr.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE or RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE);
+            .Where(attr => attr.Name is FACT_ATTRIBUTE or THEORY_ATTRIBUTE or
+                RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE or
+                RETRY_UNTAGGED_FACT_ATTRIBUTE or RETRY_UNTAGGED_THEORY_ATTRIBUTE);
 
         return testAttributes.Select(attribute => attribute.Arguments.OfType<CodeAttributeArgument>()
                 .Any(arg => string.Equals(arg.Name, SKIP_PROPERTY_NAME, StringComparison.InvariantCultureIgnoreCase)))
@@ -300,7 +324,8 @@ public class TestGeneratorProvider(
     private void revertRetryAttribute(CodeMemberMethod testMethod)
     {
         var retryAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
-            .FirstOrDefault(a => a.Name is RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE);
+            .FirstOrDefault(a => a.Name is RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE or
+                RETRY_UNTAGGED_FACT_ATTRIBUTE or RETRY_UNTAGGED_THEORY_ATTRIBUTE);
         if (retryAttribute == null)
         {
             return;
@@ -310,7 +335,9 @@ public class TestGeneratorProvider(
         testMethod.CustomAttributes.Remove(retryAttribute);
 
         var originalAttribute = codeDomHelper.AddAttribute(testMethod,
-            retryAttribute.Name == RETRY_FACT_ATTRIBUTE ? FACT_ATTRIBUTE : THEORY_ATTRIBUTE);
+            retryAttribute.Name is RETRY_FACT_ATTRIBUTE or RETRY_UNTAGGED_FACT_ATTRIBUTE
+                ? FACT_ATTRIBUTE
+                : THEORY_ATTRIBUTE);
 
         // Copy over any non-retry-specific arguments (e.g. DisplayName)
         for (var i = existingRetryArguments.RetrySpecificArgumentCount; i < retryAttribute.Arguments.Count; i++)

@@ -14,8 +14,15 @@
     <readme>docs\README.md</readme>
 
     <dependencies>
-      <dependency id="SpecFlow.xUnit" version="[3.9.50,3.10.0)" />
-      <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
+      <group targetFramework=".NETFramework4.5.2">
+        <dependency id="SpecFlow.xUnit" version="[3.9.50,3.10.0)" />
+        <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
+      </group>
+
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="SpecFlow.xUnit" version="[3.9.50,3.10.0)" />
+        <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
+      </group>
     </dependencies>
   </metadata>
 
@@ -25,6 +32,9 @@
 
     <file src="bin\Release\net461\xRetry.SpecFlowPlugin.dll" target="build\net461" />
     <file src="bin\Release\netstandard2.0\xRetry.SpecFlowPlugin.dll" target="build\netstandard2.0" />
+
+    <file src="..\xRetry.SpecFlow.Runtime\bin\Release\net452\xRetry.SpecFlow.dll" target="lib\net452" />
+    <file src="..\xRetry.SpecFlow.Runtime\bin\Release\netstandard2.0\xRetry.SpecFlow.dll" target="lib\netstandard2.0" />
 
     <file src="README.md" target="docs\" />
   </files>

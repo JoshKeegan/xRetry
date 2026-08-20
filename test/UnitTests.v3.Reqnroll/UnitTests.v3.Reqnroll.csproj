@@ -38,7 +38,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\xRetry.v3.Reqnroll\xRetry.v3.Reqnroll.csproj"/>
+        <Reference Include="xRetry.v3.Reqnroll.Plugin">
+            <HintPath>..\..\src\xRetry.v3.Reqnroll\bin\Release\netstandard2.0\xRetry.v3.Reqnroll.Plugin.dll</HintPath>
+        </Reference>
+        <ProjectReference Include="..\..\src\xRetry.v3.Reqnroll.Runtime\xRetry.v3.Reqnroll.Runtime.csproj"/>
         <ProjectReference Include="..\..\src\xRetry.v3\xRetry.v3.csproj"/>
     </ItemGroup>
 </Project>

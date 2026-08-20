@@ -84,6 +84,18 @@ jobs:
       - name: Create Nuget Packages
         working-directory: build
         run: make nuget-create
+
+      - name: Run Packed Package Smoke Tests (SpecFlow)
+        working-directory: build
+        run: make package-tests-run-specflow
+
+      - name: Run Packed Package Smoke Tests (Reqnroll)
+        working-directory: build
+        run: make package-tests-run-reqnroll
+
+      - name: Run Packed Package Smoke Tests (Reqnroll v3)
+        working-directory: build
+        run: make package-tests-run-reqnroll-v3
       
       - name: Upload artefacts
         uses: actions/upload-artifact@v7
