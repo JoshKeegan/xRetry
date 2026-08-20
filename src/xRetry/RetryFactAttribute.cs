@@ -92,6 +92,5 @@ namespace xRetry
         {
             DelayBetweenRetriesMs = delayBetweenRetriesMs;
         }
-
     }
 }
