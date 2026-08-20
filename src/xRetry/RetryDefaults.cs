@@ -13,6 +13,10 @@ namespace xRetry
     {
         public const string FILE_NAME = "xretry.json";
 
+        // Case sensitivity is not determined by the OS: Windows can configure case-sensitive
+        // directories, while NTFS or FAT32 volumes mounted on Linux can be case-insensitive.
+        // Ordinal avoids conflating distinct paths; equivalent paths on a case-insensitive file
+        // system may get separate cache entries.
         private static readonly ConcurrentDictionary<string, RetryDefaults> cache =
             new ConcurrentDictionary<string, RetryDefaults>(StringComparer.Ordinal);
 
