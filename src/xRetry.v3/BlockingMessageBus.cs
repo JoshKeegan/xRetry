@@ -11,7 +11,8 @@ namespace xRetry.v3
     public class BlockingMessageBus : IMessageBus
     {
         private readonly IMessageBus underlyingMessageBus;
-        private ConcurrentQueue<IMessageSinkMessage> messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
+        private readonly ConcurrentQueue<IMessageSinkMessage> messageQueue =
+            new ConcurrentQueue<IMessageSinkMessage>();
 
         public BlockingMessageBus(IMessageBus underlyingMessageBus)
         {
@@ -25,11 +26,6 @@ namespace xRetry.v3
             // Returns if execution should continue. Since we are intercepting the message, we
             //  have no way of checking this so always continue...
             return true;
-        }
-
-        public void Clear()
-        {
-            messageQueue = new ConcurrentQueue<IMessageSinkMessage>();
         }
 
         /// <summary>
