@@ -31,7 +31,7 @@ lint-package-tests:
 build: clean
 	dotnet restore ../
 
-# SpecFlow & Reqnroll plugins must be built before the tests
+# Build tests last. Pass --no-dependencies so explicitly versioned assemblies don't get overwritten
 	cd ../src/xRetry && \
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_VERSION)
 
@@ -39,13 +39,13 @@ build: clean
     	dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_VERSION)
 
 	cd ../src/xRetry.SpecFlow.Runtime && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies -p:Version=$(XRETRY_SPECFLOW_VERSION)
 
 	cd ../src/xRetry.Reqnroll.Runtime && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies -p:Version=$(XRETRY_REQNOLL_VERSION)
 
 	cd ../src/xRetry.v3.Reqnroll.Runtime && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies -p:Version=$(XRETRY_V3_REQNROLL_VERSION)
 
 	cd ../src/xRetry.SpecFlow && \
 		dotnet build -c Release --no-restore -p:Version=$(XRETRY_SPECFLOW_VERSION)
@@ -57,49 +57,49 @@ build: clean
     	dotnet build -c Release --no-restore -p:Version=$(XRETRY_V3_REQNROLL_VERSION)
 
 	cd ../test/UnitTests && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.SingleThreaded && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.GlobalConfig && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 	
 	cd ../test/UnitTests.SpecFlow && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.SpecFlow.GlobalConfig && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.SpecFlow.GlobalConfig.RetryUntagged && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 	
 	cd ../test/UnitTests.Reqnroll && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.Reqnroll.GlobalConfig && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.Reqnroll.GlobalConfig.RetryUntagged && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 	
 	cd ../test/UnitTests.v3 && \
-    	dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.v3.GlobalConfig && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
     
 	cd ../test/UnitTests.SingleThreaded.v3 && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 		
 	cd ../test/UnitTests.v3.Reqnroll && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged && \
-		dotnet build -c Release --no-restore
+		dotnet build -c Release --no-restore --no-dependencies
 
 .PHONY: unit-tests-run
 unit-tests-run: \
