@@ -8,6 +8,7 @@ XRETRY_V3_REQNROLL_VERSION	=0.1.0-alpha1#
 .PHONY: clean
 clean:
 	rm -r ../artefacts || true
+	rm -r ../obj || true
 	rm -r ../*/*/obj || true
 	rm -r ../*/*/bin || true
 	rm -r ../*/*/*/obj || true
