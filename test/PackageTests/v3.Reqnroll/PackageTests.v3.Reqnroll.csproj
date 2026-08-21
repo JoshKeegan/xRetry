@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net9.0;net48</TargetFrameworks>
     <OutputType>Exe</OutputType>
+    <LangVersion>13.0</LangVersion>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <xRetryV3ReqnrollVersion Condition="'$(xRetryV3ReqnrollVersion)' == ''">0.1.0-alpha1</xRetryV3ReqnrollVersion>
@@ -23,6 +24,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+
+    <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.0.0" />
   </ItemGroup>
 
 </Project>
