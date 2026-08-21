@@ -2,11 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <xRetrySpecFlowVersion Condition="'$(xRetrySpecFlowVersion)' == ''">1.9.0</xRetrySpecFlowVersion>
-    <LocalPackageSource Condition="'$(LocalPackageSource)' == ''">$(MSBuildThisFileDirectory)..\..\artefacts\nuget</LocalPackageSource>
-    <RestoreSources>$(LocalPackageSource);https://api.nuget.org/v3/index.json</RestoreSources>
+    <xRetryV3ReqnrollVersion Condition="'$(xRetryV3ReqnrollVersion)' == ''">0.1.0-alpha1</xRetryV3ReqnrollVersion>
     <RestorePackagesPath>$(BaseIntermediateOutputPath)packages</RestorePackagesPath>
   </PropertyGroup>
 
@@ -16,8 +15,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
-    <PackageReference Include="xRetry.SpecFlow" Version="$(xRetrySpecFlowVersion)" />
-    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="Reqnroll.xunit.v3" Version="3.3.2" />
+    <PackageReference Include="xRetry.v3.Reqnroll" Version="$(xRetryV3ReqnrollVersion)" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.v3.core" Version="3.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

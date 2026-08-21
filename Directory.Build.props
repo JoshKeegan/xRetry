@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\..\build\keyPair.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)build\keyPair.snk</AssemblyOriginatorKeyFile>
 
 		<!--
 			Keep NuGet/MSBuild intermediates from non-Windows builds separate from the

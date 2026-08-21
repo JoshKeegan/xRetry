@@ -85,6 +85,10 @@ jobs:
         working-directory: build
         run: make nuget-create
 
+      - name: Lint Packed Package Smoke Tests
+        working-directory: build
+        run: make lint-package-tests
+
       - name: Run Packed Package Smoke Tests (SpecFlow)
         working-directory: build
         run: make package-tests-run-specflow

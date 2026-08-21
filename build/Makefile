@@ -10,6 +10,8 @@ clean:
 	rm -r ../artefacts || true
 	rm -r ../*/*/obj || true
 	rm -r ../*/*/bin || true
+	rm -r ../*/*/*/obj || true
+	rm -r ../*/*/*/bin || true
 
 	mkdir -p ../artefacts/nuget
 
@@ -17,6 +19,12 @@ clean:
 lint:
 	dotnet format --verify-no-changes ../ || \
 		(echo "Lint check failed. You can automatically fix all formatting issues by running \"dotnet format\""; exit 1)
+
+# nuget-create must run before this target. It's not a dependency since CI invokes the targets separately, which would
+# create the packages twice.
+.PHONY: lint-package-tests
+lint-package-tests:
+	dotnet format --verify-no-changes ../test/PackageTests
 
 .PHONY: build
 build: clean
@@ -245,18 +253,18 @@ package-tests-run: \
 
 .PHONY: package-tests-run-specflow
 package-tests-run-specflow:
-	cd ../test/PackageTests.SpecFlow && \
+	cd ../test/PackageTests/SpecFlow && \
 		dotnet test -c Release -p:xRetrySpecFlowVersion=$(XRETRY_SPECFLOW_VERSION)
 
 .PHONY: package-tests-run-reqnroll
 package-tests-run-reqnroll:
-	cd ../test/PackageTests.Reqnroll && \
+	cd ../test/PackageTests/Reqnroll && \
 		dotnet test -c Release -p:xRetryReqnrollVersion=$(XRETRY_REQNOLL_VERSION)
 
 .PHONY: package-tests-run-reqnroll-v3
 package-tests-run-reqnroll-v3:
-	cd ../test/PackageTests.v3.Reqnroll && \
+	cd ../test/PackageTests/v3.Reqnroll && \
 		dotnet test -c Release -p:xRetryV3ReqnrollVersion=$(XRETRY_V3_REQNROLL_VERSION)
 
 .PHONY: ci
-ci: lint build unit-tests-run docs nuget-create package-tests-run
+ci: lint build unit-tests-run docs nuget-create lint-package-tests package-tests-run
