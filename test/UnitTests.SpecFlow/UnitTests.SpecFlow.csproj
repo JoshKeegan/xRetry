@@ -36,9 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="xRetry.SpecFlowPlugin">
-            <HintPath>..\..\src\xRetry.SpecFlow\bin\Release\netstandard2.0\xRetry.SpecFlowPlugin.dll</HintPath>
-        </Reference>
+        <ProjectReference Include="..\..\src\xRetry.SpecFlow\xRetry.SpecFlow.csproj" />
         <ProjectReference Include="..\..\src\xRetry.SpecFlow.Runtime\xRetry.SpecFlow.Runtime.csproj" />
         <ProjectReference Include="..\..\src\xRetry\xRetry.csproj" />
     </ItemGroup>
