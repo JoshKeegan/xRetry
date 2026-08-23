@@ -32,6 +32,9 @@ namespace xRetry.v3
         /// <param name="skipReason">The skip reason, if the test is to be skipped.</param>
         /// <param name="explicitOption">A flag to indicate how explicit tests should be treated.</param>
         /// <param name="constructorArguments">The arguments to be passed to the test class constructor.</param>
+        /// <param name="parallelMode">The parallel mode for the test case.</param>
+        /// <param name="scheduler">The scheduler used for task/test scheduling.</param>
+        /// <param name="methodFixtureMappings">The fixtures attached to the test method.</param>
         /// <returns>
         /// Run summary information about the test that was run.
         /// The .Time property includes any retry attempts.
@@ -50,7 +53,10 @@ namespace xRetry.v3
             string displayName,
             string? skipReason,
             ExplicitOption explicitOption,
-            object?[] constructorArguments)
+            object?[] constructorArguments,
+            ParallelMode parallelMode,
+            ExecutionScheduler scheduler,
+            FixtureMappingManager methodFixtureMappings)
         {
             Guard.ArgumentNotNull(testCase);
             Guard.ArgumentNotNull(displayName);
@@ -59,13 +65,16 @@ namespace xRetry.v3
             await using var ctxt = new XunitTestCaseRunnerContext(
                 testCase,
                 tests,
+                explicitOption,
                 messageBus,
                 aggregator,
-                cancellationTokenSource,
                 displayName,
                 skipReason,
-                explicitOption,
-                constructorArguments);
+                cancellationTokenSource,
+                parallelMode,
+                scheduler,
+                constructorArguments,
+                methodFixtureMappings);
             await ctxt.InitializeAsync();
 
             return await Run(ctxt);
@@ -104,7 +113,10 @@ namespace xRetry.v3
                     ctxt.ExplicitOption,
                     ctxt.Aggregator.Clone(),
                     ctxt.CancellationTokenSource,
-                    ctxt.BeforeAfterTestAttributes);
+                    ctxt.ParallelMode,
+                    ctxt.Scheduler,
+                    ctxt.BeforeAfterTestAttributes,
+                    ctxt.CaseFixtureMappings);
 
                 // If we succeeded, skipped, or we've reached the max retries return the result
                 if (summary.Failed == 0 || i == retryableTestCase.MaxRetries)
