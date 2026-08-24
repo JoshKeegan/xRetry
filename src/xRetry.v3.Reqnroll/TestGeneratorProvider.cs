@@ -5,7 +5,6 @@ using System.Linq;
 using Reqnroll.BoDi;
 using Reqnroll.Generator;
 using Reqnroll.Generator.CodeDom;
-using Reqnroll.Generator.Interfaces;
 using Reqnroll.Generator.UnitTestProvider;
 using xRetry.v3.Reqnroll.Parsers;
 
@@ -209,8 +208,6 @@ public class TestGeneratorProvider(
         int? maxRetries,
         int? delayBetweenRetriesMs)
     {
-        if (isTestMethodAlreadyIgnored(testMethod)) return;
-
         // Remove the original fact or theory attribute
         var originalAttribute = testMethod.CustomAttributes.OfType<CodeAttributeDeclaration>()
             .FirstOrDefault(a =>
@@ -316,9 +313,8 @@ public class TestGeneratorProvider(
                 RETRY_FACT_ATTRIBUTE or RETRY_THEORY_ATTRIBUTE or
                 RETRY_UNTAGGED_FACT_ATTRIBUTE or RETRY_UNTAGGED_THEORY_ATTRIBUTE);
 
-        return testAttributes.Select(attribute => attribute.Arguments.OfType<CodeAttributeArgument>()
-                .Any(arg => string.Equals(arg.Name, SKIP_PROPERTY_NAME, StringComparison.InvariantCultureIgnoreCase)))
-            .Any(containsSkip => containsSkip);
+        return testAttributes.Any(attribute => attribute.Arguments.OfType<CodeAttributeArgument>()
+            .Any(arg => string.Equals(arg.Name, SKIP_PROPERTY_NAME, StringComparison.OrdinalIgnoreCase)));
     }
 
     private void revertRetryAttribute(CodeMemberMethod testMethod)
