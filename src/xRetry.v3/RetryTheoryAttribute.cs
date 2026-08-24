@@ -12,6 +12,7 @@ namespace xRetry.v3
     public class RetryTheoryAttribute : RetryFactAttribute, ITheoryAttribute
     {
         public bool DisableDiscoveryEnumeration { get; set; }
+        public bool IncludeTestCaseIndex { get; set; }
         public bool SkipTestWithoutData { get; set; }
 
         /// <inheritdoc/>

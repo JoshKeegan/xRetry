@@ -50,7 +50,10 @@ namespace xRetry.v3
             IMessageBus messageBus,
             object?[] constructorArguments,
             ExceptionAggregator aggregator,
-            CancellationTokenSource cancellationTokenSource)
+            CancellationTokenSource cancellationTokenSource,
+            ParallelMode parallelMode,
+            ExecutionScheduler scheduler,
+            FixtureMappingManager methodFixtureMappings)
         {
             return await RetryTestCaseRunner.Instance.Run(
                 this,
@@ -61,7 +64,10 @@ namespace xRetry.v3
                 TestCaseDisplayName,
                 SkipReason,
                 explicitOption,
-                constructorArguments);
+                constructorArguments,
+                parallelMode,
+                scheduler,
+                methodFixtureMappings);
         }
 
         protected override void Serialize(IXunitSerializationInfo data)
