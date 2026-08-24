@@ -24,8 +24,8 @@
             See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
         -->
         <PackageReference Include="FluentAssertions" Version="7.2.2"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0"/>
-        <PackageReference Include="Reqnroll.xunit.v3" Version="3.3.2"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0"/>
+        <PackageReference Include="Reqnroll.xunit.v3" Version="3.3.4"/>
         <!-- xunit.v3 (MTP v2) fails to build on net48 with CS8336 on CI; mtp-off avoids it -->
         <PackageReference Include="xunit.v3" Version="4.0.0" Condition="'$(TargetFramework)' != 'net48'"/>
         <PackageReference Include="xunit.v3.mtp-off" Version="4.0.0" Condition="'$(TargetFramework)' == 'net48'"/>
@@ -35,7 +35,7 @@
         </PackageReference>
 
         <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
-        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.0.0"/>
+        <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.9.0"/>
     </ItemGroup>
 
     <ItemGroup>
