@@ -101,7 +101,10 @@ namespace xRetry.v3
                     ctxt.ExplicitOption,
                     ctxt.Aggregator.Clone(),
                     ctxt.CancellationTokenSource,
-                    ctxt.BeforeAfterTestAttributes);
+                    ctxt.ParallelMode,
+                    ctxt.Scheduler,
+                    ctxt.BeforeAfterTestAttributes,
+                    ctxt.CaseFixtureMappings);
             }
 
             var stopwatch = Stopwatch.StartNew();
