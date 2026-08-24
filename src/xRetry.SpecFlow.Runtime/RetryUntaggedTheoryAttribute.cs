@@ -14,7 +14,7 @@ namespace xRetry.SpecFlow
         public RetryUntaggedTheoryAttribute(params Type[] skipOnExceptions)
             : base(skipOnExceptions)
         {
-            if (!RetryDefaults.Load(AppDomain.CurrentDomain.BaseDirectory).RetryUntaggedScenarios)
+            if (!RetryDefaults.RetryUntaggedScenarios)
             {
                 MaxRetries = 1;
             }

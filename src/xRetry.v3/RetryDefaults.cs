@@ -17,8 +17,8 @@ namespace xRetry.v3
         // directories, while NTFS or FAT32 volumes mounted on Linux can be case-insensitive.
         // Ordinal avoids conflating distinct paths; equivalent paths on a case-insensitive file
         // system may get separate cache entries.
-        private static readonly ConcurrentDictionary<string, RetryDefaults> cache =
-            new ConcurrentDictionary<string, RetryDefaults>(StringComparer.Ordinal);
+        private static readonly ConcurrentDictionary<string, LoadResult> cache =
+            new ConcurrentDictionary<string, LoadResult>(StringComparer.Ordinal);
 
         private static readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions
         {
@@ -43,21 +43,28 @@ namespace xRetry.v3
         [JsonPropertyName("$schema")]
         public string? Schema { get; private set; }
 
-        public static RetryDefaults Load(string? directory) =>
-            cache.GetOrAdd(directory ?? string.Empty, load);
+        internal static LoadResult Load(string? directory) =>
+            cache.GetOrAdd(
+                directory ?? string.Empty,
+                static configDirectory =>
+                {
+                    try
+                    {
+                        string configFilePath = Path.Combine(configDirectory, FILE_NAME);
+                        if (!File.Exists(configFilePath))
+                        {
+                            return new LoadResult(new RetryDefaults());
+                        }
 
-        private static RetryDefaults load(string directory)
-        {
-            string configFilePath = Path.Combine(directory, FILE_NAME);
-            if (!File.Exists(configFilePath))
-            {
-                return new RetryDefaults();
-            }
-
-            RetryDefaults defaults = readConfigFile(configFilePath);
-            defaults.validate(configFilePath);
-            return defaults;
-        }
+                        RetryDefaults defaults = readConfigFile(configFilePath);
+                        defaults.validate(configFilePath);
+                        return new LoadResult(defaults);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        return new LoadResult(ex.Message);
+                    }
+                });
 
         private static RetryDefaults readConfigFile(string configFilePath)
         {
@@ -100,5 +107,23 @@ namespace xRetry.v3
             string message,
             Exception? innerException = null) =>
             new($"xRetry configuration file \"{configFilePath}\" is invalid: {message}.", innerException);
+
+        internal sealed class LoadResult
+        {
+            public LoadResult(RetryDefaults value)
+            {
+                Value = value;
+            }
+
+            public LoadResult(string error)
+            {
+                Value = new RetryDefaults();
+                Error = error;
+            }
+
+            public RetryDefaults Value { get; }
+
+            public string? Error { get; }
+        }
     }
 }

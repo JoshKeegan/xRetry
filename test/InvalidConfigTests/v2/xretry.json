@@ -1,0 +1,4 @@
+{
+  "maxRetries": 0,
+  "retryUntaggedScenarios": true
+}

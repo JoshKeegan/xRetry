@@ -20,6 +20,7 @@ clean:
 lint:
 	dotnet format --verify-no-changes ../ || \
 		(echo "Lint check failed. You can automatically fix all formatting issues by running \"dotnet format\""; exit 1)
+	dotnet format --verify-no-changes ../test/InvalidConfigTests
 
 # nuget-create must run before this target. It's not a dependency since CI invokes the targets separately, which would
 # create the packages twice.
@@ -30,6 +31,7 @@ lint-package-tests:
 .PHONY: build
 build: clean
 	dotnet restore ../
+	dotnet restore ../test/InvalidConfigTests
 
 # Build tests last. Pass --no-dependencies so explicitly versioned assemblies don't get overwritten
 	cd ../src/xRetry && \
@@ -101,6 +103,12 @@ build: clean
 	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged && \
 		dotnet build -c Release --no-restore --no-dependencies
 
+	cd ../test/InvalidConfigTests/v2 && \
+		dotnet build -c Release --no-restore --no-dependencies
+
+	cd ../test/InvalidConfigTests/v3 && \
+		dotnet build -c Release --no-restore --no-dependencies
+
 .PHONY: unit-tests-run
 unit-tests-run: \
 	unit-tests-run-main \
@@ -117,7 +125,8 @@ unit-tests-run: \
 	unit-tests-run-single-threaded-v3 \
 	unit-tests-run-reqnroll-v3 \
 	unit-tests-run-reqnroll-v3-global-config \
-	unit-tests-run-reqnroll-v3-global-config-retry-untagged
+	unit-tests-run-reqnroll-v3-global-config-retry-untagged \
+	unit-tests-run-invalid-config
 
 .PHONY: unit-tests-run-main
 unit-tests-run-main:
@@ -197,6 +206,11 @@ unit-tests-run-reqnroll-v3-global-config:
 unit-tests-run-reqnroll-v3-global-config-retry-untagged:
 	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged && \
 		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged.trx
+
+.PHONY: unit-tests-run-invalid-config
+unit-tests-run-invalid-config:
+	bash assert-invalid-config-output.sh ../test/InvalidConfigTests/v2/InvalidConfigTests.v2.csproj
+	bash assert-invalid-config-output.sh ../test/InvalidConfigTests/v3/InvalidConfigTests.v3.csproj
 
 .PHONY: docs
 docs:

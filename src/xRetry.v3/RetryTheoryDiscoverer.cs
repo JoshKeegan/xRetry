@@ -11,6 +11,23 @@ namespace xRetry.v3
 {
     public class RetryTheoryDiscoverer : TheoryDiscoverer
     {
+        public override ValueTask<IReadOnlyCollection<IXunitTestCase>> Discover(
+            ITestFrameworkDiscoveryOptions discoveryOptions,
+            IXunitTestMethod testMethod,
+            IFactAttribute factAttribute)
+        {
+            if (RetryConfigurationDiscovery.TryGetErrorTestCases(
+                    discoveryOptions,
+                    testMethod,
+                    factAttribute,
+                    out IReadOnlyCollection<IXunitTestCase> configurationErrorTestCases))
+            {
+                return new ValueTask<IReadOnlyCollection<IXunitTestCase>>(configurationErrorTestCases);
+            }
+
+            return base.Discover(discoveryOptions, testMethod, factAttribute);
+        }
+
         protected override ValueTask<IReadOnlyCollection<IXunitTestCase>> CreateTestCasesForDataRow(
             ITestFrameworkDiscoveryOptions discoveryOptions,
             IXunitTestMethod testMethod,

@@ -15,6 +15,15 @@ namespace xRetry.v3
             IXunitTestMethod testMethod,
             IFactAttribute factAttribute)
         {
+            if (RetryConfigurationDiscovery.TryGetErrorTestCases(
+                    discoveryOptions,
+                    testMethod,
+                    factAttribute,
+                    out IReadOnlyCollection<IXunitTestCase> configurationErrorTestCases))
+            {
+                return new ValueTask<IReadOnlyCollection<IXunitTestCase>>(configurationErrorTestCases);
+            }
+
             var details = TestIntrospectionHelper.GetTestCaseDetails(discoveryOptions, testMethod, factAttribute);
             IXunitTestCase testCase;
 

@@ -13,7 +13,7 @@ public sealed class RetryUntaggedFactAttribute : RetryFactAttribute
 {
     public RetryUntaggedFactAttribute()
     {
-        if (!RetryDefaults.Load(AppDomain.CurrentDomain.BaseDirectory).RetryUntaggedScenarios)
+        if (!RetryDefaults.RetryUntaggedScenarios)
         {
             MaxRetries = 1;
         }

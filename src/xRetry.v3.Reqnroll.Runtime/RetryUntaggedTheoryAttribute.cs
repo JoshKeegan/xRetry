@@ -13,7 +13,7 @@ public sealed class RetryUntaggedTheoryAttribute : RetryTheoryAttribute
 {
     public RetryUntaggedTheoryAttribute()
     {
-        if (!RetryDefaults.Load(AppDomain.CurrentDomain.BaseDirectory).RetryUntaggedScenarios)
+        if (!RetryDefaults.RetryUntaggedScenarios)
         {
             MaxRetries = 1;
         }

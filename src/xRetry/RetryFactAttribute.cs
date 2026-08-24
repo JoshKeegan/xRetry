@@ -16,14 +16,14 @@ namespace xRetry
         public const int DEFAULT_MAX_RETRIES = 3;
         public const int DEFAULT_DELAY_BETWEEN_RETRIES_MS = 0;
 
-        private readonly int defaultMaxRetries;
-        private readonly int defaultDelayBetweenRetriesMs;
         private int? maxRetries;
         private int? delayBetweenRetriesMs;
 
+        protected RetryDefaults RetryDefaults { get; }
+
         public int MaxRetries
         {
-            get => maxRetries ?? defaultMaxRetries;
+            get => maxRetries ?? RetryDefaults.MaxRetries ?? DEFAULT_MAX_RETRIES;
             set
             {
                 if (value < 1)
@@ -36,7 +36,9 @@ namespace xRetry
 
         public int DelayBetweenRetriesMs
         {
-            get => delayBetweenRetriesMs ?? defaultDelayBetweenRetriesMs;
+            get => delayBetweenRetriesMs ??
+                RetryDefaults.DelayBetweenRetriesMs ??
+                DEFAULT_DELAY_BETWEEN_RETRIES_MS;
             set
             {
                 if (value < 0)
@@ -62,9 +64,9 @@ namespace xRetry
                 throw new ArgumentException("Specified type must be an exception", nameof(skipOnExceptions));
             }
 
-            RetryDefaults retryDefaults = RetryDefaults.Load(AppDomain.CurrentDomain.BaseDirectory);
-            defaultMaxRetries = retryDefaults.MaxRetries ?? DEFAULT_MAX_RETRIES;
-            defaultDelayBetweenRetriesMs = retryDefaults.DelayBetweenRetriesMs ?? DEFAULT_DELAY_BETWEEN_RETRIES_MS;
+            RetryDefaults = RetryDefaults
+                .Load(AppDomain.CurrentDomain.BaseDirectory)
+                .Value;
         }
 
         /// <summary>
