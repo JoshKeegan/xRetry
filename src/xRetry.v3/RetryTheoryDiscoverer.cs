@@ -16,10 +16,11 @@ namespace xRetry.v3
             IXunitTestMethod testMethod,
             ITheoryAttribute theoryAttribute,
             ITheoryDataRow dataRow,
-            object?[] testMethodArguments)
+            object?[] testMethodArguments,
+            string? index)
         {
             var details = TestIntrospectionHelper.GetTestCaseDetailsForTheoryDataRow(
-                discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments);
+                discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments, index);
 
             IXunitTestCase testCase;
 
