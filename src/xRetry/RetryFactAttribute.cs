@@ -28,7 +28,7 @@ namespace xRetry
             {
                 if (value < 1)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(MaxRetries) + " must be >= 1");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "MaxRetries must be >= 1");
                 }
                 maxRetries = value;
             }
@@ -43,7 +43,10 @@ namespace xRetry
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(DelayBetweenRetriesMs) + " must be >= 0");
+                    throw new ArgumentOutOfRangeException(
+                        nameof(value),
+                        value,
+                        "DelayBetweenRetriesMs must be >= 0");
                 }
                 delayBetweenRetriesMs = value;
             }
