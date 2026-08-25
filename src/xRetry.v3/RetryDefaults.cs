@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -39,13 +40,14 @@ namespace xRetry.v3
         /// The JSON schema used by editors to validate <c>xretry.json</c>.
         /// This value has no effect at runtime.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [JsonInclude]
         [JsonPropertyName("$schema")]
         public string? Schema { get; private set; }
 
-        internal static LoadResult Load(string? directory) =>
+        internal static LoadResult Load(string directory) =>
             cache.GetOrAdd(
-                directory ?? string.Empty,
+                directory,
                 static configDirectory =>
                 {
                     try

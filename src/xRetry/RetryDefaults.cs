@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -20,6 +21,13 @@ namespace xRetry
         private static readonly ConcurrentDictionary<string, LoadResult> cache =
             new ConcurrentDictionary<string, LoadResult>(StringComparer.Ordinal);
 
+        // Json.NET matches property names with the same casing first, then falls back to a case-insensitive match.
+        // It doesn't provide a setting to enforce case-sensitive matching, so we can't do that without rolling
+        // our own check before deserialisation. That is a difference with System.Text.Json used in v3, but 
+        // it's better to accept than than go through the hassle of rolling our own validation or switching to a less
+        // common JSON library just for this minor difference in behaviour.
+        // If someone relies on case insensitive property names, and then goes to upgrade their project to v3, they
+        // should get a clear error message because we error on missing members.
         private static readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver
@@ -42,12 +50,13 @@ namespace xRetry
         /// The JSON schema used by editors to validate <c>xretry.json</c>.
         /// This value has no effect at runtime.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [JsonProperty("$schema")]
         public string Schema { get; private set; }
 
         internal static LoadResult Load(string directory) =>
             cache.GetOrAdd(
-                directory ?? string.Empty,
+                directory,
                 static configDirectory =>
                 {
                     try
