@@ -38,6 +38,10 @@ assert_output() {
         test_command+=(--filter "$filter")
     fi
 
+    if [[ "$framework" == "net48" && "${OS:-}" != "Windows_NT" ]]; then
+        test_command+=(-- xUnit.ParallelizeTestCollections=false)
+    fi
+
     echo "Asserting $project ($framework, $run_name)"
 
     if "${test_command[@]}" >"$output_file" 2>&1; then

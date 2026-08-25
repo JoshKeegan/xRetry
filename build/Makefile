@@ -5,6 +5,20 @@ XRETRY_REQNOLL_VERSION		=1.1.0#
 XRETRY_V3_VERSION			=1.0.0#
 XRETRY_V3_VERSION_MAX		:= $(shell expr $(shell echo $(XRETRY_V3_VERSION) | cut -d. -f1) + 1).0.0
 XRETRY_V3_REQNROLL_VERSION	=1.0.0#
+
+# net48 runs on Mono (unless on Windows). Parallel test collections randomly cause assembly load errors, so run them
+# sequentially on Mono.
+ifneq ($(OS),Windows_NT)
+NET48_XUNIT_RUNNER_ARGS		=-- xUnit.ParallelizeTestCollections=false
+endif
+
+define RUN_UNIT_TESTS
+$(2) dotnet test --no-build -c Release -f net9.0 \
+	--logger:trx\;logfilename=../../../artefacts/testResults/$(1).net9.0.trx && \
+$(2) dotnet test --no-build -c Release -f net48 \
+	--logger:trx\;logfilename=../../../artefacts/testResults/$(1).net48.trx $(NET48_XUNIT_RUNNER_ARGS)
+endef
+
 .PHONY: clean
 clean:
 	rm -r ../artefacts || true
@@ -131,81 +145,81 @@ unit-tests-run: \
 .PHONY: unit-tests-run-main
 unit-tests-run-main:
 	cd ../test/UnitTests && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.trx
+		$(call RUN_UNIT_TESTS,UnitTests,)
 
 .PHONY: unit-tests-run-single-threaded
 unit-tests-run-single-threaded:
 #  Run the single threaded tests with a timeout, as they test deadlock scenarios which would never return if failing
 #	You can tell if this times out as it returns exit code 124, which make prints as "Error 124"
 	cd ../test/UnitTests.SingleThreaded && \
-		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.trx
+		$(call RUN_UNIT_TESTS,UnitTests.SingleThreaded,timeout 10)
 
 .PHONY: unit-tests-run-main-global-config
 unit-tests-run-main-global-config:
 	cd ../test/UnitTests.GlobalConfig && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.GlobalConfig.trx
+		$(call RUN_UNIT_TESTS,UnitTests.GlobalConfig,)
 
 .PHONY: unit-tests-run-specflow
 unit-tests-run-specflow:
 	cd ../test/UnitTests.SpecFlow && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.trx
+		$(call RUN_UNIT_TESTS,UnitTests.SpecFlow,)
 
 .PHONY: unit-tests-run-specflow-global-config
 unit-tests-run-specflow-global-config:
 	cd ../test/UnitTests.SpecFlow.GlobalConfig && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.GlobalConfig.trx
+		$(call RUN_UNIT_TESTS,UnitTests.SpecFlow.GlobalConfig,)
 
 .PHONY: unit-tests-run-specflow-global-config-retry-untagged
 unit-tests-run-specflow-global-config-retry-untagged:
 	cd ../test/UnitTests.SpecFlow.GlobalConfig.RetryUntagged && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SpecFlow.GlobalConfig.RetryUntagged.trx
+		$(call RUN_UNIT_TESTS,UnitTests.SpecFlow.GlobalConfig.RetryUntagged,)
 
 .PHONY: unit-tests-run-reqnroll
 unit-tests-run-reqnroll:
 	cd ../test/UnitTests.Reqnroll && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.trx
+		$(call RUN_UNIT_TESTS,UnitTests.Reqnroll,)
 
 .PHONY: unit-tests-run-reqnroll-global-config
 unit-tests-run-reqnroll-global-config:
 	cd ../test/UnitTests.Reqnroll.GlobalConfig && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.GlobalConfig.trx
+		$(call RUN_UNIT_TESTS,UnitTests.Reqnroll.GlobalConfig,)
 
 .PHONY: unit-tests-run-reqnroll-global-config-retry-untagged
 unit-tests-run-reqnroll-global-config-retry-untagged:
 	cd ../test/UnitTests.Reqnroll.GlobalConfig.RetryUntagged && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.Reqnroll.GlobalConfig.RetryUntagged.trx
+		$(call RUN_UNIT_TESTS,UnitTests.Reqnroll.GlobalConfig.RetryUntagged,)
 
 .PHONY: unit-tests-run-main-v3
 unit-tests-run-main-v3:
 	cd ../test/UnitTests.v3 && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.trx
+		$(call RUN_UNIT_TESTS,UnitTests.v3,)
 
 .PHONY: unit-tests-run-main-v3-global-config
 unit-tests-run-main-v3-global-config:
 	cd ../test/UnitTests.v3.GlobalConfig && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.GlobalConfig.trx
+		$(call RUN_UNIT_TESTS,UnitTests.v3.GlobalConfig,)
 
 .PHONY: unit-tests-run-single-threaded-v3
 unit-tests-run-single-threaded-v3:
 #  Run the single threaded tests with a timeout, as they test deadlock scenarios which would never return if failing
 #	You can tell if this times out as it returns exit code 124, which make prints as "Error 124"
 	cd ../test/UnitTests.SingleThreaded.v3 && \
-		timeout 10 dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.SingleThreaded.v3.trx
+		$(call RUN_UNIT_TESTS,UnitTests.SingleThreaded.v3,timeout 10)
 
 .PHONY: unit-tests-run-reqnroll-v3
 unit-tests-run-reqnroll-v3:
 	cd ../test/UnitTests.v3.Reqnroll && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.trx
+		$(call RUN_UNIT_TESTS,UnitTests.v3.Reqnroll,)
 
 .PHONY: unit-tests-run-reqnroll-v3-global-config
 unit-tests-run-reqnroll-v3-global-config:
 	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.GlobalConfig.trx
+		$(call RUN_UNIT_TESTS,UnitTests.v3.Reqnroll.GlobalConfig,)
 
 .PHONY: unit-tests-run-reqnroll-v3-global-config-retry-untagged
 unit-tests-run-reqnroll-v3-global-config-retry-untagged:
 	cd ../test/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged && \
-		dotnet test --no-build -c Release --logger:trx\;logfilename=../../../artefacts/testResults/UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged.trx
+		$(call RUN_UNIT_TESTS,UnitTests.v3.Reqnroll.GlobalConfig.RetryUntagged,)
 
 .PHONY: unit-tests-run-invalid-config
 unit-tests-run-invalid-config:
@@ -269,17 +283,20 @@ package-tests-run: \
 .PHONY: package-tests-run-specflow
 package-tests-run-specflow:
 	cd ../test/PackageTests/SpecFlow && \
-		dotnet test -c Release -p:xRetrySpecFlowVersion=$(XRETRY_SPECFLOW_VERSION)
+		dotnet test -c Release -f net9.0 -p:xRetrySpecFlowVersion=$(XRETRY_SPECFLOW_VERSION) && \
+		dotnet test -c Release -f net48 -p:xRetrySpecFlowVersion=$(XRETRY_SPECFLOW_VERSION) $(NET48_XUNIT_RUNNER_ARGS)
 
 .PHONY: package-tests-run-reqnroll
 package-tests-run-reqnroll:
 	cd ../test/PackageTests/Reqnroll && \
-		dotnet test -c Release -p:xRetryReqnrollVersion=$(XRETRY_REQNOLL_VERSION)
+		dotnet test -c Release -f net9.0 -p:xRetryReqnrollVersion=$(XRETRY_REQNOLL_VERSION) && \
+		dotnet test -c Release -f net48 -p:xRetryReqnrollVersion=$(XRETRY_REQNOLL_VERSION) $(NET48_XUNIT_RUNNER_ARGS)
 
 .PHONY: package-tests-run-reqnroll-v3
 package-tests-run-reqnroll-v3:
 	cd ../test/PackageTests/v3.Reqnroll && \
-		dotnet test -c Release -p:xRetryV3ReqnrollVersion=$(XRETRY_V3_REQNROLL_VERSION)
+		dotnet test -c Release -f net9.0 -p:xRetryV3ReqnrollVersion=$(XRETRY_V3_REQNROLL_VERSION) && \
+		dotnet test -c Release -f net48 -p:xRetryV3ReqnrollVersion=$(XRETRY_V3_REQNROLL_VERSION) $(NET48_XUNIT_RUNNER_ARGS)
 
 .PHONY: ci
 ci: lint build unit-tests-run docs nuget-create lint-package-tests package-tests-run
