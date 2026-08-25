@@ -21,9 +21,19 @@ namespace UnitTests.v3
         [Theory]
         [InlineData(-1)]
         [InlineData(-1337)]
-        public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs)
+        public void Property_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs)
         {
             Action act = () => new RetryTheoryAttribute { DelayBetweenRetriesMs = delayBetweenRetriesMs };
+
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-1337)]
+        public void Ctor_NegativeDelayBetweenRetries_ShouldThrow(int delayBetweenRetriesMs)
+        {
+            Action act = () => new RetryTheoryAttribute(1, delayBetweenRetriesMs);
 
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
