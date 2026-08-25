@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="4.18.1" />
     <!-- 
       Do not upgrade FluentAssertions beyond 7.x, as the license changes in v8.
       See https://github.com/JoshKeegan/xRetry/pull/270#issuecomment-2614457485
