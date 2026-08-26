@@ -7,7 +7,10 @@ opening an issue first to discuss, and make sure nobody else is working on the s
 
 #### In an IDE
 
-To build and run locally, always build `xRetry.Reqnroll` and `xRetry.SpecFlow` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the test projects.  
+Before building the test projects, build every project under `src/` in the Release configuration. The order does not
+matter, but all Release outputs must be current before the tests are built. The test projects load the generator
+plugins directly from `bin/Release`. Missing outputs cause compile errors; stale outputs can make the tests run against
+old code instead of your changes.
 
 #### From the terminal
 

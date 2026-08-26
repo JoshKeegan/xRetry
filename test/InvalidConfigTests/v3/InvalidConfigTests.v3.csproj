@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Deliberately fails; run through build/assert-invalid-config-output.sh. -->
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net48</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <LangVersion>13.0</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <!-- xunit.v3 (MTP v2) fails to build on net48 with CS8336 on CI; mtp-off avoids it -->
+    <PackageReference Include="xunit.v3" Version="4.0.0" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="xunit.v3.mtp-off" Version="4.0.0" Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+
+    <!-- required for .net framework xunit tests to run on mono via dotnet test: https://github.com/microsoft/vstest/issues/2469 -->
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/xRetry.v3.Reqnroll.Runtime/xRetry.v3.Reqnroll.Runtime.csproj" />
+    <ProjectReference Include="../../../src/xRetry.v3/xRetry.v3.csproj" />
+  </ItemGroup>
+
+</Project>

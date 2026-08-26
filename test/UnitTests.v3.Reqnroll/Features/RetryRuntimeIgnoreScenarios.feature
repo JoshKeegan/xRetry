@@ -4,6 +4,15 @@ So that the full feature set of Reqnroll is still available with xRetry (IUnitTe
 As a QA engineer
 I want to be able to ignore/skip tests
 
+    Scenario: Untagged test is ignored at runtime
+        When I ignore this test
+        Then fail because this test should have been skipped
+
+    @retry(1)
+    Scenario: Test with retries disabled is ignored at runtime
+        When I ignore this test
+        Then fail because this test should have been skipped
+
     @retry
     Scenario: Test is ignored at runtime
         When I ignore this test

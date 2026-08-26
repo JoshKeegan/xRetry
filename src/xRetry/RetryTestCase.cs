@@ -41,8 +41,8 @@ namespace xRetry
             object[] constructorArguments, ExceptionAggregator aggregator,
             CancellationTokenSource cancellationTokenSource) =>
             RetryTestCaseRunner.RunAsync(this, diagnosticMessageSink, messageBus, cancellationTokenSource,
-                blockingMessageBus => new XunitTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
-                        TestMethodArguments, blockingMessageBus, aggregator, cancellationTokenSource)
+                testMessageBus => new XunitTestCaseRunner(this, DisplayName, SkipReason, constructorArguments,
+                        TestMethodArguments, testMessageBus, aggregator, cancellationTokenSource)
                     .RunAsync());
 
         public override void Serialize(IXunitSerializationInfo data)

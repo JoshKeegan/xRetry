@@ -18,6 +18,15 @@ namespace xRetry
         public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod,
             IAttributeInfo factAttribute)
         {
+            if (RetryConfigurationDiscovery.TryGetErrorTestCases(
+                    messageSink,
+                    discoveryOptions,
+                    testMethod,
+                    out IEnumerable<IXunitTestCase> configurationErrorTestCases))
+            {
+                return configurationErrorTestCases;
+            }
+
             IXunitTestCase testCase;
 
             if (testMethod.Method.GetParameters().Any())

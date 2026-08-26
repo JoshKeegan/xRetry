@@ -18,7 +18,7 @@ namespace xRetry
         /// <param name="diagnosticMessageSink">The diagnostic message sink to write messages to about retries, waits etc...</param>
         /// <param name="messageBus">The message bus xunit is listening for statuses to report on</param>
         /// <param name="cancellationTokenSource">The cancellation token source from xunit</param>
-        /// <param name="fnRunSingle">(async) Lambda to run this test case once (without retries) - takes the blocking message bus and returns the test run result</param>
+        /// <param name="fnRunSingle">(async) Lambda to run this test case once (without retries) - takes the message bus and returns the test run result</param>
         /// <returns>Resulting run summary</returns>
         public static async Task<RunSummary> RunAsync(
             IRetryableTestCase testCase,
@@ -27,6 +27,24 @@ namespace xRetry
             CancellationTokenSource cancellationTokenSource,
             Func<IMessageBus, Task<RunSummary>> fnRunSingle)
         {
+            if (testCase.MaxRetries == 1)
+            {
+                MessageTransformer messageTransformer = new MessageTransformer(testCase.SkipOnExceptionFullNames);
+                using (TransformingMessageBus transformingMessageBus =
+                    new TransformingMessageBus(messageBus, messageTransformer))
+                {
+                    RunSummary summary = await fnRunSingle(transformingMessageBus);
+
+                    if (messageTransformer.Skipped)
+                    {
+                        summary.Failed = 0;
+                        summary.Skipped = 1;
+                    }
+
+                    return summary;
+                }
+            }
+
             var stopwatch = Stopwatch.StartNew();
 
             for (int i = 1; ; i++)

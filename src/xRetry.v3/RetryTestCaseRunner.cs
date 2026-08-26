@@ -92,6 +92,21 @@ namespace xRetry.v3
                 throw new ArgumentException("ctxt.TestCase must implement IRetryableTestCase");
             }
 
+            if (retryableTestCase.MaxRetries == 1)
+            {
+                return await XunitTestRunner.Instance.Run(
+                    test,
+                    ctxt.MessageBus,
+                    ctxt.ConstructorArguments,
+                    ctxt.ExplicitOption,
+                    ctxt.Aggregator.Clone(),
+                    ctxt.CancellationTokenSource,
+                    ctxt.ParallelMode,
+                    ctxt.Scheduler,
+                    ctxt.BeforeAfterTestAttributes,
+                    ctxt.CaseFixtureMappings);
+            }
+
             var stopwatch = Stopwatch.StartNew();
 
             for (int i = 1; ; i++)

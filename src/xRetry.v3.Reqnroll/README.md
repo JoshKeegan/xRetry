@@ -75,6 +75,69 @@ by default but for some cases also wanted to wait some time before each retry at
 a specific scenario not be retried, even though it is within a feature with a `@retry` tag, by adding `@retry(1)` to the
 scenario.
 
+### Project-wide defaults
+
+You can define project-wide defaults in a file named `xretry.json` in the root of your test project directory:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
+  "maxRetries": 4,
+  "delayBetweenRetriesMs": 50,
+  "retryUntaggedScenarios": true
+}
+```
+
+Supported keys:
+ - `$schema`: optional schema reference for editor completion and validation
+ - `maxRetries`: default maximum number of attempts
+ - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
+ - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
+
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
+
+Add the following to your test project so MSBuild makes the file available at runtime:
+
+```xml
+<ItemGroup>
+    <Content Include="xretry.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+With this project entry in place, no manual copying or feature-file regeneration is required. Edit `xretry.json` in
+your project and run the tests normally; MSBuild copies it when it is newer. If you run `dotnet test --no-build`, build
+the project first so the updated file is copied to the test output directory.
+
+By default, retries remain opt-in and only scenarios or features tagged with `@retry` are retried.
+
+If `retryUntaggedScenarios` is `true`, untagged scenarios use the configured defaults:
+
+```gherkin
+Feature: Retryable Feature
+
+Scenario: Uses global defaults
+	When I increment the retry count
+	Then the result should be 4
+```
+
+Enable this only for the transient failures described in [When to use this](#when-to-use-this), not to cover up bugs
+in the code under test.
+
+Precedence is:
+ - scenario `@retry` tag
+ - feature `@retry` tag
+ - `xretry.json` when `retryUntaggedScenarios` is `true`
+ - no retries for untagged scenarios otherwise
+
+Any value not specified in a tag falls back to the next level. For example, plain `@retry` uses the configured
+retry count and delay when present, `@retry(5)` overrides the retry count but can still use the configured delay,
+and `@retry(1)` can be used to opt out even when a feature tag or `retryUntaggedScenarios` would otherwise retry
+the scenario.
+
+If the same test project also contains direct xUnit retries via `xRetry.v3`, those tests read the same `xretry.json` too.
+Direct xUnit retries still require `[RetryFact]` or `[RetryTheory]`; `retryUntaggedScenarios` only affects the
+Reqnroll-generated tests.
+
 
 [//]: \# (Src: logs.md)
 

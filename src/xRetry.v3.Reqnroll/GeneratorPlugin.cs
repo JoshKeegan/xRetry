@@ -16,10 +16,10 @@ public class GeneratorPlugin : IGeneratorPlugin
         UnitTestProviderConfiguration unitTestProviderConfiguration)
     {
         unitTestProviderConfiguration.UseUnitTestProvider("xunit3");
-        generatorPluginEvents.CustomizeDependencies += CustomizeDependencies;
+        generatorPluginEvents.CustomizeDependencies += customizeDependencies;
     }
 
-    private void CustomizeDependencies(object sender, CustomizeDependenciesEventArgs eventArgs)
+    private void customizeDependencies(object sender, CustomizeDependenciesEventArgs eventArgs)
     {
         eventArgs.ObjectContainer.RegisterTypeAs<RetryTagParser, IRetryTagParser>();
         eventArgs.ObjectContainer.RegisterTypeAs<TestGeneratorProvider, IUnitTestGeneratorProvider>();

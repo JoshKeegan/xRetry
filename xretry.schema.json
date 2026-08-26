@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/JoshKeegan/xRetry/master/xretry.schema.json",
+  "title": "xRetry configuration",
+  "description": "Project-wide retry defaults for xRetry, xRetry.v3, and their SpecFlow and Reqnroll integrations.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "description": "The xRetry JSON schema used by editors for completion and validation.",
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "maxRetries": {
+      "description": "The default maximum number of attempts.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 3
+    },
+    "delayBetweenRetriesMs": {
+      "description": "The default delay between attempts, in milliseconds.",
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "retryUntaggedScenarios": {
+      "description": "Whether untagged SpecFlow and Reqnroll scenarios use the configured or built-in retry defaults.",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false
+}

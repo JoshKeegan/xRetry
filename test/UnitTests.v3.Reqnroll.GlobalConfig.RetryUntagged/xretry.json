@@ -1,0 +1,6 @@
+{
+  "$schema": "../../xretry.schema.json",
+  "maxRetries": 4,
+  "delayBetweenRetriesMs": 50,
+  "retryUntaggedScenarios": true
+}

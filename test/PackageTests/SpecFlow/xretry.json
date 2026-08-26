@@ -1,0 +1,5 @@
+{
+  "$schema": "../../xretry.schema.json",
+  "maxRetries": 2,
+  "retryUntaggedScenarios": true
+}

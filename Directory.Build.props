@@ -2,7 +2,16 @@
 
 	<PropertyGroup>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\..\build\keyPair.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)build\keyPair.snk</AssemblyOriginatorKeyFile>
+
+		<!--
+			Keep NuGet/MSBuild intermediates from non-Windows builds separate from the
+			per-project obj directories used by Windows host builds. This allows the
+			repository to be built from a Linux container mounted into a Windows host
+			without the two build environments overwriting each other's
+			project.assets.json files.
+		-->
+		<BaseIntermediateOutputPath Condition="'$(OS)' != 'Windows_NT'">$(MSBuildThisFileDirectory)obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
 	</PropertyGroup>
 
 </Project>

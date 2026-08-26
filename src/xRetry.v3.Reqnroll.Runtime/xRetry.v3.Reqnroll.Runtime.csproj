@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>xRetry.v3.Reqnroll</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\xRetry.v3\xRetry.v3.csproj" />
+  </ItemGroup>
+
+</Project>

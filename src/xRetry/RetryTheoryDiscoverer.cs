@@ -10,6 +10,23 @@ namespace xRetry
         public RetryTheoryDiscoverer(IMessageSink diagnosticMessageSink)
             : base(diagnosticMessageSink) { }
 
+        public override IEnumerable<IXunitTestCase> Discover(
+            ITestFrameworkDiscoveryOptions discoveryOptions,
+            ITestMethod testMethod,
+            IAttributeInfo theoryAttribute)
+        {
+            if (RetryConfigurationDiscovery.TryGetErrorTestCases(
+                    DiagnosticMessageSink,
+                    discoveryOptions,
+                    testMethod,
+                    out IEnumerable<IXunitTestCase> configurationErrorTestCases))
+            {
+                return configurationErrorTestCases;
+            }
+
+            return base.Discover(discoveryOptions, testMethod, theoryAttribute);
+        }
+
         protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(
             ITestFrameworkDiscoveryOptions discoveryOptions,
             ITestMethod testMethod,

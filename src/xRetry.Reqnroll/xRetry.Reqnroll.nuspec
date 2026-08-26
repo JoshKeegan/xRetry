@@ -14,8 +14,10 @@
     <readme>docs\README.md</readme>
 
     <dependencies>
-      <dependency id="Reqnroll.xUnit" version="[2.0.0,4.0.0)" />
-      <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Reqnroll.xUnit" version="[2.0.0,4.0.0)" />
+        <dependency id="xRetry" version="[$xRetryVersionMin$,$xRetryVersionMax$)" />
+      </group>
     </dependencies>
   </metadata>
 
@@ -24,6 +26,8 @@
     <file src="xRetry.Reqnroll.props" target="build" />
     
     <file src="bin\Release\netstandard2.0\xRetry.ReqnrollPlugin.dll" target="build\netstandard2.0" />
+
+    <file src="..\xRetry.Reqnroll.Runtime\bin\Release\netstandard2.0\xRetry.Reqnroll.dll" target="lib\netstandard2.0" />
 
     <file src="README.md" target="docs\" />
   </files>
