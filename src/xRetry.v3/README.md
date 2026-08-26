@@ -103,7 +103,8 @@ Supported keys:
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
 
-If the file or a key is missing, xRetry falls back to the built-in defaults of `3` retries and `0ms` delay.
+If the file or a key is missing, xRetry falls back to the built-in defaults of `3` attempts and `0ms` delay.
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
 
 To make the file available when the tests run, copy it to the output directory, e.g:
 

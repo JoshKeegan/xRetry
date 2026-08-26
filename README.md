@@ -115,7 +115,8 @@ Supported keys:
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
 
-If the file or a key is missing, xRetry falls back to the built-in defaults of `3` retries and `0ms` delay.
+If the file or a key is missing, xRetry falls back to the built-in defaults of `3` attempts and `0ms` delay.
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
 
 To make the file available when the tests run, copy it to the output directory, e.g:
 
@@ -219,7 +220,8 @@ Supported keys:
  - `maxRetries`: default maximum number of attempts
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
 
-If the file or a key is missing, xRetry falls back to the built-in defaults of `3` retries and `0ms` delay.
+If the file or a key is missing, xRetry falls back to the built-in defaults of `3` attempts and `0ms` delay.
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
 
 To make the file available when the tests run, copy it to the output directory, e.g:
 
@@ -319,6 +321,8 @@ Supported keys:
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
 
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
+
 Add the following to your test project so MSBuild makes the file available at runtime:
 
 ```xml
@@ -342,6 +346,9 @@ Scenario: Uses global defaults
 	When I increment the retry count
 	Then the result should be 4
 ```
+
+Enable this only for the transient failures described in [When to use this](#when-to-use-this), not to cover up bugs
+in the code under test.
 
 Precedence is:
  - scenario `@retry` tag
@@ -421,6 +428,8 @@ Supported keys:
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
 
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
+
 Add the following to your test project so MSBuild makes the file available at runtime:
 
 ```xml
@@ -444,6 +453,9 @@ Scenario: Uses global defaults
 	When I increment the retry count
 	Then the result should be 4
 ```
+
+Enable this only for the transient failures described in [When to use this](#when-to-use-this), not to cover up bugs
+in the code under test.
 
 Precedence is:
  - scenario `@retry` tag
@@ -526,6 +538,8 @@ Supported keys:
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
 
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
+
 Add the following to your test project so MSBuild makes the file available at runtime:
 
 ```xml
@@ -549,6 +563,9 @@ Scenario: Uses global defaults
 	When I increment the retry count
 	Then the result should be 4
 ```
+
+Enable this only for the transient failures described in [When to use this](#when-to-use-this), not to cover up bugs
+in the code under test.
 
 Precedence is:
  - scenario `@retry` tag
@@ -587,7 +604,10 @@ opening an issue first to discuss, and make sure nobody else is working on the s
 
 #### In an IDE
 
-To build and run locally, always build `xRetry.Reqnroll` and `xRetry.SpecFlow` with the Release profile before the tests to ensure MSBuild uses the latest version of your changes when building the test projects.  
+Before building the test projects, build every project under `src/` in the Release configuration. The order does not
+matter, but all Release outputs must be current before the tests are built. The test projects load the generator
+plugins directly from `bin/Release`. Missing outputs cause compile errors; stale outputs can make the tests run against
+old code instead of your changes.
 
 #### From the terminal
 

@@ -61,6 +61,8 @@ Supported keys:
  - `delayBetweenRetriesMs`: default delay between attempts, in milliseconds
  - `retryUntaggedScenarios`: when `true`, untagged scenarios use the configured or built-in retry defaults
 
+If `xretry.json` is malformed or contains an unknown key, affected tests fail with a configuration error.
+
 Add the following to your test project so MSBuild makes the file available at runtime:
 
 ```xml
@@ -84,6 +86,9 @@ Scenario: Uses global defaults
 	When I increment the retry count
 	Then the result should be 4
 ```
+
+Enable this only for the transient failures described in [When to use this](#when-to-use-this), not to cover up bugs
+in the code under test.
 
 Precedence is:
  - scenario `@retry` tag
