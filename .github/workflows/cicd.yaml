@@ -81,6 +81,10 @@ jobs:
         working-directory: build
         run: make unit-tests-run-reqnroll-v3-global-config-retry-untagged
 
+      - name: Run Unit Tests (Invalid Config)
+        working-directory: build
+        run: make unit-tests-run-invalid-config
+
       - name: Create Nuget Packages
         working-directory: build
         run: make nuget-create
