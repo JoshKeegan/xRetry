@@ -14,3 +14,5 @@ make unit-tests-run-invalid-config
 ```
 
 The assertion covers xUnit v2 and v3 on every target framework declared by the projects.
+This harness tests the discovery and test-runner plumbing with one representative invalid input; per-input parsing and
+validation cases belong in the `RetryDefaults` unit tests.

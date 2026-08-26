@@ -54,7 +54,7 @@ namespace xRetry
         [JsonProperty("$schema")]
         public string Schema { get; private set; }
 
-        internal static LoadResult Load(string directory) =>
+        public static LoadResult Load(string directory) =>
             cache.GetOrAdd(
                 directory,
                 static configDirectory =>
@@ -119,7 +119,7 @@ namespace xRetry
             Exception innerException = null) =>
             new($"xRetry configuration file \"{configFilePath}\" is invalid: {message}.", innerException);
 
-        internal sealed class LoadResult
+        public sealed class LoadResult
         {
             public LoadResult(RetryDefaults value)
             {
